@@ -66,7 +66,7 @@ glfw_platform = {
         ,"glfw/src/glx_context.c"
         ,"glfw/src/egl_context.c"
         ,"glfw/src/osmesa_context.c"
-        ,"glfw/src/null_joystick.c"
+        ,"glfw/src/linux_joystick.c"
     ],
     'win32': [
          "glfw/src/win32_init.c"
