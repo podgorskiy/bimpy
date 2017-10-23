@@ -146,9 +146,9 @@ glfw_platform = {
         ,"glfw/src/cocoa_joystick.m"
         ,"glfw/src/cocoa_monitor.m"
         ,"glfw/src/cocoa_window.m"
-        ,"glfw/src/cocoa_time.m"
+        ,"glfw/src/cocoa_time.c"
         ,"glfw/src/posix_thread.c"
-        ,"glfw/src/nsgl_context.c"
+        ,"glfw/src/nsgl_context.m"
         ,"glfw/src/egl_context.c"
         ,"glfw/src/osmesa_context.c"
     ],
@@ -195,11 +195,18 @@ libs = {
     'win32': ["gdi32", "opengl32", "Shell32"],
 }
 
+extra_link = {
+    'darwin': ["-framework", "Cocoa","-framework", "IOKit","-framework", "Cocoa","-framework", "CoreFoundation","-framework", "CoreVideo"],
+    'posix': [],
+    'win32': [],
+}
+
 extension = Extension("_impy",
                              imgui + glfw + glfw_platform[target_os] + ['impy.cpp', "imgui_glfw.cpp", "gl3w/src/gl3w.c"],
                              define_macros = definitions[target_os],
                              include_dirs=["glfw/include", "imgui", "pybind11/include", "gl3w/include"],
-                             libraries = libs[target_os],)
+                             extra_link_args=extra_link[target_os],
+                             libraries = libs[target_os])
 
 extension.extra_compile_cpp_args = ['-std=c++11']
 
