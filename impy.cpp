@@ -633,6 +633,75 @@ PYBIND11_MODULE(_impy, m) {
 		return result;
 	}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v3"), py::arg("v4"), py::arg("flags") = 0);
 	
+	m.def("slider_float", [](const char* label, Float& v, float v_min, float v_max, const char* display_format, float power)
+	{
+		return ImGui::SliderFloat(label, &v.value, v_min, v_max, display_format, power);
+	}, py::arg("label"), py::arg("v"), py::arg("v_min"), py::arg("v_max"), py::arg("display_format") = "%.3f", py::arg("power") = 1.0f);
+	m.def("slider_float2", [](const char* label, Float& v1, Float& v2, float v_min, float v_max, const char* display_format, float power)
+	{
+		float v[2] = {v1.value, v2.value};
+		bool result = ImGui::SliderFloat2(label, v, v_min, v_max, display_format, power);
+		v1.value = v[0];
+		v2.value = v[1];
+		return result;
+	}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v_min"), py::arg("v_max"), py::arg("display_format") = "%.3f", py::arg("power") = 1.0f);
+	m.def("slider_float3", [](const char* label, Float& v1, Float& v2, Float& v3, float v_min, float v_max, const char* display_format, float power)
+	{
+		float v[3] = {v1.value, v2.value, v3.value};
+		bool result = ImGui::SliderFloat3(label, v, v_min, v_max, display_format, power);
+		v1.value = v[0];
+		v2.value = v[1];
+		v3.value = v[2];
+		return result;
+	}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v3"), py::arg("v_min"), py::arg("v_max"), py::arg("display_format") = "%.3f", py::arg("power") = 1.0f);
+	m.def("slider_float4", [](const char* label, Float& v1, Float& v2, Float& v3, Float& v4, float v_min, float v_max, const char* display_format, float power)
+	{
+		float v[4] = {v1.value, v2.value, v3.value, v4.value};
+		bool result = ImGui::SliderFloat4(label, v, v_min, v_max, display_format, power);
+		v1.value = v[0];
+		v2.value = v[1];
+		v3.value = v[2];
+		v4.value = v[3];
+		return result;
+	}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v3"), py::arg("v4"), py::arg("v_min"), py::arg("v_max"), py::arg("display_format") = "%.3f", py::arg("power") = 1.0f);
+	
+	m.def("slider_angle", [](const char* label, Float& v_rad, float v_degrees_min, float v_degrees_max)
+	{
+		return ImGui::SliderAngle(label, &v_rad.value, v_degrees_min, v_degrees_max);
+	}, py::arg("label"), py::arg("v_rad"), py::arg("v_degrees_min")=-360.0f, py::arg("v_degrees_max")=+360.0f);
+	
+	m.def("slider_int", [](const char* label, Int& v, int v_min, int v_max, const char* display_format)
+	{
+		return ImGui::SliderInt(label, &v.value, v_min, v_max, display_format);
+	}, py::arg("label"), py::arg("v"), py::arg("v_min"), py::arg("v_max"), py::arg("display_format") = "%.0f");
+	m.def("slider_int2", [](const char* label, Int& v1, Int& v2, int v_min, int v_max, const char* display_format)
+	{
+		int v[2] = {v1.value, v2.value};
+		bool result = ImGui::SliderInt2(label, v, v_min, v_max, display_format);
+		v1.value = v[0];
+		v2.value = v[1];
+		return result;
+	}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v_min"), py::arg("v_max"), py::arg("display_format") = "%.0f");
+	m.def("slider_int3", [](const char* label, Int& v1, Int& v2, Int& v3, int v_min, int v_max, const char* display_format)
+	{
+		int v[3] = {v1.value, v2.value, v3.value};
+		bool result = ImGui::SliderInt3(label, v, v_min, v_max, display_format);
+		v1.value = v[0];
+		v2.value = v[1];
+		v3.value = v[2];
+		return result;
+	}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v3"), py::arg("v_min"), py::arg("v_max"), py::arg("display_format") = "%.0f");
+	m.def("slider_int4", [](const char* label, Int& v1, Int& v2, Int& v3, Int& v4, int v_min, int v_max, const char* display_format)
+	{
+		int v[4] = {v1.value, v2.value, v3.value, v4.value};
+		bool result = ImGui::SliderInt4(label, v, v_min, v_max, display_format);
+		v1.value = v[0];
+		v2.value = v[1];
+		v3.value = v[2];
+		v4.value = v[3];
+		return result;
+	}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v3"), py::arg("v4"), py::arg("v_min"), py::arg("v_max"), py::arg("display_format") = "%.0f");
+	
 	m.def("plot_lines", [](
 		const char* label,
 		const std::vector<float>& values,
