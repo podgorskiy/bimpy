@@ -215,19 +215,21 @@ setup(
 
     version='0.0.1',
 
-    description='impy',
+    description='impy - imgui for python',
     long_description=long_description,
 
     url='https://github.com/podgorskiy/impy',
 
     author='Stanislav Pidhorskyi',
-    author_email='stpidhorskyi@mix.wvu.edu',
+    author_email='stanislav@podgorskiy.com',
 
     license='MIT',
 
     classifiers=[
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 2.7',
+		'Programming Language :: Python :: 3.6',
     ],
 
     keywords='imgui ui',
