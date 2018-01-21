@@ -191,7 +191,7 @@ PYBIND11_MODULE(_impy, m) {
 	static Bool null;
 	null.null = true;
 	
-    m.doc() = "impy - imgui for python";
+	m.doc() = "impy - imgui for python";
 
 	py::enum_<ImGuiCond_>(m, "Condition")
 		.value("Always", ImGuiCond_::ImGuiCond_Always)
@@ -287,54 +287,54 @@ PYBIND11_MODULE(_impy, m) {
 		.value("ModalWindowDarkening", ImGuiCol_::ImGuiCol_ModalWindowDarkening)
 		.export_values();
 		
-    py::class_<Context>(m, "Context")
-        .def(py::init())
-        .def("init", &Context::Init, "Initializes context and creates window")
-        .def("new_frame", &Context::NewFrame, "Starts a new frame. NewFrame must be called before any imgui functions")
-        .def("render", &Context::Render, "Finilizes the frame and draws all UI. Render must be called after all imgui functions")
+	py::class_<Context>(m, "Context")
+		.def(py::init())
+		.def("init", &Context::Init, "Initializes context and creates window")
+		.def("new_frame", &Context::NewFrame, "Starts a new frame. NewFrame must be called before any imgui functions")
+		.def("render", &Context::Render, "Finilizes the frame and draws all UI. Render must be called after all imgui functions")
 		.def("should_close", &Context::ShouldClose)
-        .def("__enter__", &Context::NewFrame)
-        .def("__exit__", [](Context& self, py::object, py::object, py::object)
+		.def("__enter__", &Context::NewFrame)
+		.def("__exit__", [](Context& self, py::object, py::object, py::object)
 			{
 				self.Render();
 			});
 		
-    py::class_<Bool>(m, "Bool")
-        .def(py::init())
-        .def(py::init<bool>())
+	py::class_<Bool>(m, "Bool")
+		.def(py::init())
+		.def(py::init<bool>())
 		.def_readwrite("value", &Bool::value);
 		
-    py::class_<Float>(m, "Float")
-        .def(py::init())
-        .def(py::init<float>())
+	py::class_<Float>(m, "Float")
+		.def(py::init())
+		.def(py::init<float>())
 		.def_readwrite("value", &Float::value);
 	
-    py::class_<Int>(m, "Int")
-        .def(py::init())
-        .def(py::init<int>())
+	py::class_<Int>(m, "Int")
+		.def(py::init())
+		.def(py::init<int>())
 		.def_readwrite("value", &Int::value);
 		
-    py::class_<String>(m, "String")
-        .def(py::init())
-        .def(py::init<std::string>())
+	py::class_<String>(m, "String")
+		.def(py::init())
+		.def(py::init<std::string>())
 		.def_readwrite("value", &String::value);
 		
-    py::class_<ImVec2>(m, "Vec2")
-        .def(py::init())
-        .def(py::init<float, float>())
+	py::class_<ImVec2>(m, "Vec2")
+		.def(py::init())
+		.def(py::init<float, float>())
 		.def_readwrite("x", &ImVec2::x)
 		.def_readwrite("y", &ImVec2::y);
 		
-    py::class_<ImVec4>(m, "Vec4")
-        .def(py::init())
-        .def(py::init<float, float, float, float>())
+	py::class_<ImVec4>(m, "Vec4")
+		.def(py::init())
+		.def(py::init<float, float, float, float>())
 		.def_readwrite("x", &ImVec4::x)
 		.def_readwrite("y", &ImVec4::y)
 		.def_readwrite("z", &ImVec4::z)
 		.def_readwrite("w", &ImVec4::w);
 	
-    py::class_<ImGuiStyle>(m, "GuiStyle")
-        .def(py::init())
+	py::class_<ImGuiStyle>(m, "GuiStyle")
+		.def(py::init())
 		.def_readwrite("alpha", &ImGuiStyle::Alpha)
 		.def_readwrite("window_padding", &ImGuiStyle::WindowPadding)
 		.def_readwrite("window_min_size", &ImGuiStyle::WindowMinSize)
@@ -367,133 +367,133 @@ PYBIND11_MODULE(_impy, m) {
 				self.Colors[(int)a] = c;
 			});
 
-    m.def("get_style", &ImGui::GetStyle);
-    m.def("set_style", [](const ImGuiStyle& a) 
+	m.def("get_style", &ImGui::GetStyle);
+	m.def("set_style", [](const ImGuiStyle& a) 
 		{
-            ImGui::GetStyle() = a;
-        });
+			ImGui::GetStyle() = a;
+		});
 	
-    m.def("show_test_window", [](){ ImGui::ShowTestWindow(); });
+	m.def("show_test_window", [](){ ImGui::ShowTestWindow(); });
 	
-    m.def("begin",[](const std::string& name, Bool& opened, ImGuiWindowFlags flags) -> bool
+	m.def("begin",[](const std::string& name, Bool& opened, ImGuiWindowFlags flags) -> bool
 		{
 			return ImGui::Begin(name.c_str(), opened.null ? nullptr : &opened.value, flags);
 		},
 		"Push a new ImGui window to add widgets to",
 		py::arg("name"), py::arg("opened") = null, py::arg("flags") = ImGuiWindowFlags_(0));
 	  
-    m.def("end", &ImGui::End);
+	m.def("end", &ImGui::End);
 	
-    m.def("begin_child",[](const std::string& str_id, const ImVec2& size, bool border, ImGuiWindowFlags extra_flags) -> bool
+	m.def("begin_child",[](const std::string& str_id, const ImVec2& size, bool border, ImGuiWindowFlags extra_flags) -> bool
 		{
 			return ImGui::BeginChild(str_id.c_str(), size);
 		},
 		"begin a scrolling region. size==0.0f: use remaining window size, size<0.0f: use remaining window size minus abs(size). size>0.0f: fixed size. each axis can use a different mode, e.g. ImVec2(0,400).",
 		py::arg("str_id"), py::arg("size") = ImVec2(0,0), py::arg("border") = false, py::arg("extra_flags") = ImGuiWindowFlags_(0));
 		
-    m.def("end_child", &ImGui::EndChild);
+	m.def("end_child", &ImGui::EndChild);
 	
-    m.def("get_content_region_max", &ImGui::GetContentRegionMax);
-    m.def("get_content_region_avail", &ImGui::GetContentRegionAvail);
-    m.def("get_content_region_avail_width", &ImGui::GetContentRegionAvailWidth);
-    m.def("get_window_content_region_min", &ImGui::GetWindowContentRegionMin);
-    m.def("get_window_content_region_max", &ImGui::GetWindowContentRegionMax);
-    m.def("get_window_content_region_width", &ImGui::GetWindowContentRegionWidth);
-    m.def("get_window_font_size", &ImGui::GetWindowFontSize);
-    m.def("set_window_font_scale", &ImGui::SetWindowFontScale);
-    m.def("get_window_pos", &ImGui::GetWindowPos);
-    m.def("get_window_size", &ImGui::GetWindowSize);
-    m.def("get_window_width", &ImGui::GetWindowWidth);
-    m.def("get_window_height", &ImGui::GetWindowHeight);
-    m.def("is_window_collapsed", &ImGui::IsWindowCollapsed);
-    m.def("is_window_appearing", &ImGui::IsWindowAppearing);
-    m.def("set_window_font_scale", &ImGui::SetWindowFontScale); 
+	m.def("get_content_region_max", &ImGui::GetContentRegionMax);
+	m.def("get_content_region_avail", &ImGui::GetContentRegionAvail);
+	m.def("get_content_region_avail_width", &ImGui::GetContentRegionAvailWidth);
+	m.def("get_window_content_region_min", &ImGui::GetWindowContentRegionMin);
+	m.def("get_window_content_region_max", &ImGui::GetWindowContentRegionMax);
+	m.def("get_window_content_region_width", &ImGui::GetWindowContentRegionWidth);
+	m.def("get_window_font_size", &ImGui::GetWindowFontSize);
+	m.def("set_window_font_scale", &ImGui::SetWindowFontScale);
+	m.def("get_window_pos", &ImGui::GetWindowPos);
+	m.def("get_window_size", &ImGui::GetWindowSize);
+	m.def("get_window_width", &ImGui::GetWindowWidth);
+	m.def("get_window_height", &ImGui::GetWindowHeight);
+	m.def("is_window_collapsed", &ImGui::IsWindowCollapsed);
+	m.def("is_window_appearing", &ImGui::IsWindowAppearing);
+	m.def("set_window_font_scale", &ImGui::SetWindowFontScale); 
 	
-    m.def("set_next_window_pos", &ImGui::SetNextWindowPos, py::arg("pos"), py::arg("cond") = 0, py::arg("pivot") = ImVec2(0,0));
-    m.def("set_next_window_size", &ImGui::SetNextWindowSize, py::arg("size"), py::arg("cond") = 0);
-    m.def("set_next_window_size_constraints", [](const ImVec2& size_min, const ImVec2& size_max){ ImGui::SetNextWindowSizeConstraints(size_min, size_max); }, py::arg("size_min"), py::arg("size_max") = 0);
-    m.def("set_next_window_content_size", &ImGui::SetNextWindowContentSize, py::arg("size"));
-    m.def("set_next_window_content_width", &ImGui::SetNextWindowContentWidth, py::arg("width"));
-    m.def("set_next_window_collapsed", &ImGui::SetNextWindowCollapsed, py::arg("collapsed"), py::arg("cond") = 0);
-    m.def("set_next_window_focus", &ImGui::SetNextWindowFocus); 
-    m.def("set_window_pos", [](const char* name, const ImVec2& pos, ImGuiCond cond){ ImGui::SetWindowPos(name, pos, cond); }, py::arg("name"), py::arg("pos"), py::arg("cond") = 0);
-    m.def("set_window_size", [](const char* name, const ImVec2& size, ImGuiCond cond){ ImGui::SetWindowSize(name, size, cond); }, py::arg("name"), py::arg("size"), py::arg("cond") = 0);
-    m.def("set_window_collapsed", [](const char* name, bool collapsed, ImGuiCond cond){ ImGui::SetWindowCollapsed(name, collapsed, cond); }, py::arg("name"), py::arg("collapsed"), py::arg("cond") = 0);
-    m.def("set_window_focus", [](const char* name){ ImGui::SetWindowFocus(name); }, py::arg("name"));
-   	
-    m.def("get_scroll_x", &ImGui::GetScrollX);
-    m.def("get_scroll_y", &ImGui::GetScrollY);
-    m.def("get_scroll_max_x", &ImGui::GetScrollMaxX);
-    m.def("get_scroll_max_y", &ImGui::GetScrollMaxY);
-    m.def("set_scroll_x", &ImGui::SetScrollX);
-    m.def("set_scroll_y", &ImGui::SetScrollY);
-    m.def("set_scroll_here", &ImGui::SetScrollHere, py::arg("center_y_ratio") = 0.5f);
-    m.def("set_scroll_from_pos_y", &ImGui::SetScrollFromPosY, py::arg("pos_y"), py::arg("center_y_ratio") = 0.5f);
-    m.def("set_keyboard_focus_here", &ImGui::SetKeyboardFocusHere, py::arg("offset") = 0.0f);
+	m.def("set_next_window_pos", &ImGui::SetNextWindowPos, py::arg("pos"), py::arg("cond") = 0, py::arg("pivot") = ImVec2(0,0));
+	m.def("set_next_window_size", &ImGui::SetNextWindowSize, py::arg("size"), py::arg("cond") = 0);
+	m.def("set_next_window_size_constraints", [](const ImVec2& size_min, const ImVec2& size_max){ ImGui::SetNextWindowSizeConstraints(size_min, size_max); }, py::arg("size_min"), py::arg("size_max") = 0);
+	m.def("set_next_window_content_size", &ImGui::SetNextWindowContentSize, py::arg("size"));
+	m.def("set_next_window_content_width", &ImGui::SetNextWindowContentWidth, py::arg("width"));
+	m.def("set_next_window_collapsed", &ImGui::SetNextWindowCollapsed, py::arg("collapsed"), py::arg("cond") = 0);
+	m.def("set_next_window_focus", &ImGui::SetNextWindowFocus); 
+	m.def("set_window_pos", [](const char* name, const ImVec2& pos, ImGuiCond cond){ ImGui::SetWindowPos(name, pos, cond); }, py::arg("name"), py::arg("pos"), py::arg("cond") = 0);
+	m.def("set_window_size", [](const char* name, const ImVec2& size, ImGuiCond cond){ ImGui::SetWindowSize(name, size, cond); }, py::arg("name"), py::arg("size"), py::arg("cond") = 0);
+	m.def("set_window_collapsed", [](const char* name, bool collapsed, ImGuiCond cond){ ImGui::SetWindowCollapsed(name, collapsed, cond); }, py::arg("name"), py::arg("collapsed"), py::arg("cond") = 0);
+	m.def("set_window_focus", [](const char* name){ ImGui::SetWindowFocus(name); }, py::arg("name"));
 	
-    m.def("push_style_color", [](ImGuiCol_ idx, const ImVec4& col){ ImGui::PushStyleColor((ImGuiCol)idx, col); });
-    m.def("pop_style_color", &ImGui::PopStyleColor, py::arg("count") = 1);
+	m.def("get_scroll_x", &ImGui::GetScrollX);
+	m.def("get_scroll_y", &ImGui::GetScrollY);
+	m.def("get_scroll_max_x", &ImGui::GetScrollMaxX);
+	m.def("get_scroll_max_y", &ImGui::GetScrollMaxY);
+	m.def("set_scroll_x", &ImGui::SetScrollX);
+	m.def("set_scroll_y", &ImGui::SetScrollY);
+	m.def("set_scroll_here", &ImGui::SetScrollHere, py::arg("center_y_ratio") = 0.5f);
+	m.def("set_scroll_from_pos_y", &ImGui::SetScrollFromPosY, py::arg("pos_y"), py::arg("center_y_ratio") = 0.5f);
+	m.def("set_keyboard_focus_here", &ImGui::SetKeyboardFocusHere, py::arg("offset") = 0.0f);
 	
-    m.def("push_item_width", &ImGui::PushItemWidth);
-    m.def("pop_item_width", &ImGui::PopItemWidth);
-    m.def("calc_item_width", &ImGui::CalcItemWidth);
-    m.def("push_text_wrap_pos", &ImGui::PushTextWrapPos, py::arg("wrap_pos_x") = 0.0f);
-    m.def("pop_text_wrap_pos", &ImGui::PopTextWrapPos);
-    m.def("push_allow_keyboard_focus", &ImGui::PushAllowKeyboardFocus);
-    m.def("pop_allow_keyboard_focus", &ImGui::PopAllowKeyboardFocus);
-    m.def("push_button_repeat", &ImGui::PushButtonRepeat);
-    m.def("pop_button_repeat", &ImGui::PopButtonRepeat);
+	m.def("push_style_color", [](ImGuiCol_ idx, const ImVec4& col){ ImGui::PushStyleColor((ImGuiCol)idx, col); });
+	m.def("pop_style_color", &ImGui::PopStyleColor, py::arg("count") = 1);
+	
+	m.def("push_item_width", &ImGui::PushItemWidth);
+	m.def("pop_item_width", &ImGui::PopItemWidth);
+	m.def("calc_item_width", &ImGui::CalcItemWidth);
+	m.def("push_text_wrap_pos", &ImGui::PushTextWrapPos, py::arg("wrap_pos_x") = 0.0f);
+	m.def("pop_text_wrap_pos", &ImGui::PopTextWrapPos);
+	m.def("push_allow_keyboard_focus", &ImGui::PushAllowKeyboardFocus);
+	m.def("pop_allow_keyboard_focus", &ImGui::PopAllowKeyboardFocus);
+	m.def("push_button_repeat", &ImGui::PushButtonRepeat);
+	m.def("pop_button_repeat", &ImGui::PopButtonRepeat);
 	
 
-    m.def("separator", &ImGui::Separator);
-    m.def("same_line", &ImGui::SameLine, py::arg("local_pos_x") = 0.0f, py::arg("spacing_w") = -1.0f);
-    m.def("new_line", &ImGui::NewLine);
-    m.def("spacing", &ImGui::Spacing);
-    m.def("dummy", &ImGui::Dummy);
-    m.def("indent", &ImGui::Indent, py::arg("indent_w") = 0.0f);
-    m.def("unindent", &ImGui::Unindent, py::arg("indent_w") = 0.0f);
-    m.def("begin_group", &ImGui::BeginGroup);
-    m.def("end_group", &ImGui::EndGroup);
-    m.def("get_cursor_pos", &ImGui::GetCursorPos);
-    m.def("get_cursor_pos_x", &ImGui::GetCursorPosX);
-    m.def("get_cursor_pos_y", &ImGui::GetCursorPosY);
-    m.def("set_cursor_pos", &ImGui::SetCursorPos);
-    m.def("set_cursor_pos_x", &ImGui::SetCursorPosX);
-    m.def("set_cursor_pos_y", &ImGui::SetCursorPosY);
-    m.def("get_cursor_start_pos", &ImGui::GetCursorStartPos);
-    m.def("get_cursor_screen_pos", &ImGui::GetCursorScreenPos);
-    m.def("set_cursor_screen_pos", &ImGui::SetCursorScreenPos);
-    m.def("align_first_text_height_to_widgets", &ImGui::AlignFirstTextHeightToWidgets);
-    m.def("get_text_line_height", &ImGui::GetTextLineHeight);
-    m.def("get_text_line_height_with_spacing", &ImGui::GetTextLineHeightWithSpacing);
-    m.def("get_items_line_height_with_spacing", &ImGui::GetItemsLineHeightWithSpacing);
+	m.def("separator", &ImGui::Separator);
+	m.def("same_line", &ImGui::SameLine, py::arg("local_pos_x") = 0.0f, py::arg("spacing_w") = -1.0f);
+	m.def("new_line", &ImGui::NewLine);
+	m.def("spacing", &ImGui::Spacing);
+	m.def("dummy", &ImGui::Dummy);
+	m.def("indent", &ImGui::Indent, py::arg("indent_w") = 0.0f);
+	m.def("unindent", &ImGui::Unindent, py::arg("indent_w") = 0.0f);
+	m.def("begin_group", &ImGui::BeginGroup);
+	m.def("end_group", &ImGui::EndGroup);
+	m.def("get_cursor_pos", &ImGui::GetCursorPos);
+	m.def("get_cursor_pos_x", &ImGui::GetCursorPosX);
+	m.def("get_cursor_pos_y", &ImGui::GetCursorPosY);
+	m.def("set_cursor_pos", &ImGui::SetCursorPos);
+	m.def("set_cursor_pos_x", &ImGui::SetCursorPosX);
+	m.def("set_cursor_pos_y", &ImGui::SetCursorPosY);
+	m.def("get_cursor_start_pos", &ImGui::GetCursorStartPos);
+	m.def("get_cursor_screen_pos", &ImGui::GetCursorScreenPos);
+	m.def("set_cursor_screen_pos", &ImGui::SetCursorScreenPos);
+	m.def("align_first_text_height_to_widgets", &ImGui::AlignFirstTextHeightToWidgets);
+	m.def("get_text_line_height", &ImGui::GetTextLineHeight);
+	m.def("get_text_line_height_with_spacing", &ImGui::GetTextLineHeightWithSpacing);
+	m.def("get_items_line_height_with_spacing", &ImGui::GetItemsLineHeightWithSpacing);
 
-    m.def("columns", &ImGui::Columns, py::arg("count") = 1, py::arg("id") = nullptr, py::arg("border") = true);
-    m.def("next_column", &ImGui::NextColumn);
-    m.def("get_column_index", &ImGui::GetColumnIndex);
-    m.def("get_column_offset", &ImGui::GetColumnOffset, py::arg("column_index") = -1);
-    m.def("set_column_offset", &ImGui::SetColumnOffset, py::arg("column_index"), py::arg("offset_x"));
-    m.def("get_column_width", &ImGui::GetColumnWidth, py::arg("column_index") = -1);
-    m.def("get_columns_count", &ImGui::GetColumnsCount);
+	m.def("columns", &ImGui::Columns, py::arg("count") = 1, py::arg("id") = nullptr, py::arg("border") = true);
+	m.def("next_column", &ImGui::NextColumn);
+	m.def("get_column_index", &ImGui::GetColumnIndex);
+	m.def("get_column_offset", &ImGui::GetColumnOffset, py::arg("column_index") = -1);
+	m.def("set_column_offset", &ImGui::SetColumnOffset, py::arg("column_index"), py::arg("offset_x"));
+	m.def("get_column_width", &ImGui::GetColumnWidth, py::arg("column_index") = -1);
+	m.def("get_columns_count", &ImGui::GetColumnsCount);
 	
-    m.def("push_id_str", [](const char* str_id_begin, const char* str_id_end){ ImGui::PushID(str_id_begin, str_id_end); }, py::arg("str_id_begin"), py::arg("str_id_end") = nullptr);
-    m.def("push_id_int", [](int int_id){ ImGui::PushID(int_id); } );
-    m.def("pop_id", &ImGui::PopID);
-    m.def("get_id_str", [](const char* str_id_begin, const char* str_id_end){ ImGui::GetID(str_id_begin, str_id_end); }, py::arg("str_id_begin"), py::arg("str_id_end") = nullptr);
+	m.def("push_id_str", [](const char* str_id_begin, const char* str_id_end){ ImGui::PushID(str_id_begin, str_id_end); }, py::arg("str_id_begin"), py::arg("str_id_end") = nullptr);
+	m.def("push_id_int", [](int int_id){ ImGui::PushID(int_id); } );
+	m.def("pop_id", &ImGui::PopID);
+	m.def("get_id_str", [](const char* str_id_begin, const char* str_id_end){ ImGui::GetID(str_id_begin, str_id_end); }, py::arg("str_id_begin"), py::arg("str_id_end") = nullptr);
 
-    m.def("text", [](const char* text){ ImGui::Text(text); });
-    m.def("text_colored", [](const ImVec4& col, const char* text){ ImGui::TextColored(col, text); });
-    m.def("text_disabled", [](const char* text){ ImGui::TextDisabled(text); });
-    m.def("text_wrapped", [](const char* text){ ImGui::TextWrapped(text); });
-    m.def("label_text", [](const char* label, const char* text){ ImGui::LabelText(label, text); });
-    m.def("bullet_text", [](const char* text){ ImGui::BulletText(text); });
-    m.def("bullet", &ImGui::Bullet);
+	m.def("text", [](const char* text){ ImGui::Text(text); });
+	m.def("text_colored", [](const ImVec4& col, const char* text){ ImGui::TextColored(col, text); });
+	m.def("text_disabled", [](const char* text){ ImGui::TextDisabled(text); });
+	m.def("text_wrapped", [](const char* text){ ImGui::TextWrapped(text); });
+	m.def("label_text", [](const char* label, const char* text){ ImGui::LabelText(label, text); });
+	m.def("bullet_text", [](const char* text){ ImGui::BulletText(text); });
+	m.def("bullet", &ImGui::Bullet);
 	
-    m.def("button", &ImGui::Button, py::arg("label"), py::arg("size") = ImVec2(0,0));
-    m.def("small_button", &ImGui::SmallButton);
-    m.def("invisible_button", &ImGui::InvisibleButton);
+	m.def("button", &ImGui::Button, py::arg("label"), py::arg("size") = ImVec2(0,0));
+	m.def("small_button", &ImGui::SmallButton);
+	m.def("invisible_button", &ImGui::InvisibleButton);
 	m.def("collapsing_header", [](const char* label, ImGuiTreeNodeFlags flags){ ImGui::CollapsingHeader(label, flags); }, py::arg("label"), py::arg("flags") = 0);
-    m.def("checkbox", [](const char* label, Bool& v){ return ImGui::Checkbox(label, &v.value); });
+	m.def("checkbox", [](const char* label, Bool& v){ return ImGui::Checkbox(label, &v.value); });
 	m.def("radio_button", [](const char* label, bool active){ return ImGui::RadioButton(label, active); });
 	m.def("combo", [](const char* label, Int& current_item, const std::vector<std::string>& items)
 	{ 
@@ -651,11 +651,11 @@ PYBIND11_MODULE(_impy, m) {
 		, py::arg("overlay_text") = nullptr
 		, py::arg("scale_min") = FLT_MAX
 		, py::arg("scale_max") = FLT_MAX
-		, py::arg("graph_size")  = ImVec2(0,0)
+		, py::arg("graph_size")	 = ImVec2(0,0)
 		, py::arg("stride") = sizeof(float)
 		);
 		
-    m.def("progress_bar", &ImGui::ProgressBar, py::arg("fraction"), py::arg("size_arg") = ImVec2(-1,0), py::arg("overlay") = nullptr);
+	m.def("progress_bar", &ImGui::ProgressBar, py::arg("fraction"), py::arg("size_arg") = ImVec2(-1,0), py::arg("overlay") = nullptr);
 
-    m.def("color_button", &ImGui::ColorButton, py::arg("desc_id"), py::arg("col"), py::arg("flags") = 0, py::arg("size") = ImVec2(0,0));
+	m.def("color_button", &ImGui::ColorButton, py::arg("desc_id"), py::arg("col"), py::arg("flags") = 0, py::arg("size") = ImVec2(0,0));
 }
