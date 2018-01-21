@@ -1,5 +1,5 @@
 #
-# Copyright 2017 Stanislav Pidhorskyi. All rights reserved.
+# Copyright 2017-2018 Stanislav Pidhorskyi. All rights reserved.
 # License: https://raw.githubusercontent.com/podgorskiy/impy/master/LICENSE.txt
 #
 
@@ -213,8 +213,8 @@ extra_compile_cpp_args = {
     'win32': [],
 }
 
-extension = Extension("_impy",
-                             imgui + glfw + glfw_platform[target_os] + ['impy.cpp', "imgui_glfw.cpp", "gl3w/src/gl3w.c"],
+extension = Extension("_bimpy",
+                             imgui + glfw + glfw_platform[target_os] + ['bimpy.cpp', "imgui_glfw.cpp", "gl3w/src/gl3w.c"],
                              define_macros = definitions[target_os],
                              include_dirs=["glfw/include", "imgui", "pybind11/include", "gl3w/include"],
                              extra_compile_args=extra_compile_args[target_os],
@@ -224,14 +224,14 @@ extension = Extension("_impy",
 extension.extra_compile_cpp_args = extra_compile_cpp_args[target_os]
 
 setup(
-    name='impy',
+    name='bimpy',
 
     version='0.0.1',
 
-    description='impy - imgui for python',
+    description='bimpy - bundled imgui for python',
     long_description=long_description,
 
-    url='https://github.com/podgorskiy/impy',
+    url='https://github.com/podgorskiy/impui',
 
     author='Stanislav Pidhorskyi',
     author_email='stanislav@podgorskiy.com',
@@ -247,7 +247,7 @@ setup(
 
     keywords='imgui ui',
 
-    packages=['impy'],
+    packages=['bimpy'],
 
     ext_modules=[extension]
 )

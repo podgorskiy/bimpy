@@ -1,39 +1,41 @@
-impy
+bimpy - bundled imgui for python
 =============
 
-**impy** is python bindings to [dear imgui](https://github.com/ocornut/imgui) distributed as a self-contained package bundled with [glfw](https://github.com/glfw/glfw) and [gl3w](https://github.com/skaslev/gl3w).
+**bimpy** is a python module that provides bindings to [dear imgui](https://github.com/ocornut/imgui) and distributed as a self-contained package bundled with [glfw](https://github.com/glfw/glfw) and [gl3w](https://github.com/skaslev/gl3w).
 
 Features:
 * Allows to create immediate mode UI with python easily. The API is kept as close to the original dear imgui as possible.
 
-* **impy** already has all necessary functionality for window/OpenGL context creation and hides those details from the user.
+* **bimpy** already has all necessary functionality for window/OpenGL context creation and hides those details from the user.
 
-* **impy** supports multiple contexts and allows creating multiple windows. 
+* **bimpy** supports multiple contexts and allows creating multiple windows. 
 
-* **impy** works on Windows, GNU Linux, and macOS
+* **bimpy** works on Windows, GNU Linux, and macOS.
 
-Hello-world with impy:
+* **bimpy** does not have dependencies and can be easely built from sources. Building relies only on distutils.
+
+Hello-world with bimpy:
 
 ```python
-import impy
+import bimpy
 
-ctx = impy.Context()
+ctx = bimpy.Context()
     
 ctx.init(600, 600, "Hello")
  
-str = impy.String()
-f = impy.Float();
+str = bimpy.String()
+f = bimpy.Float();
 	
 while(not ctx.should_close()):
 	with ctx: 
-		impy.text("Hello, world!")
+		bimpy.text("Hello, world!")
 		
-		if impy.button("OK"):
+		if bimpy.button("OK"):
 		    print(str.value)
         
-		impy.input_text('string', str, 256)
+		bimpy.input_text('string', str, 256)
 		
-		impy.slider_float("float", f, 0.0, 1.0)
+		bimpy.slider_float("float", f, 0.0, 1.0)
 ```
 
 ![hellowworld](https://i.imgur.com/rL7cFj7.png)
@@ -44,7 +46,7 @@ Install
 
 Installation is easy since the package does not have dependencies:
 
-``pip install impy``
+``pip install bimpy``
 
 Or you can build and install from sources:
 
@@ -66,28 +68,28 @@ How to use it?
 Intro
 -----
 
-**impy** is python binding for [dear imgui](https://github.com/ocornut/imgui) and tries to match the C++ API. Also, it has some additional functions to create a window and some other differences.
+**bimpy** is python binding for [dear imgui](https://github.com/ocornut/imgui) and tries to match the C++ API. Also, it has some additional functions to create a window and some other differences.
 
-It has binding for the most functions from **dear imgui**. All functions are renamed from **CamelCase** to **snake_case**, which is more common for python. For example ``ImGui::InputText`` is mapped to ``impy.input_text``.
+It has binding for the most functions from **dear imgui**. All functions are renamed from **CamelCase** to **snake_case**, which is more common for python. For example ``ImGui::InputText`` is mapped to ``bimpy.input_text``.
 
 Context and window
 ------------------
 
-First of all, you need to import **impy**
+First of all, you need to import **bimpy**
 
-``import impy``
+``import bimpy``
 
-Distinctively from **dear imgui**, impy does not have global state (**dear imgui** has it by default, but it has an option not to have one). So, you will need to create a context.
+Distinctively from **dear imgui**, bimpy does not have global state (**dear imgui** has it by default, but it has an option not to have one). So, you will need to create a context.
 
-``ctx = impy.Context(width, height, name)``
+``ctx = bimpy.Context(width, height, name)``
 
 Where integers *width* and *height* specify the size of the window, and string *name* is a caption of the window.
 
-All calls to **impy**'s API must be within *with* statement applied to the context object:
+All calls to **bimpy**'s API must be within *with* statement applied to the context object:
 
 ```python
 with ctx: 
-		impy.text("Hello, world!")
+		bimpy.text("Hello, world!")
 ```
 
 And there must be only one *with* statement applied to the context object per frame.
@@ -96,7 +98,7 @@ Or, a second option is to manualy call ``ctx.new_frame()`` before all API calls,
 
 ```python
 ctx.new_frame()
-impy.text("Hello, world!")
+bimpy.text("Hello, world!")
 ctx.render()
 ```
 
@@ -105,12 +107,12 @@ You can have multiple *Context* objects for multiple windows, however, API is no
 Variables
 ------------------
 
-All **imgui** API that provides user input (such as *InputText*, *SliderFloat*, etc.) modifies the variable through the reference to it. However, in python, such objects as integers, floats and strings are passed always by value. Because of this, **impy** provides special wrappers, that allow passing those variables by reference.
+All **imgui** API that provides user input (such as *InputText*, *SliderFloat*, etc.) modifies the variable through the reference to it. However, in python, such objects as integers, floats and strings are passed always by value. Because of this, **bimpy** provides special wrappers, that allow passing those variables by reference.
 
 For example, to use *slider_float*, you will need first to create a variable that will hold the state:
 
 ```python
-f = impy.Float();
+f = bimpy.Float();
 ```
 
 You can access the value in the following way: ``f.value``
@@ -118,17 +120,17 @@ You can access the value in the following way: ``f.value``
 To use it with *slider_float* simply pass it to that function:
 
 ```python
-impy.slider_float("float slider", f, 0.0, 1.0)
+bimpy.slider_float("float slider", f, 0.0, 1.0)
 ```
 
 All **imgui** input functions that provide multiple inputs, like *SliderFloat2*, *SliderInt4*, *InputInt3*, etc. are mapped to equivalent functions, but instead of passing an array of variables, you need to list all variables in the argument list:
 
 ```python
-f1 = impy.Float();
-f2 = impy.Float();
-f3 = impy.Float();
+f1 = bimpy.Float();
+f2 = bimpy.Float();
+f3 = bimpy.Float();
 
 while(not ctx.should_close()):
 	with ctx: 
-		impy.slider_float3("float", f1, f2, f3, 0.0, 1.0)
+		bimpy.slider_float3("float", f1, f2, f3, 0.0, 1.0)
 ```

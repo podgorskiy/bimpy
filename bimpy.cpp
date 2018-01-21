@@ -1,6 +1,6 @@
 /*
- * Copyright 2017 Stanislav Pidhorskyi. All rights reserved.
- * License: https://raw.githubusercontent.com/podgorskiy/impy/master/LICENSE.txt
+ * Copyright 2017-2018 Stanislav Pidhorskyi. All rights reserved.
+ * License: https://raw.githubusercontent.com/podgorskiy/bimpy/master/LICENSE.txt
  */
 
 #include "imgui_glfw.h"
@@ -187,11 +187,11 @@ struct String
 	std::string value;
 };
 
-PYBIND11_MODULE(_impy, m) {
+PYBIND11_MODULE(_bimpy, m) {
 	static Bool null;
 	null.null = true;
 	
-	m.doc() = "impy - imgui for python";
+	m.doc() = "bimpy - bundled imgui for python";
 
 	py::enum_<ImGuiCond_>(m, "Condition")
 		.value("Always", ImGuiCond_::ImGuiCond_Always)
