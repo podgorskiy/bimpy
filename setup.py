@@ -231,7 +231,7 @@ setup(
     description='bimpy - bundled imgui for python',
     long_description=long_description,
 
-    url='https://github.com/podgorskiy/impui',
+    url='https://github.com/podgorskiy/bimpy',
 
     author='Stanislav Pidhorskyi',
     author_email='stanislav@podgorskiy.com',

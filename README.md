@@ -1,5 +1,5 @@
 bimpy - bundled imgui for python
-=============
+================================
 
 **bimpy** is a python module that provides bindings to [dear imgui](https://github.com/ocornut/imgui) and distributed as a self-contained package bundled with [glfw](https://github.com/glfw/glfw) and [gl3w](https://github.com/skaslev/gl3w).
 
