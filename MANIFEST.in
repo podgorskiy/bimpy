@@ -1,0 +1,8 @@
+include gl3w/gl3w_gen.py
+recursive-include example *.py
+recursive-include gl3w/include *.h
+recursive-include glfw/src *.c *.h *.m
+recursive-include glfw/include *.h
+recursive-include imgui *.h
+recursive-include pybind11 *.h
+include imgui_glfw.h
