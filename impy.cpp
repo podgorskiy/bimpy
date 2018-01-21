@@ -179,6 +179,14 @@ struct Int
 	int value;
 };
 
+struct String
+{
+	String(): value("") {}
+	String(const std::string& v): value(v) {}
+
+	std::string value;
+};
+
 PYBIND11_MODULE(_impy, m) {
 	static Bool null;
 	null.null = true;
@@ -212,6 +220,27 @@ PYBIND11_MODULE(_impy, m) {
 		.value("AlwaysUseWindowPadding", ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysUseWindowPadding)
 		.export_values();
 		
+	py::enum_<ImGuiInputTextFlags_>(m, "InputTextFlags")
+		.value("CharsDecimal", ImGuiInputTextFlags_::ImGuiInputTextFlags_CharsDecimal)
+		.value("CharsHexadecimal", ImGuiInputTextFlags_::ImGuiInputTextFlags_CharsHexadecimal)
+		.value("CharsUppercase", ImGuiInputTextFlags_::ImGuiInputTextFlags_CharsUppercase)
+		.value("CharsNoBlank", ImGuiInputTextFlags_::ImGuiInputTextFlags_CharsNoBlank)
+		.value("AutoSelectAll", ImGuiInputTextFlags_::ImGuiInputTextFlags_AutoSelectAll)
+		.value("EnterReturnsTrue", ImGuiInputTextFlags_::ImGuiInputTextFlags_EnterReturnsTrue)
+		//.value("CallbackCompletion", ImGuiInputTextFlags_::ImGuiInputTextFlags_CallbackCompletion)
+		//.value("CallbackHistory", ImGuiInputTextFlags_::ImGuiInputTextFlags_CallbackHistory)
+		//.value("CallbackAlways", ImGuiInputTextFlags_::ImGuiInputTextFlags_CallbackAlways)
+		//.value("CallbackCharFilter", ImGuiInputTextFlags_::ImGuiInputTextFlags_CallbackCharFilter)
+		.value("AllowTabInput", ImGuiInputTextFlags_::ImGuiInputTextFlags_AllowTabInput)
+		.value("CtrlEnterForNewLine", ImGuiInputTextFlags_::ImGuiInputTextFlags_CtrlEnterForNewLine)
+		.value("NoHorizontalScroll", ImGuiInputTextFlags_::ImGuiInputTextFlags_NoHorizontalScroll)
+		.value("AlwaysInsertMode", ImGuiInputTextFlags_::ImGuiInputTextFlags_AlwaysInsertMode)
+		.value("ReadOnly", ImGuiInputTextFlags_::ImGuiInputTextFlags_ReadOnly)
+		.value("Password", ImGuiInputTextFlags_::ImGuiInputTextFlags_Password)
+		//.value("NoUndoRedo", ImGuiInputTextFlags_::ImGuiInputTextFlags_NoUndoRedo)
+		.value("Multiline", ImGuiInputTextFlags_::ImGuiInputTextFlags_Multiline)
+		.export_values();
+
 	py::enum_<ImGuiCol_>(m, "Colors")
 		.value("Text", ImGuiCol_::ImGuiCol_Text)
 		.value("TextDisabled", ImGuiCol_::ImGuiCol_TextDisabled)
@@ -284,6 +313,11 @@ PYBIND11_MODULE(_impy, m) {
         .def(py::init())
         .def(py::init<int>())
 		.def_readwrite("value", &Int::value);
+		
+    py::class_<String>(m, "String")
+        .def(py::init())
+        .def(py::init<std::string>())
+		.def_readwrite("value", &String::value);
 		
     py::class_<ImVec2>(m, "Vec2")
         .def(py::init())
@@ -459,8 +493,8 @@ PYBIND11_MODULE(_impy, m) {
     m.def("small_button", &ImGui::SmallButton);
     m.def("invisible_button", &ImGui::InvisibleButton);
 	m.def("collapsing_header", [](const char* label, ImGuiTreeNodeFlags flags){ ImGui::CollapsingHeader(label, flags); }, py::arg("label"), py::arg("flags") = 0);
-    m.def("checkbox", [](const char* label, Bool& v){ ImGui::Checkbox(label, &v.value); });
-	m.def("radio_button", [](const char* label, bool active){ ImGui::RadioButton(label, active); });
+    m.def("checkbox", [](const char* label, Bool& v){ return ImGui::Checkbox(label, &v.value); });
+	m.def("radio_button", [](const char* label, bool active){ return ImGui::RadioButton(label, active); });
 	m.def("combo", [](const char* label, Int& current_item, const std::vector<std::string>& items)
 	{ 
 		if (items.size() < 10)
@@ -470,7 +504,7 @@ PYBIND11_MODULE(_impy, m) {
 			{
 				items_[i] = items[i].c_str();
 			}
-			ImGui::Combo(label, &current_item.value, items_, (int)items.size()); 
+			return ImGui::Combo(label, &current_item.value, items_, (int)items.size()); 
 		}
 		else
 		{
@@ -479,10 +513,125 @@ PYBIND11_MODULE(_impy, m) {
 			{
 				items_[i] = items[i].c_str();
 			}
-			ImGui::Combo(label, &current_item.value, items_, (int)items.size());
+			bool result = ImGui::Combo(label, &current_item.value, items_, (int)items.size());
 			delete[] items_;
+			return result;
 		}
 	});
+	m.def("input_text", [](const char* label, String& text, size_t buf_size, ImGuiInputTextFlags flags)
+	{
+		bool result = false;
+		if (buf_size > 256)
+		{
+			char* buff = new char[buf_size];
+			strncpy(buff, text.value.c_str(), buf_size);
+			result = ImGui::InputText(label, buff, buf_size, flags);
+			if (result)
+			{
+				text.value = buff;
+			}
+			delete[] buff;
+		}
+		else
+		{
+			char buff[256];
+			strncpy(buff, text.value.c_str(), 256);
+			result = ImGui::InputText(label, buff, buf_size, flags);
+			if (result)
+			{
+				text.value = buff;
+			}
+		}	
+		return result;
+	}, py::arg("label"), py::arg("text"), py::arg("buf_size"), py::arg("flags") = 0);
+	m.def("input_text_multiline", [](const char* label, String& text, size_t buf_size, const ImVec2& size, ImGuiInputTextFlags flags)
+	{
+		bool result = false;
+		if (buf_size > 256)
+		{
+			char* buff = new char[buf_size];
+			strncpy(buff, text.value.c_str(), buf_size);
+			result = ImGui::InputTextMultiline(label, &text.value[0], buf_size, size, flags);
+			if (result)
+			{
+				text.value = buff;
+			}
+			delete[] buff;
+		}
+		else
+		{
+			char buff[256];
+			strncpy(buff, text.value.c_str(), 256);
+			result = ImGui::InputTextMultiline(label, &text.value[0], buf_size, size, flags);
+			if (result)
+			{
+				text.value = buff;
+			}
+		}	
+		return result;
+	}, py::arg("label"), py::arg("text"), py::arg("buf_size"), py::arg("flags") = 0, py::arg("size") = ImVec2(0,0));
+	m.def("input_float", [](const char* label, Float& v, float step, float step_fast, int decimal_precision, ImGuiInputTextFlags flags)
+	{
+		return ImGui::InputFloat(label, &v.value, step, step_fast, decimal_precision, flags);
+	}, py::arg("label"), py::arg("v"), py::arg("flags") = 0, py::arg("step") = 0.0f, py::arg("step_fast") = 0.0f, py::arg("decimal_precision") = -1);
+	m.def("input_float2", [](const char* label, Float& v1, Float& v2, int decimal_precision, ImGuiInputTextFlags flags)
+	{
+		float v[2] = {v1.value, v2.value};
+		bool result = ImGui::InputFloat2(label, v, decimal_precision, flags);
+		v1.value = v[0];
+		v2.value = v[1];
+		return result;
+	}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("flags") = 0, py::arg("decimal_precision") = -1);
+	m.def("input_float3", [](const char* label, Float& v1, Float& v2, Float& v3, int decimal_precision, ImGuiInputTextFlags flags)
+	{
+		float v[3] = {v1.value, v2.value, v3.value};
+		bool result = ImGui::InputFloat3(label, v, decimal_precision, flags);
+		v1.value = v[0];
+		v2.value = v[1];
+		v3.value = v[2];
+		return result;
+	}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v3"), py::arg("flags") = 0, py::arg("decimal_precision") = -1);
+	m.def("input_float4", [](const char* label, Float& v1, Float& v2, Float& v3, Float& v4, int decimal_precision, ImGuiInputTextFlags flags)
+	{
+		float v[4] = {v1.value, v2.value, v3.value, v4.value};
+		bool result = ImGui::InputFloat4(label, v, decimal_precision, flags);
+		v1.value = v[0];
+		v2.value = v[1];
+		v3.value = v[2];
+		v4.value = v[3];
+		return result;
+	}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v3"), py::arg("v4"), py::arg("flags") = 0, py::arg("decimal_precision") = -1);
+	m.def("input_int", [](const char* label, Int& v, int step, int step_fast, ImGuiInputTextFlags flags)
+	{
+		return ImGui::InputInt(label, &v.value, step, step_fast, flags);
+	}, py::arg("label"), py::arg("v"), py::arg("flags") = 0, py::arg("step") = 1, py::arg("step_fast") = 100);
+	m.def("input_int2", [](const char* label, Int& v1, Int& v2, ImGuiInputTextFlags flags)
+	{
+		int v[2] = {v1.value, v2.value};
+		bool result = ImGui::InputInt2(label, v, flags);
+		v1.value = v[0];
+		v2.value = v[1];
+		return result;
+	}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("flags") = 0);
+	m.def("input_int3", [](const char* label, Int& v1, Int& v2, Int& v3, ImGuiInputTextFlags flags)
+	{
+		int v[3] = {v1.value, v2.value, v3.value};
+		bool result = ImGui::InputInt3(label, v, flags);
+		v1.value = v[0];
+		v2.value = v[1];
+		v3.value = v[2];
+		return result;
+	}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v3"), py::arg("flags") = 0);
+	m.def("input_int4", [](const char* label, Int& v1, Int& v2, Int& v3, Int& v4, ImGuiInputTextFlags flags)
+	{
+		int v[4] = {v1.value, v2.value, v3.value, v4.value};
+		bool result = ImGui::InputInt4(label, v, flags);
+		v1.value = v[0];
+		v2.value = v[1];
+		v3.value = v[2];
+		v4.value = v[3];
+		return result;
+	}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v3"), py::arg("v4"), py::arg("flags") = 0);
 	
 	m.def("plot_lines", [](
 		const char* label,
