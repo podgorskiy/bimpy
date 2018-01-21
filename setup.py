@@ -37,7 +37,7 @@ elif platform.system() == 'Windows':
     
 here = os.path.abspath(os.path.dirname(__file__))
 
-with open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
+with open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 
@@ -226,7 +226,7 @@ extension.extra_compile_cpp_args = extra_compile_cpp_args[target_os]
 setup(
     name='bimpy',
 
-    version='0.0.1',
+    version='0.0.2',
 
     description='bimpy - bundled imgui for python',
     long_description=long_description,
