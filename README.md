@@ -25,17 +25,17 @@ ctx.init(600, 600, "Hello")
  
 str = bimpy.String()
 f = bimpy.Float();
-	
+    
 while(not ctx.should_close()):
-	with ctx: 
-		bimpy.text("Hello, world!")
-		
-		if bimpy.button("OK"):
-		    print(str.value)
+    with ctx: 
+        bimpy.text("Hello, world!")
         
-		bimpy.input_text('string', str, 256)
-		
-		bimpy.slider_float("float", f, 0.0, 1.0)
+        if bimpy.button("OK"):
+            print(str.value)
+        
+        bimpy.input_text('string', str, 256)
+        
+        bimpy.slider_float("float", f, 0.0, 1.0)
 ```
 
 ![hellowworld](https://i.imgur.com/rL7cFj7.png)
@@ -89,7 +89,7 @@ All calls to **bimpy**'s API must be within *with* statement applied to the cont
 
 ```python
 with ctx: 
-		bimpy.text("Hello, world!")
+    bimpy.text("Hello, world!")
 ```
 
 And there must be only one *with* statement applied to the context object per frame.
@@ -131,6 +131,6 @@ f2 = bimpy.Float();
 f3 = bimpy.Float();
 
 while(not ctx.should_close()):
-	with ctx: 
-		bimpy.slider_float3("float", f1, f2, f3, 0.0, 1.0)
+    with ctx: 
+        bimpy.slider_float3("float", f1, f2, f3, 0.0, 1.0)
 ```
