@@ -23,7 +23,7 @@ try:
 except:
     sys.path.insert(0, './gl3w')
     import gl3w_gen
-	
+
 sys.argv = sys._argv
 
 target_os = 'none'
@@ -201,14 +201,27 @@ extra_link = {
     'win32': [],
 }
 
+extra_compile_args = {
+    'darwin': [],
+    'posix': [],
+    'win32': ['/MT', '/fp:fast', '/GL', '/GR-'],
+}
+
+extra_compile_cpp_args = {
+    'darwin': ['-std=c++11'],
+    'posix': ['-std=c++11'],
+    'win32': [],
+}
+
 extension = Extension("_impy",
                              imgui + glfw + glfw_platform[target_os] + ['impy.cpp', "imgui_glfw.cpp", "gl3w/src/gl3w.c"],
                              define_macros = definitions[target_os],
                              include_dirs=["glfw/include", "imgui", "pybind11/include", "gl3w/include"],
+                             extra_compile_args=extra_compile_args[target_os],
                              extra_link_args=extra_link[target_os],
                              libraries = libs[target_os])
 
-extension.extra_compile_cpp_args = ['-std=c++11']
+extension.extra_compile_cpp_args = extra_compile_cpp_args[target_os]
 
 setup(
     name='impy',
@@ -229,7 +242,7 @@ setup(
         'Development Status :: 3 - Alpha',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 2.7',
-		'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.6',
     ],
 
     keywords='imgui ui',
