@@ -4,10 +4,12 @@
  */
 
 #include "imgui_glfw.h"
+#define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui_internal.h"
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 #include <pybind11/pybind11.h>
+#include <pybind11/operators.h>
 #include <pybind11/functional.h>
 #include <pybind11/stl.h>
 #include <memory>
@@ -187,6 +189,18 @@ struct String
 	std::string value;
 };
 
+
+void  AddLine(const ImVec2& a, const ImVec2& b, ImU32 col, float thickness){ ImGui::GetWindowDrawList()->AddLine(a, b, col, thickness); }
+void  AddRect(const ImVec2& a, const ImVec2& b, ImU32 col, float rounding, int rounding_corners_flags, float thickness){ ImGui::GetWindowDrawList()->AddRect(a, b, col, rounding, rounding_corners_flags, thickness); }
+void  AddRectFilled(const ImVec2& a, const ImVec2& b, ImU32 col, float rounding, int rounding_corners_flags){ ImGui::GetWindowDrawList()->AddRectFilled(a, b, col, rounding, rounding_corners_flags); }
+void  AddRectFilledMultiColor(const ImVec2& a, const ImVec2& b, ImU32 col_upr_left, ImU32 col_upr_right, ImU32 col_bot_right, ImU32 col_bot_lefs){ ImGui::GetWindowDrawList()->AddRectFilledMultiColor(a, b, col_upr_left, col_upr_right, col_bot_right, col_bot_lefs); }
+void  AddQuad(const ImVec2& a, const ImVec2& b, const ImVec2& c, const ImVec2& d, ImU32 col, float thickness){ ImGui::GetWindowDrawList()->AddQuad(a, b, c, d, col, thickness); }
+void  AddQuadFilled(const ImVec2& a, const ImVec2& b, const ImVec2& c, const ImVec2& d, ImU32 col){ ImGui::GetWindowDrawList()->AddQuadFilled(a, b, c, d, col); }
+void  AddTriangle(const ImVec2& a, const ImVec2& b, const ImVec2& c, ImU32 col, float thickness){ ImGui::GetWindowDrawList()->AddTriangle(a, b, c, col, thickness); }
+void  AddTriangleFilled(const ImVec2& a, const ImVec2& b, const ImVec2& c, ImU32 col){ ImGui::GetWindowDrawList()->AddTriangleFilled(a, b, c, col); }
+void  AddCircle(const ImVec2& centre, float radius, ImU32 col, int num_segments, float thickness){ ImGui::GetWindowDrawList()->AddCircle(centre, radius, col, num_segments, thickness); }
+void  AddCircleFilled(const ImVec2& centre, float radius, ImU32 col, int num_segments){ ImGui::GetWindowDrawList()->AddCircleFilled(centre, radius, col, num_segments); }
+
 PYBIND11_MODULE(_bimpy, m) {
 	static Bool null;
 	null.null = true;
@@ -298,7 +312,15 @@ PYBIND11_MODULE(_bimpy, m) {
 			{
 				self.Render();
 			});
-		
+	
+	py::enum_<ImGuiCorner>(m, "Corner")
+		.value("TopLeft", ImGuiCorner::ImGuiCorner_TopLeft)
+		.value("TopRight", ImGuiCorner::ImGuiCorner_TopRight)
+		.value("BotRight", ImGuiCorner::ImGuiCorner_BotRight)
+		.value("BotLeft", ImGuiCorner::ImGuiCorner_BotLeft)
+		.value("All", ImGuiCorner::ImGuiCorner_All)
+		.export_values();
+	
 	py::class_<Bool>(m, "Bool")
 		.def(py::init())
 		.def(py::init<bool>())
@@ -323,7 +345,20 @@ PYBIND11_MODULE(_bimpy, m) {
 		.def(py::init())
 		.def(py::init<float, float>())
 		.def_readwrite("x", &ImVec2::x)
-		.def_readwrite("y", &ImVec2::y);
+		.def_readwrite("y", &ImVec2::y)
+        .def(py::self * float())
+        .def(py::self / float())
+        .def(py::self + py::self)
+        .def(py::self - py::self)
+        .def(py::self * py::self)
+        .def(py::self / py::self)
+        .def(py::self += py::self)
+        .def(py::self -= py::self)
+        .def(py::self *= float())
+        .def(py::self /= float())
+		.def("__mul__", [](float b, const ImVec2 &a) {
+			return a * b;
+		}, py::is_operator());
 		
 	py::class_<ImVec4>(m, "Vec4")
 		.def(py::init())
@@ -569,11 +604,11 @@ PYBIND11_MODULE(_bimpy, m) {
 			}
 		}	
 		return result;
-	}, py::arg("label"), py::arg("text"), py::arg("buf_size"), py::arg("flags") = 0, py::arg("size") = ImVec2(0,0));
+	}, py::arg("label"), py::arg("text"), py::arg("buf_size"), py::arg("size") = ImVec2(0,0), py::arg("flags") = 0);
 	m.def("input_float", [](const char* label, Float& v, float step, float step_fast, int decimal_precision, ImGuiInputTextFlags flags)
 	{
 		return ImGui::InputFloat(label, &v.value, step, step_fast, decimal_precision, flags);
-	}, py::arg("label"), py::arg("v"), py::arg("flags") = 0, py::arg("step") = 0.0f, py::arg("step_fast") = 0.0f, py::arg("decimal_precision") = -1);
+	}, py::arg("label"), py::arg("v"), py::arg("step") = 0.0f, py::arg("step_fast") = 0.0f, py::arg("decimal_precision") = -1, py::arg("flags") = 0);
 	m.def("input_float2", [](const char* label, Float& v1, Float& v2, int decimal_precision, ImGuiInputTextFlags flags)
 	{
 		float v[2] = {v1.value, v2.value};
@@ -581,7 +616,7 @@ PYBIND11_MODULE(_bimpy, m) {
 		v1.value = v[0];
 		v2.value = v[1];
 		return result;
-	}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("flags") = 0, py::arg("decimal_precision") = -1);
+	}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("decimal_precision") = -1, py::arg("flags") = 0);
 	m.def("input_float3", [](const char* label, Float& v1, Float& v2, Float& v3, int decimal_precision, ImGuiInputTextFlags flags)
 	{
 		float v[3] = {v1.value, v2.value, v3.value};
@@ -590,7 +625,7 @@ PYBIND11_MODULE(_bimpy, m) {
 		v2.value = v[1];
 		v3.value = v[2];
 		return result;
-	}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v3"), py::arg("flags") = 0, py::arg("decimal_precision") = -1);
+	}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v3"), py::arg("decimal_precision") = -1, py::arg("flags") = 0);
 	m.def("input_float4", [](const char* label, Float& v1, Float& v2, Float& v3, Float& v4, int decimal_precision, ImGuiInputTextFlags flags)
 	{
 		float v[4] = {v1.value, v2.value, v3.value, v4.value};
@@ -600,11 +635,11 @@ PYBIND11_MODULE(_bimpy, m) {
 		v3.value = v[2];
 		v4.value = v[3];
 		return result;
-	}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v3"), py::arg("v4"), py::arg("flags") = 0, py::arg("decimal_precision") = -1);
+	}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v3"), py::arg("v4"), py::arg("decimal_precision") = -1, py::arg("flags") = 0);
 	m.def("input_int", [](const char* label, Int& v, int step, int step_fast, ImGuiInputTextFlags flags)
 	{
 		return ImGui::InputInt(label, &v.value, step, step_fast, flags);
-	}, py::arg("label"), py::arg("v"), py::arg("flags") = 0, py::arg("step") = 1, py::arg("step_fast") = 100);
+	}, py::arg("label"), py::arg("v"), py::arg("step") = 1, py::arg("step_fast") = 100, py::arg("flags") = 0);
 	m.def("input_int2", [](const char* label, Int& v1, Int& v2, ImGuiInputTextFlags flags)
 	{
 		int v[2] = {v1.value, v2.value};
@@ -712,7 +747,7 @@ PYBIND11_MODULE(_bimpy, m) {
 		ImVec2 graph_size = ImVec2(0,0),
 		int stride = sizeof(float))
 		{ 
-			ImGui::PlotLines(label, values.data(), values.size(), values_offset, overlay_text, scale_min, scale_max, graph_size, stride); 
+			ImGui::PlotLines(label, values.data(), (int)values.size(), values_offset, overlay_text, scale_min, scale_max, graph_size, stride); 
 		}
 		, py::arg("label")
 		, py::arg("values")
@@ -727,4 +762,15 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("progress_bar", &ImGui::ProgressBar, py::arg("fraction"), py::arg("size_arg") = ImVec2(-1,0), py::arg("overlay") = nullptr);
 
 	m.def("color_button", &ImGui::ColorButton, py::arg("desc_id"), py::arg("col"), py::arg("flags") = 0, py::arg("size") = ImVec2(0,0));
+	
+	m.def("add_line", &AddLine, py::arg("a"), py::arg("b"), py::arg("col"), py::arg("thickness") = 1.0f);
+	m.def("add_rect", &AddRect, py::arg("a"), py::arg("b"), py::arg("col"), py::arg("rounding") = 0.0f, py::arg("rounding_corners_flags") = ImGuiCorner::ImGuiCorner_All, py::arg("thickness") = 1.0f);
+	m.def("add_rect_filled", &AddRectFilled, py::arg("a"), py::arg("b"), py::arg("col"), py::arg("rounding") = 0.0f, py::arg("rounding_corners_flags") = ImGuiCorner::ImGuiCorner_All);
+	m.def("add_rect_filled_multicolor", &AddRectFilledMultiColor, py::arg("a"), py::arg("b"), py::arg("col_upr_left"), py::arg("col_upr_right"), py::arg("col_bot_right"), py::arg("col_bot_lefs"));
+	m.def("add_quad", &AddQuad, py::arg("a"), py::arg("b"), py::arg("c"), py::arg("d"), py::arg("col"), py::arg("thickness") = 1.0f);
+	m.def("add_quad_filled", &AddQuadFilled, py::arg("a"), py::arg("b"), py::arg("c"), py::arg("d"), py::arg("col"));
+	m.def("add_triangle", &AddTriangle, py::arg("a"), py::arg("b"), py::arg("c"), py::arg("col"), py::arg("thickness") = 1.0f);
+	m.def("add_triangle_filled", &AddTriangleFilled, py::arg("a"), py::arg("b"), py::arg("c"), py::arg("col"));
+	m.def("add_circle", &AddCircle, py::arg("centre"), py::arg("radius"), py::arg("col"), py::arg("num_segments") = 12, py::arg("thickness") = 1.0f);
+	m.def("add_circle_filled", &AddCircleFilled, py::arg("centre"), py::arg("radius"), py::arg("col"), py::arg("num_segments") = 12);
 }

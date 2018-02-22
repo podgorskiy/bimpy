@@ -39,6 +39,7 @@ Hello-world with bimpy:
 			bimpy.slider_float("float", f, 0.0, 1.0)
 
 
+
 .. figure:: https://i.imgur.com/rL7cFj7.png
    :alt: hello-world
 
@@ -148,4 +149,113 @@ All **imgui** input functions that provide multiple inputs, like *SliderFloat2*,
 	while(not ctx.should_close()):
 		with ctx: 
 			bimpy.slider_float3("float", f1, f2, f3, 0.0, 1.0)
+
+Draw commands
+------------------
+
+Some draw commands are exposed. In contrust to C++ API, the exposed functions are not methods of **ImDrawList**, but global functions. All drawing functions should be called inside the *begin/end* calles of a window. 
+
+List of exposed drawing functions:
+
+.. code:: python
+
+    add_circle(centre: _bimpy.Vec2, radius: float, col: int, num_segments: int=12, thickness: float=1.0) -> None
+    add_circle_filled(centre: _bimpy.Vec2, radius: float, col: int, num_segments: int=12) -> None
+    add_line(a: _bimpy.Vec2, b: _bimpy.Vec2, col: int, thickness: float=1.0) -> None
+    add_quad(a: _bimpy.Vec2, b: _bimpy.Vec2, c: _bimpy.Vec2, d: _bimpy.Vec2, col: int, thickness: float=1.0) -> None
+    add_quad_filled(a: _bimpy.Vec2, b: _bimpy.Vec2, c: _bimpy.Vec2, d: _bimpy.Vec2, col: int) -> None
+    add_rect(a: _bimpy.Vec2, b: _bimpy.Vec2, col: int, rounding: float=0.0, rounding_corners_flags: int=Corner.All, thickness: float=1.0) -> None
+    add_rect_filled(a: _bimpy.Vec2, b: _bimpy.Vec2, col: int, rounding: float=0.0, rounding_corners_flags: int=Corner.All) -> None
+    add_rect_filled_multicolor(a: _bimpy.Vec2, b: _bimpy.Vec2, col_upr_left: int, col_upr_right: int, col_bot_right: int, col_bot_lefs: int) -> None
+    add_triangle(a: _bimpy.Vec2, b: _bimpy.Vec2, c: _bimpy.Vec2, col: int, thickness: float=1.0) -> None
+    add_triangle_filled(a: _bimpy.Vec2, b: _bimpy.Vec2, c: _bimpy.Vec2, col: int) -> None
+
+Simple usage example below:
+
+.. figure:: https://i.imgur.com/MU5Vhfl.png
+   :alt: hello-world
+
+.. code:: python
+
+	import bimpy
+	import numpy as np
+
+	ctx = bimpy.Context()
+
+	ctx.init(1200, 1200, "ITQ")
+
+	with ctx:
+		bimpy.themes.set_light_theme()
+
+	DATA_POINTS = bimpy.Int(30)
+	CLASTERS = bimpy.Int(4)
+
+	std = bimpy.Float(0.5)
+
+	colors = [0x4b19e6, 0x4bb43c, 0x19e1ff, 0xc88200, 0x3182f5, 0xb41e91, 0xf0f046, 0xf032e6, 0xd2f53c,
+			  0xfabebe, 0x008080, 0xe6beff, 0xaa6e28, 0xfffac8, 0x800000, 0xaaffc3, 0x808000, 0xffd8b1,
+			  0x000080, 0x808080, 0xFFFFFF, 0x000000]
+
+	datapoints = []
+
+
+	def generate_fake_data():
+		datapoints.clear()
+		for i in range(CLASTERS.value):
+			x = np.random.normal(size=(DATA_POINTS.value, 2))
+			alpha = np.random.rand()
+			scale = std.value * np.random.rand(2) * np.eye(2, 2)
+			position = np.random.rand(2) * 5
+			rotation = np.array([[np.cos(alpha), np.sin(alpha)], [-np.sin(alpha), np.cos(alpha)]])
+			x = np.matmul(x, scale)
+			x = np.matmul(x, rotation)
+			x += position
+			datapoints.append((x, rotation, position, scale))
+
+	axis = x = np.array([[-1, 0], [1, 0], [0, -1], [0, 1]])
+
+	while not ctx.should_close():
+		ctx.new_frame()
+
+		bimpy.begin("Drawings", flags=bimpy.WindowFlags.ShowBorders)
+
+		window_pos = bimpy.get_window_pos()
+
+		center = bimpy.Vec2(100, 100) + window_pos
+		m = 100.0
+		for i in range(len(datapoints)):
+			(x, R, P, S) = datapoints[i]
+
+			for j in range(x.shape[0]):
+				point = bimpy.Vec2(x[j, 0], x[j, 1])
+				bimpy.add_circle_filled(point * m + center, 5, 0xAF000000 + colors[i], 100)
+
+			axis_ = np.matmul(axis, S * 2.0)
+			axis_ = np.matmul(axis_, R) + P
+
+			bimpy.add_line(
+				center + bimpy.Vec2(axis_[0, 0], axis_[0, 1]) * m,
+				center + bimpy.Vec2(axis_[1, 0], axis_[1, 1]) * m,
+				0xFFFF0000, 1)
+
+			bimpy.add_line(
+				center + bimpy.Vec2(axis_[2, 0], axis_[2, 1]) * m,
+				center + bimpy.Vec2(axis_[3, 0], axis_[3, 1]) * m,
+				0xFFFF0000, 1)
+
+		bimpy.end()
+
+		bimpy.begin("Controls", flags=bimpy.WindowFlags.ShowBorders)
+
+		bimpy.input_int("Data points count", DATA_POINTS)
+		bimpy.input_int("Clasters count", CLASTERS)
+
+		bimpy.slider_float("std", std, 0.0, 3.0)
+
+		if bimpy.button("Generate data"):
+			generate_fake_data()
+
+		bimpy.end()
+
+		ctx.render()
 
