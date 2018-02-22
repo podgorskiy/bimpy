@@ -152,8 +152,7 @@ All **imgui** input functions that provide multiple inputs, like *SliderFloat2*,
 
 Draw commands
 ------------------
-
-Some draw commands are exposed. In contrust to C++ API, the exposed functions are not methods of **ImDrawList**, but global functions. All drawing functions should be called inside the *begin/end* calles of a window. 
+Some draw commands are exposed. In contrast to C++ API, the exposed functions are not methods of **ImDrawList**, but global functions. All drawing functions should be called inside the *begin/end* calls of a window. 
 
 List of exposed drawing functions:
 
