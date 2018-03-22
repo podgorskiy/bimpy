@@ -226,7 +226,7 @@ extension.extra_compile_cpp_args = extra_compile_cpp_args[target_os]
 setup(
     name='bimpy',
 
-    version='0.0.6',
+    version='0.0.7',
 
     description='bimpy - bundled imgui for python',
     long_description=long_description,
