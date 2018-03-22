@@ -516,12 +516,12 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("pop_id", &ImGui::PopID);
 	m.def("get_id_str", [](const char* str_id_begin, const char* str_id_end){ ImGui::GetID(str_id_begin, str_id_end); }, py::arg("str_id_begin"), py::arg("str_id_end") = nullptr);
 
-	m.def("text", [](const char* text){ ImGui::Text(text); });
-	m.def("text_colored", [](const ImVec4& col, const char* text){ ImGui::TextColored(col, text); });
-	m.def("text_disabled", [](const char* text){ ImGui::TextDisabled(text); });
-	m.def("text_wrapped", [](const char* text){ ImGui::TextWrapped(text); });
-	m.def("label_text", [](const char* label, const char* text){ ImGui::LabelText(label, text); });
-	m.def("bullet_text", [](const char* text){ ImGui::BulletText(text); });
+	m.def("text", [](const char* text){ ImGui::Text("%s", text); });
+	m.def("text_colored", [](const ImVec4& col, const char* text){ ImGui::TextColored(col, "%s", text); });
+	m.def("text_disabled", [](const char* text){ ImGui::TextDisabled("%s", text); });
+	m.def("text_wrapped", [](const char* text){ ImGui::TextWrapped("%s", text); });
+	m.def("label_text", [](const char* label, const char* text){ ImGui::LabelText(label, "%s", text); });
+	m.def("bullet_text", [](const char* text){ ImGui::BulletText("%s", text); });
 	m.def("bullet", &ImGui::Bullet);
 	
 	m.def("button", &ImGui::Button, py::arg("label"), py::arg("size") = ImVec2(0,0));
