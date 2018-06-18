@@ -527,7 +527,7 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("button", &ImGui::Button, py::arg("label"), py::arg("size") = ImVec2(0,0));
 	m.def("small_button", &ImGui::SmallButton);
 	m.def("invisible_button", &ImGui::InvisibleButton);
-	m.def("collapsing_header", [](const char* label, ImGuiTreeNodeFlags flags){ ImGui::CollapsingHeader(label, flags); }, py::arg("label"), py::arg("flags") = 0);
+	m.def("collapsing_header", [](const char* label, ImGuiTreeNodeFlags flags){ return ImGui::CollapsingHeader(label, flags); }, py::arg("label"), py::arg("flags") = 0);
 	m.def("checkbox", [](const char* label, Bool& v){ return ImGui::Checkbox(label, &v.value); });
 	m.def("radio_button", [](const char* label, bool active){ return ImGui::RadioButton(label, active); });
 	m.def("combo", [](const char* label, Int& current_item, const std::vector<std::string>& items)
