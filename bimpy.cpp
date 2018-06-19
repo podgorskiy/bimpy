@@ -527,7 +527,7 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("button", &ImGui::Button, py::arg("label"), py::arg("size") = ImVec2(0,0));
 	m.def("small_button", &ImGui::SmallButton);
 	m.def("invisible_button", &ImGui::InvisibleButton);
-	m.def("collapsing_header", [](const char* label, ImGuiTreeNodeFlags flags){ ImGui::CollapsingHeader(label, flags); }, py::arg("label"), py::arg("flags") = 0);
+	m.def("collapsing_header", [](const char* label, ImGuiTreeNodeFlags flags){ return ImGui::CollapsingHeader(label, flags); }, py::arg("label"), py::arg("flags") = 0);
 	m.def("checkbox", [](const char* label, Bool& v){ return ImGui::Checkbox(label, &v.value); });
 	m.def("radio_button", [](const char* label, bool active){ return ImGui::RadioButton(label, active); });
 	m.def("combo", [](const char* label, Int& current_item, const std::vector<std::string>& items)
@@ -700,6 +700,11 @@ PYBIND11_MODULE(_bimpy, m) {
 		return result;
 	}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v3"), py::arg("v4"), py::arg("v_min"), py::arg("v_max"), py::arg("display_format") = "%.3f", py::arg("power") = 1.0f);
 	
+	m.def("v_slider_float", [](const char* label, const ImVec2& size, Float& v, float v_min, float v_max, const char* display_format, float power)
+	{
+		return ImGui::VSliderFloat(label, size, &v.value, v_min, v_max, display_format, power);
+	}, py::arg("label"), py::arg("size"), py::arg("v"), py::arg("v_min"), py::arg("v_max"), py::arg("display_format") = "%.3f", py::arg("power") = 1.0f);
+
 	m.def("slider_angle", [](const char* label, Float& v_rad, float v_degrees_min, float v_degrees_max)
 	{
 		return ImGui::SliderAngle(label, &v_rad.value, v_degrees_min, v_degrees_max);
@@ -736,6 +741,11 @@ PYBIND11_MODULE(_bimpy, m) {
 		v4.value = v[3];
 		return result;
 	}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v3"), py::arg("v4"), py::arg("v_min"), py::arg("v_max"), py::arg("display_format") = "%.0f");
+
+	m.def("v_slider_int", [](const char* label, const ImVec2& size, Int& v, int v_min, int v_max, const char* display_format)
+	{
+		return ImGui::VSliderInt(label, size, &v.value, v_min, v_max, display_format);
+	}, py::arg("label"), py::arg("size"), py::arg("v"), py::arg("v_min"), py::arg("v_max"), py::arg("display_format") = "%.0f");
 	
 	m.def("plot_lines", [](
 		const char* label,
