@@ -700,6 +700,11 @@ PYBIND11_MODULE(_bimpy, m) {
 		return result;
 	}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v3"), py::arg("v4"), py::arg("v_min"), py::arg("v_max"), py::arg("display_format") = "%.3f", py::arg("power") = 1.0f);
 	
+	m.def("v_slider_float", [](const char* label, const ImVec2& size, Float& v, float v_min, float v_max, const char* display_format, float power)
+	{
+		return ImGui::VSliderFloat(label, size, &v.value, v_min, v_max, display_format, power);
+	}, py::arg("label"), py::arg("size"), py::arg("v"), py::arg("v_min"), py::arg("v_max"), py::arg("display_format") = "%.3f", py::arg("power") = 1.0f);
+
 	m.def("slider_angle", [](const char* label, Float& v_rad, float v_degrees_min, float v_degrees_max)
 	{
 		return ImGui::SliderAngle(label, &v_rad.value, v_degrees_min, v_degrees_max);
