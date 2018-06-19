@@ -744,7 +744,7 @@ PYBIND11_MODULE(_bimpy, m) {
 
 	m.def("v_slider_int", [](const char* label, const ImVec2& size, Int& v, int v_min, int v_max, const char* display_format)
 	{
-		return ImGui::SliderInt(label, size, &v.value, v_min, v_max, display_format);
+		return ImGui::VSliderInt(label, size, &v.value, v_min, v_max, display_format);
 	}, py::arg("label"), py::arg("size"), py::arg("v"), py::arg("v_min"), py::arg("v_max"), py::arg("display_format") = "%.0f");
 	
 	m.def("plot_lines", [](
