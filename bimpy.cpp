@@ -409,8 +409,8 @@ PYBIND11_MODULE(_bimpy, m) {
 		});
 	
 	m.def("show_test_window", [](){ ImGui::ShowTestWindow(); });
-    
     m.def("show_metrics_window", [](){ ImGui::ShowMetricsWindow(); });
+    m.def("show_user_guide", [](){ ImGui::ShowUserGuide(); });
 	
 	m.def("begin",[](const std::string& name, Bool& opened, ImGuiWindowFlags flags) -> bool
 		{
