@@ -793,6 +793,30 @@ PYBIND11_MODULE(_bimpy, m) {
 
 	m.def("color_button", &ImGui::ColorButton, py::arg("desc_id"), py::arg("col"), py::arg("flags") = 0, py::arg("size") = ImVec2(0,0));
 
+	m.def("selectable", [](
+		std::string label,
+	 	Bool selected = false,
+		ImGuiSelectableFlags flags = 0,
+		ImVec2 size = ImVec2(0,0))
+		{
+			ImGui::Selectable(label.c_str(), (bool*) (selected.null ? nullptr : &selected.value), flags, size);
+		}
+		, py::arg("label")
+		, py::arg("selected")
+		, py::arg("flags") = 0
+		, py::arg("size")
+		);
+	m.def("list_box_header", [](
+			std::string label,
+		 	ImVec2 size = ImVec2(0,0))
+			{
+				ImGui::ListBoxHeader(label.c_str(), size);
+			}
+			, py::arg("label")
+			, py::arg("size")
+			);
+	m.def("list_box_footer", &ImGui::ListBoxFooter);
+
 	m.def("add_line", &AddLine, py::arg("a"), py::arg("b"), py::arg("col"), py::arg("thickness") = 1.0f);
 	m.def("add_rect", &AddRect, py::arg("a"), py::arg("b"), py::arg("col"), py::arg("rounding") = 0.0f, py::arg("rounding_corners_flags") = ImGuiCorner::ImGuiCorner_All, py::arg("thickness") = 1.0f);
 	m.def("add_rect_filled", &AddRectFilled, py::arg("a"), py::arg("b"), py::arg("col"), py::arg("rounding") = 0.0f, py::arg("rounding_corners_flags") = ImGuiCorner::ImGuiCorner_All);
