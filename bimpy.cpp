@@ -436,7 +436,7 @@ PYBIND11_MODULE(_bimpy, m) {
     m.def("end_menu_bar", &ImGui::EndMenuBar);
     m.def("begin_menu",[](const std::string& name, Bool& enabled) -> bool
           {
-              return ImGui::BeginMenu(name.c_str(), enabled.null ? nullptr : &enabled.value);
+              return ImGui::BeginMenu(name.c_str(), (bool *) (enabled.null ? nullptr : &enabled.value));
           },
           "create a sub-menu entry. only call EndMenu() if this returns true!",
           py::arg("name"), py::arg("enabled") = null);
