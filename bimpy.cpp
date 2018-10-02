@@ -837,4 +837,21 @@ PYBIND11_MODULE(_bimpy, m) {
 	, py::arg("filename")
 	, py::arg("size_pixels")
 );
+
+	m.def("set_display_framebuffer_scale",[](float scale){
+		ImGui::GetIO().DisplayFramebufferScale = ImVec2(scale,scale);
+	}, py::arg("scale"));
+	m.def("get_display_framebuffer_scale",[](){
+		return ImGui::GetIO().DisplayFramebufferScale;
+	});
+
+	m.def("set_font_global_scale",[](float scale){
+		ImGui::GetIO().FontGlobalScale = scale;
+	}, py::arg("scale"));
+	m.def("get_font_global_scale",[](){
+		return ImGui::GetIO().FontGlobalScale;
+	});
+
+
+
 }
