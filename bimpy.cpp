@@ -29,6 +29,9 @@ public:
 	void Render();
 
 	bool ShouldClose();
+
+	int width(){return m_imp->m_width;}
+	int height(){return m_imp->m_height;}
 private:
 	struct Imp
 	{
@@ -66,7 +69,7 @@ void Context::Init(int width, int height, const std::string& name)
 		m_imp->m_width = width;
 		m_imp->m_height = height;
 
-		glfwSetWindowUserPointer(m_imp->m_window, m_imp.get());
+		glfwSetWindowUserPointer(m_imp->m_window, this); // replaced m_imp.get()
 
 		glfwSetWindowSizeCallback(m_imp->m_window, [](GLFWwindow* window, int width, int height)
 		{
@@ -307,6 +310,8 @@ PYBIND11_MODULE(_bimpy, m) {
 		.def("new_frame", &Context::NewFrame, "Starts a new frame. NewFrame must be called before any imgui functions")
 		.def("render", &Context::Render, "Finilizes the frame and draws all UI. Render must be called after all imgui functions")
 		.def("should_close", &Context::ShouldClose)
+		.def("width", &Context::width)
+		.def("height", &Context::height)
 		.def("__enter__", &Context::NewFrame)
 		.def("__exit__", [](Context& self, py::object, py::object, py::object)
 			{
