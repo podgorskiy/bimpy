@@ -304,6 +304,21 @@ PYBIND11_MODULE(_bimpy, m) {
 		.value("ModalWindowDarkening", ImGuiCol_::ImGuiCol_ModalWindowDarkening)
 		.export_values();
 
+	py::enum_<ImGuiStyleVar_>(m, "Style")
+		.value("Alpha", ImGuiStyleVar_::ImGuiStyleVar_Alpha)
+		.value("WindowPadding", ImGuiStyleVar_::ImGuiStyleVar_WindowPadding)
+		.value("WindowRounding", ImGuiStyleVar_::ImGuiStyleVar_WindowRounding)
+		.value("WindowMinSize", ImGuiStyleVar_::ImGuiStyleVar_WindowMinSize)
+		.value("ChildWindowRounding", ImGuiStyleVar_::ImGuiStyleVar_ChildWindowRounding)
+		.value("FramePadding", ImGuiStyleVar_::ImGuiStyleVar_FramePadding)
+		.value("FrameRounding", ImGuiStyleVar_::ImGuiStyleVar_FrameRounding)
+		.value("ItemSpacing", ImGuiStyleVar_::ImGuiStyleVar_ItemSpacing)
+		.value("ItemInnerSpacing", ImGuiStyleVar_::ImGuiStyleVar_ItemInnerSpacing)
+		.value("IndentSpacing", ImGuiStyleVar_::ImGuiStyleVar_IndentSpacing)
+		.value("GrabMinSize", ImGuiStyleVar_::ImGuiStyleVar_GrabMinSize)
+		.value("ButtonTextAlign", ImGuiStyleVar_::ImGuiStyleVar_ButtonTextAlign)
+		.export_values();
+
 	py::class_<Context>(m, "Context")
 		.def(py::init())
 		.def("init", &Context::Init, "Initializes context and creates window")
@@ -493,6 +508,9 @@ PYBIND11_MODULE(_bimpy, m) {
 
 	m.def("push_style_color", [](ImGuiCol_ idx, const ImVec4& col){ ImGui::PushStyleColor((ImGuiCol)idx, col); });
 	m.def("pop_style_color", &ImGui::PopStyleColor, py::arg("count") = 1);
+
+	m.def("push_style_var", [](ImGuiStyleVar_ idx, float val){ ImGui::PushStyleVar((ImGuiStyleVar)idx, val); });
+	m.def("pop_style_var", &ImGui::PopStyleVar, py::arg("count") = 1);
 
 	m.def("push_item_width", &ImGui::PushItemWidth);
 	m.def("pop_item_width", &ImGui::PopItemWidth);
