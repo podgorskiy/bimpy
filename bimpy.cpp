@@ -827,4 +827,14 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("add_triangle_filled", &AddTriangleFilled, py::arg("a"), py::arg("b"), py::arg("c"), py::arg("col"));
 	m.def("add_circle", &AddCircle, py::arg("centre"), py::arg("radius"), py::arg("col"), py::arg("num_segments") = 12, py::arg("thickness") = 1.0f);
 	m.def("add_circle_filled", &AddCircleFilled, py::arg("centre"), py::arg("radius"), py::arg("col"), py::arg("num_segments") = 12);
+
+	m.def("add_font_from_file_ttf", [](
+		std::string filename,
+		int size_pixels = 32
+	){
+		ImGui::GetIO().Fonts->AddFontFromFileTTF(filename.c_str(), size_pixels);
+	}
+	, py::arg("filename")
+	, py::arg("size_pixels")
+);
 }
