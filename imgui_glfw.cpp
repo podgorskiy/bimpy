@@ -20,7 +20,7 @@
 #endif
 
 // This is the main rendering function that you have to implement and provide to ImGui (via setting up 'RenderDrawListsFn' in the ImGuiIO structure)
-// Note that this implementation is little overcomplicated because we are saving/setting up/restoring every OpenGL state explicitly, in order to be able to run within any OpenGL engine that doesn't do so. 
+// Note that this implementation is little overcomplicated because we are saving/setting up/restoring every OpenGL state explicitly, in order to be able to run within any OpenGL engine that doesn't do so.
 // If text or lines are blurry when integrating ImGui in your engine: in your Render function, try translating your projection matrix by (0.5f,0.5f) or (0.375f,0.375f)
 void ImGui_ImplGlfwGL3_RenderDrawLists(imguiBinding* im, ImDrawData* draw_data)
 {
@@ -77,19 +77,19 @@ void ImGui_ImplGlfwGL3_RenderDrawLists(imguiBinding* im, ImDrawData* draw_data)
     glUniform1i(im->g_AttribLocationTex, 0);
     glUniformMatrix4fv(im->g_AttribLocationProjMtx, 1, GL_FALSE, &ortho_projection[0][0]);
 
-	
+
 	glBindBuffer(GL_ARRAY_BUFFER, im->g_VboHandle);
 	glEnableVertexAttribArray(im->g_AttribLocationPosition);
 	glEnableVertexAttribArray(im->g_AttribLocationUV);
 	glEnableVertexAttribArray(im->g_AttribLocationColor);
-	
+
 #define OFFSETOF(TYPE, ELEMENT) ((size_t)&(((TYPE *)0)->ELEMENT))
 	glVertexAttribPointer(im->g_AttribLocationPosition, 2, GL_FLOAT, GL_FALSE, sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, pos));
 	glVertexAttribPointer(im->g_AttribLocationUV, 2, GL_FLOAT, GL_FALSE, sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, uv));
 	glVertexAttribPointer(im->g_AttribLocationColor, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(ImDrawVert), (GLvoid*)OFFSETOF(ImDrawVert, col));
 #undef OFFSETOF
 
-	
+
     //glBindSampler(0, 0); // Rely on combined texture/sampler state.
 
     for (int n = 0; n < draw_data->CmdListsCount; n++)
@@ -137,8 +137,8 @@ void ImGui_ImplGlfwGL3_RenderDrawLists(imguiBinding* im, ImDrawData* draw_data)
     glPolygonMode(GL_FRONT_AND_BACK, last_polygon_mode[0]);
     glViewport(last_viewport[0], last_viewport[1], (GLsizei)last_viewport[2], (GLsizei)last_viewport[3]);
     glScissor(last_scissor_box[0], last_scissor_box[1], (GLsizei)last_scissor_box[2], (GLsizei)last_scissor_box[3]);
-	
-	
+
+
 	glBindBuffer(GL_ARRAY_BUFFER, NULL);
 	glDisableVertexAttribArray(im->g_AttribLocationPosition);
 	glDisableVertexAttribArray(im->g_AttribLocationUV);
@@ -320,7 +320,9 @@ bool ImGui_ImplGlfwGL3_Init(imguiBinding* im, GLFWwindow* window, bool install_c
 void ImGui_ImplGlfwGL3_Shutdown(imguiBinding* im)
 {
     ImGui_ImplGlfwGL3_InvalidateDeviceObjects(im);
-    ImGui::Shutdown();
+    // v1.61 changelog:
+    // removed Shutdown() function, as DestroyContext() serve this purpose. If you are using an old backend from the examples/ folder, remove the line that calls Shutdown().
+    // ImGui::Shutdown();
 }
 
 void ImGui_ImplGlfwGL3_NewFrame(imguiBinding* im)
@@ -347,7 +349,7 @@ void ImGui_ImplGlfwGL3_NewFrame(imguiBinding* im)
     // (we already got mouse wheel, keyboard keys & characters from glfw callbacks polled in glfwPollEvents())
     if (glfwGetWindowAttrib(im->g_Window, GLFW_FOCUSED))
     {
-        if (io.WantMoveMouse)
+        if (io.WantSetMousePos)
         {
             glfwSetCursorPos(im->g_Window, (double)io.MousePos.x, (double)io.MousePos.y);   // Set mouse position if requested by io.WantMoveMouse flag (used when io.NavMovesTrue is enabled by user and using directional navigation)
         }

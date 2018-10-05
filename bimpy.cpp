@@ -60,7 +60,7 @@ void Context::Init(int width, int height, const std::string& name)
 
 		gl3wInit();
 
-		m_imp->imgui = new ImGuiContext();
+		m_imp->imgui = ImGui::CreateContext();
 		GImGui = m_imp->imgui;
 
 		ImGui_ImplGlfwGL3_Init(&m_imp->imbinding, m_imp->m_window, false);
@@ -225,7 +225,8 @@ PYBIND11_MODULE(_bimpy, m) {
 		.value("NoScrollWithMouse", ImGuiWindowFlags_::ImGuiWindowFlags_NoScrollWithMouse)
 		.value("NoCollapse", ImGuiWindowFlags_::ImGuiWindowFlags_NoCollapse)
 		.value("AlwaysAutoResize", ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysAutoResize)
-		.value("ShowBorders", ImGuiWindowFlags_::ImGuiWindowFlags_ShowBorders)
+		// obsolete --> Set style.FrameBorderSize=1.0f / style.WindowBorderSize=1.0f to enable borders around windows and items
+		// .value("ShowBorders", ImGuiWindowFlags_::ImGuiWindowFlags_ShowBorders)
 		.value("NoSavedSettings", ImGuiWindowFlags_::ImGuiWindowFlags_NoSavedSettings)
 		.value("NoInputs", ImGuiWindowFlags_::ImGuiWindowFlags_NoInputs)
 		.value("MenuBar", ImGuiWindowFlags_::ImGuiWindowFlags_MenuBar)
@@ -277,7 +278,8 @@ PYBIND11_MODULE(_bimpy, m) {
 		.value("ScrollbarGrab", ImGuiCol_::ImGuiCol_ScrollbarGrab)
 		.value("ScrollbarGrabHovered", ImGuiCol_::ImGuiCol_ScrollbarGrabHovered)
 		.value("ScrollbarGrabActive", ImGuiCol_::ImGuiCol_ScrollbarGrabActive)
-		.value("ComboBg", ImGuiCol_::ImGuiCol_ComboBg)
+		// [unused since 1.53+] ComboBg has been merged with PopupBg, so a redirect isn't accurate.
+		// .value("ComboBg", ImGuiCol_::ImGuiCol_ComboBg)
 		.value("CheckMark", ImGuiCol_::ImGuiCol_CheckMark)
 		.value("SliderGrab", ImGuiCol_::ImGuiCol_SliderGrab)
 		.value("SliderGrabActive", ImGuiCol_::ImGuiCol_SliderGrabActive)
@@ -293,9 +295,10 @@ PYBIND11_MODULE(_bimpy, m) {
 		.value("ResizeGrip", ImGuiCol_::ImGuiCol_ResizeGrip)
 		.value("ResizeGripActive", ImGuiCol_::ImGuiCol_ResizeGripActive)
 		.value("ResizeGripHovered", ImGuiCol_::ImGuiCol_ResizeGripHovered)
-		.value("CloseButton", ImGuiCol_::ImGuiCol_CloseButton)
-		.value("CloseButtonHovered", ImGuiCol_::ImGuiCol_CloseButtonHovered)
-		.value("CloseButtonActive", ImGuiCol_::ImGuiCol_CloseButtonActive)
+		// [unused since 1.60+] the close button now uses regular button colors.
+		// .value("CloseButton", ImGuiCol_::ImGuiCol_CloseButton)
+		// .value("CloseButtonHovered", ImGuiCol_::ImGuiCol_CloseButtonHovered)
+		// .value("CloseButtonActive", ImGuiCol_::ImGuiCol_CloseButtonActive)
 		.value("PlotLines", ImGuiCol_::ImGuiCol_PlotLines)
 		.value("PlotLinesHovered", ImGuiCol_::ImGuiCol_PlotLinesHovered)
 		.value("PlotHistogram", ImGuiCol_::ImGuiCol_PlotHistogram)
@@ -309,7 +312,8 @@ PYBIND11_MODULE(_bimpy, m) {
 		.value("WindowPadding", ImGuiStyleVar_::ImGuiStyleVar_WindowPadding)
 		.value("WindowRounding", ImGuiStyleVar_::ImGuiStyleVar_WindowRounding)
 		.value("WindowMinSize", ImGuiStyleVar_::ImGuiStyleVar_WindowMinSize)
-		.value("ChildWindowRounding", ImGuiStyleVar_::ImGuiStyleVar_ChildWindowRounding)
+		// .value("ChildWindowRounding", ImGuiStyleVar_::ImGuiStyleVar_ChildWindowRounding)
+		.value("ChildRounding", ImGuiStyleVar_::ImGuiStyleVar_ChildRounding)
 		.value("FramePadding", ImGuiStyleVar_::ImGuiStyleVar_FramePadding)
 		.value("FrameRounding", ImGuiStyleVar_::ImGuiStyleVar_FrameRounding)
 		.value("ItemSpacing", ImGuiStyleVar_::ImGuiStyleVar_ItemSpacing)
@@ -333,12 +337,12 @@ PYBIND11_MODULE(_bimpy, m) {
 				self.Render();
 			});
 
-	py::enum_<ImGuiCorner>(m, "Corner")
-		.value("TopLeft", ImGuiCorner::ImGuiCorner_TopLeft)
-		.value("TopRight", ImGuiCorner::ImGuiCorner_TopRight)
-		.value("BotRight", ImGuiCorner::ImGuiCorner_BotRight)
-		.value("BotLeft", ImGuiCorner::ImGuiCorner_BotLeft)
-		.value("All", ImGuiCorner::ImGuiCorner_All)
+	py::enum_<ImDrawCornerFlags_>(m, "Corner")
+		.value("TopLeft", ImDrawCornerFlags_TopLeft)
+		.value("TopRight", ImDrawCornerFlags_TopRight)
+		.value("BotRight", ImDrawCornerFlags_BotRight)
+		.value("BotLeft", ImDrawCornerFlags_BotLeft)
+		.value("All", ImDrawCornerFlags_All)
 		.export_values();
 
 	py::class_<Bool>(m, "Bool")
@@ -395,7 +399,8 @@ PYBIND11_MODULE(_bimpy, m) {
 		.def_readwrite("window_min_size", &ImGuiStyle::WindowMinSize)
 		.def_readwrite("window_rounding", &ImGuiStyle::WindowRounding)
 		.def_readwrite("window_title_align", &ImGuiStyle::WindowTitleAlign)
-		.def_readwrite("child_window_rounding", &ImGuiStyle::ChildWindowRounding)
+		// .def_readwrite("child_window_rounding", &ImGuiStyle::ChildWindowRounding)
+		.def_readwrite("child_rounding", &ImGuiStyle::ChildRounding)
 		.def_readwrite("frame_padding", &ImGuiStyle::FramePadding)
 		.def_readwrite("frame_rounding", &ImGuiStyle::FrameRounding)
 		.def_readwrite("item_spacing", &ImGuiStyle::ItemSpacing)
@@ -411,7 +416,7 @@ PYBIND11_MODULE(_bimpy, m) {
 		.def_readwrite("display_window_padding", &ImGuiStyle::DisplayWindowPadding)
 		.def_readwrite("display_safe_area_padding", &ImGuiStyle::DisplaySafeAreaPadding)
 		.def_readwrite("anti_aliased_lines", &ImGuiStyle::AntiAliasedLines)
-		.def_readwrite("anti_aliased_shapes", &ImGuiStyle::AntiAliasedShapes)
+		// .def_readwrite("anti_aliased_shapes", &ImGuiStyle::AntiAliasedShapes)
 		.def_readwrite("curve_tessellation_tol", &ImGuiStyle::CurveTessellationTol)
 		.def("get_color",[](ImGuiStyle& self, ImGuiCol_ a)
 			{
@@ -474,7 +479,8 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("get_window_content_region_min", &ImGui::GetWindowContentRegionMin);
 	m.def("get_window_content_region_max", &ImGui::GetWindowContentRegionMax);
 	m.def("get_window_content_region_width", &ImGui::GetWindowContentRegionWidth);
-	m.def("get_window_font_size", &ImGui::GetWindowFontSize);
+	// m.def("get_window_font_size", &ImGui::GetWindowFontSize);
+	m.def("get_font_size", &ImGui::GetFontSize);
 	m.def("set_window_font_scale", &ImGui::SetWindowFontScale);
 	m.def("get_window_pos", &ImGui::GetWindowPos);
 	m.def("get_window_size", &ImGui::GetWindowSize);
@@ -841,8 +847,8 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("list_box_footer", &ImGui::ListBoxFooter);
 
 	m.def("add_line", &AddLine, py::arg("a"), py::arg("b"), py::arg("col"), py::arg("thickness") = 1.0f);
-	m.def("add_rect", &AddRect, py::arg("a"), py::arg("b"), py::arg("col"), py::arg("rounding") = 0.0f, py::arg("rounding_corners_flags") = ImGuiCorner::ImGuiCorner_All, py::arg("thickness") = 1.0f);
-	m.def("add_rect_filled", &AddRectFilled, py::arg("a"), py::arg("b"), py::arg("col"), py::arg("rounding") = 0.0f, py::arg("rounding_corners_flags") = ImGuiCorner::ImGuiCorner_All);
+	m.def("add_rect", &AddRect, py::arg("a"), py::arg("b"), py::arg("col"), py::arg("rounding") = 0.0f, py::arg("rounding_corners_flags") = ImDrawCornerFlags_All, py::arg("thickness") = 1.0f);
+	m.def("add_rect_filled", &AddRectFilled, py::arg("a"), py::arg("b"), py::arg("col"), py::arg("rounding") = 0.0f, py::arg("rounding_corners_flags") = ImDrawCornerFlags_All);
 	m.def("add_rect_filled_multicolor", &AddRectFilledMultiColor, py::arg("a"), py::arg("b"), py::arg("col_upr_left"), py::arg("col_upr_right"), py::arg("col_bot_right"), py::arg("col_bot_lefs"));
 	m.def("add_quad", &AddQuad, py::arg("a"), py::arg("b"), py::arg("c"), py::arg("d"), py::arg("col"), py::arg("thickness") = 1.0f);
 	m.def("add_quad_filled", &AddQuadFilled, py::arg("a"), py::arg("b"), py::arg("c"), py::arg("d"), py::arg("col"));
