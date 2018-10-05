@@ -846,6 +846,30 @@ PYBIND11_MODULE(_bimpy, m) {
 			);
 	m.def("list_box_footer", &ImGui::ListBoxFooter);
 
+	m.def("set_item_default_focus", &ImGui::SetItemDefaultFocus);
+	m.def("set_keyboard_focus_here", &ImGui::SetKeyboardFocusHere);
+
+	m.def("is_item_hovered", &ImGui::IsItemHovered);
+	m.def("is_item_active", &ImGui::IsItemActive);
+	m.def("is_item_focused", &ImGui::IsItemFocused);
+	m.def("is_item_clicked", &ImGui::IsItemClicked);
+	m.def("is_item_visible", &ImGui::IsItemVisible);
+	m.def("is_item_edited", &ImGui::IsItemEdited);
+	m.def("is_item_deactivated", &ImGui::IsItemDeactivated);
+	m.def("is_item_deactivated_after_edit", &ImGui::IsItemDeactivatedAfterEdit);
+	m.def("is_any_item_hovered", &ImGui::IsAnyItemHovered);
+	m.def("is_any_item_active", &ImGui::IsAnyItemActive);
+	m.def("is_any_item_focused", &ImGui::IsAnyItemFocused);
+
+	m.def("get_item_rect_min", &ImGui::GetItemRectMin);
+	m.def("get_item_rect_max", &ImGui::GetItemRectMax);
+	m.def("get_item_rect_size", &ImGui::GetItemRectSize);
+
+	m.def("set_item_allow_overlap", &ImGui::SetItemAllowOverlap);
+
+	m.def("get_time", &ImGui::GetTime);
+	m.def("get_frame_count", &ImGui::GetFrameCount);
+
 	m.def("add_line", &AddLine, py::arg("a"), py::arg("b"), py::arg("col"), py::arg("thickness") = 1.0f);
 	m.def("add_rect", &AddRect, py::arg("a"), py::arg("b"), py::arg("col"), py::arg("rounding") = 0.0f, py::arg("rounding_corners_flags") = ImDrawCornerFlags_All, py::arg("thickness") = 1.0f);
 	m.def("add_rect_filled", &AddRectFilled, py::arg("a"), py::arg("b"), py::arg("col"), py::arg("rounding") = 0.0f, py::arg("rounding_corners_flags") = ImDrawCornerFlags_All);
