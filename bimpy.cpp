@@ -370,16 +370,16 @@ PYBIND11_MODULE(_bimpy, m) {
 		.def(py::init<float, float>())
 		.def_readwrite("x", &ImVec2::x)
 		.def_readwrite("y", &ImVec2::y)
-        .def(py::self * float())
-        .def(py::self / float())
-        .def(py::self + py::self)
-        .def(py::self - py::self)
-        .def(py::self * py::self)
-        .def(py::self / py::self)
-        .def(py::self += py::self)
-        .def(py::self -= py::self)
-        .def(py::self *= float())
-        .def(py::self /= float())
+		.def(py::self * float())
+		.def(py::self / float())
+		.def(py::self + py::self)
+		.def(py::self - py::self)
+		.def(py::self * py::self)
+		.def(py::self / py::self)
+		.def(py::self += py::self)
+		.def(py::self -= py::self)
+		.def(py::self *= float())
+		.def(py::self /= float())
 		.def("__mul__", [](float b, const ImVec2 &a) {
 			return a * b;
 		}, py::is_operator());
@@ -434,8 +434,8 @@ PYBIND11_MODULE(_bimpy, m) {
 		});
 
 	m.def("show_test_window", [](){ ImGui::ShowTestWindow(); });
-    m.def("show_metrics_window", [](){ ImGui::ShowMetricsWindow(); });
-    m.def("show_user_guide", [](){ ImGui::ShowUserGuide(); });
+	m.def("show_metrics_window", [](){ ImGui::ShowMetricsWindow(); });
+	m.def("show_user_guide", [](){ ImGui::ShowUserGuide(); });
 
 	m.def("begin",[](const std::string& name, Bool& opened, ImGuiWindowFlags flags) -> bool
 		{
@@ -455,23 +455,23 @@ PYBIND11_MODULE(_bimpy, m) {
 
 	m.def("end_child", &ImGui::EndChild);
 
-    m.def("begin_main_menu_bar", &ImGui::BeginMainMenuBar, "create and append to a full screen menu-bar. only call EndMainMenuBar() if this returns true!");
-    m.def("end_main_menu_bar", &ImGui::EndMainMenuBar);
-    m.def("begin_menu_bar", &ImGui::BeginMenuBar, "append to menu-bar of current window (requires ImGuiWindowFlags_MenuBar flag set on parent window). only call EndMenuBar() if this returns true!");
-    m.def("end_menu_bar", &ImGui::EndMenuBar);
-    m.def("begin_menu",[](const std::string& name, Bool& enabled) -> bool
-          {
-              return ImGui::BeginMenu(name.c_str(), (bool *) (enabled.null ? nullptr : &enabled.value));
-          },
-          "create a sub-menu entry. only call EndMenu() if this returns true!",
-          py::arg("name"), py::arg("enabled") = null);
-    m.def("menu_item",[](const std::string& label, const std::string& shortcut, Bool& selected, Bool enabled) -> bool
-          {
-              return ImGui::MenuItem(label.c_str(), shortcut.c_str(), selected.null ? nullptr : &selected.value, enabled.value);
-          },
-          "return true when activated + toggle (*p_selected) if p_selected != NULL",
-          py::arg("name"), py::arg("shortcut"), py::arg("selected") = null, py::arg("enabled") = true);
-    m.def("end_menu", &ImGui::EndMenu);
+	m.def("begin_main_menu_bar", &ImGui::BeginMainMenuBar, "create and append to a full screen menu-bar. only call EndMainMenuBar() if this returns true!");
+	m.def("end_main_menu_bar", &ImGui::EndMainMenuBar);
+	m.def("begin_menu_bar", &ImGui::BeginMenuBar, "append to menu-bar of current window (requires ImGuiWindowFlags_MenuBar flag set on parent window). only call EndMenuBar() if this returns true!");
+	m.def("end_menu_bar", &ImGui::EndMenuBar);
+	m.def("begin_menu",[](const std::string& name, Bool& enabled) -> bool
+		{
+			return ImGui::BeginMenu(name.c_str(), (bool *) (enabled.null ? nullptr : &enabled.value));
+		},
+		"create a sub-menu entry. only call EndMenu() if this returns true!",
+		py::arg("name"), py::arg("enabled") = null);
+	m.def("menu_item",[](const std::string& label, const std::string& shortcut, Bool& selected, Bool enabled) -> bool
+		{
+			return ImGui::MenuItem(label.c_str(), shortcut.c_str(), selected.null ? nullptr : &selected.value, enabled.value);
+		},
+		"return true when activated + toggle (*p_selected) if p_selected != NULL",
+		py::arg("name"), py::arg("shortcut"), py::arg("selected") = null, py::arg("enabled") = true);
+	m.def("end_menu", &ImGui::EndMenu);
 
 	m.def("get_content_region_max", &ImGui::GetContentRegionMax);
 	m.def("get_content_region_avail", &ImGui::GetContentRegionAvail);
@@ -928,9 +928,9 @@ PYBIND11_MODULE(_bimpy, m) {
 		if (!payload->IsDataType("string") || !payload->Data)
 			return "";
 		if (payload->IsDelivery())
-				return std::string(static_cast<char*>(payload->Data), payload->DataSize);
-			else
-				return "";
+			return std::string(static_cast<char*>(payload->Data), payload->DataSize);
+		else
+			return "";
 	});
 
 	m.def("end_drag_drop_target", &ImGui::EndDragDropTarget);
@@ -948,13 +948,12 @@ PYBIND11_MODULE(_bimpy, m) {
 
 	m.def("add_font_from_file_ttf", [](
 		std::string filename,
-		int size_pixels = 32
-	){
-		ImGui::GetIO().Fonts->AddFontFromFileTTF(filename.c_str(), size_pixels);
-	}
-	, py::arg("filename")
-	, py::arg("size_pixels")
-);
+		int size_pixels = 32)
+		{
+			ImGui::GetIO().Fonts->AddFontFromFileTTF(filename.c_str(), size_pixels);
+		}
+		, py::arg("filename")
+		, py::arg("size_pixels"));
 
 	m.def("set_display_framebuffer_scale",[](float scale){
 		ImGui::GetIO().DisplayFramebufferScale = ImVec2(scale,scale);
