@@ -20,6 +20,10 @@ namespace py = pybind11;
 class Context
 {
 public:
+	Context& operator=(const Context&) = delete;
+	Context(const Context&) = delete;
+	Context() = default;
+
 	void Init(int width, int height, const std::string& name);
 
 	void Resize(int width, int height);
@@ -30,54 +34,52 @@ public:
 
 	bool ShouldClose();
 
-	int width(){return m_imp->m_width;}
-	int height(){return m_imp->m_height;}
-private:
-	struct Imp
-	{
-		GLFWwindow* m_window = nullptr;
-		int m_width;
-		int m_height;
-		struct ImGuiContext* imgui;
-		imguiBinding imbinding;
-		std::mutex imgui_ctx_mutex;
-		~Imp();
-	};
+	int GetWidth() const;
 
-	std::shared_ptr<Imp> m_imp = std::make_shared<Imp>();
+	int GetHeight() const;
+
+	~Context();
+
+private:
+	GLFWwindow* m_window = nullptr;
+	int m_width;
+	int m_height;
+	struct ImGuiContext* m_imgui;
+	imguiBinding m_imbinding;
+	std::mutex m_imgui_ctx_mutex;
 };
 
 
 void Context::Init(int width, int height, const std::string& name)
 {
-	if (nullptr == m_imp->m_window)
+	if (nullptr == m_window)
 	{
 		glfwInit();
 
-		m_imp->m_window = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
+		m_window = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
 
-		glfwMakeContextCurrent(m_imp->m_window);
+		glfwMakeContextCurrent(m_window);
 
 		gl3wInit();
 
-		m_imp->imgui = ImGui::CreateContext();
-		GImGui = m_imp->imgui;
+		m_imgui = ImGui::CreateContext();
+		GImGui = m_imgui;
 
-		ImGui_ImplGlfwGL3_Init(&m_imp->imbinding, m_imp->m_window, false);
+		ImGui_ImplGlfwGL3_Init(&m_imbinding, m_window, false);
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
-		m_imp->m_width = width;
-		m_imp->m_height = height;
+		m_width = width;
+		m_height = height;
 
-		glfwSetWindowUserPointer(m_imp->m_window, this); // replaced m_imp.get()
+		glfwSetWindowUserPointer(m_window, this); // replaced m_imp.get()
 
-		glfwSetWindowSizeCallback(m_imp->m_window, [](GLFWwindow* window, int width, int height)
+		glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height)
 		{
 			Context* ctx = static_cast<Context*>(glfwGetWindowUserPointer(window));
 			ctx->Resize(width, height);
 		});
 
-		glfwSetKeyCallback(m_imp->m_window, [](GLFWwindow*, int key, int, int action, int mods)
+		glfwSetKeyCallback(m_window, [](GLFWwindow*, int key, int, int action, int mods)
 		{
 			ImGuiIO& io = ImGui::GetIO();
 			if (action == GLFW_PRESS)
@@ -91,19 +93,19 @@ void Context::Init(int width, int height, const std::string& name)
 			io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
 		});
 
-		glfwSetCharCallback(m_imp->m_window, [](GLFWwindow*, unsigned int c)
+		glfwSetCharCallback(m_window, [](GLFWwindow*, unsigned int c)
 		{
 			ImGuiIO& io = ImGui::GetIO();
 			io.AddInputCharacter((unsigned short)c);
 		});
 
-		glfwSetScrollCallback(m_imp->m_window, [](GLFWwindow*, double /*xoffset*/, double yoffset)
+		glfwSetScrollCallback(m_window, [](GLFWwindow*, double /*xoffset*/, double yoffset)
 		{
 			ImGuiIO& io = ImGui::GetIO();
 			io.MouseWheel += (float)yoffset * 2.0f;
 		});
 
-		glfwSetMouseButtonCallback(m_imp->m_window, [](GLFWwindow*, int button, int action, int /*mods*/)
+		glfwSetMouseButtonCallback(m_window, [](GLFWwindow*, int button, int action, int /*mods*/)
 		{
 			ImGuiIO& io = ImGui::GetIO();
 
@@ -116,47 +118,57 @@ void Context::Init(int width, int height, const std::string& name)
 }
 
 
-Context::Imp::~Imp()
+Context::~Context()
 {
 	glfwSetWindowSizeCallback(m_window, nullptr);
-	GImGui = imgui;
-	ImGui_ImplGlfwGL3_Shutdown(&imbinding);
+	GImGui = m_imgui;
+	ImGui_ImplGlfwGL3_Shutdown(&m_imbinding);
 	glfwTerminate();
-	delete imgui;
+	delete m_imgui;
 }
 
 
 void Context::Render()
 {
-	glfwMakeContextCurrent(m_imp->m_window);
-	glViewport(0, 0, m_imp->m_width, m_imp->m_height);
+	glfwMakeContextCurrent(m_window);
+	glViewport(0, 0, m_width, m_height);
 	glClear(GL_COLOR_BUFFER_BIT);
-	ImGui_ImplGlfwGL3_Render(&m_imp->imbinding);
+	ImGui_ImplGlfwGL3_Render(&m_imbinding);
 	glfwSwapInterval(1);
-	glfwSwapBuffers(m_imp->m_window);
+	glfwSwapBuffers(m_window);
 	glfwPollEvents();
-	m_imp->imgui_ctx_mutex.unlock();
+	m_imgui_ctx_mutex.unlock();
 }
 
 
 void Context::NewFrame()
 {
-	m_imp->imgui_ctx_mutex.lock();
-	GImGui = m_imp->imgui;
-	ImGui_ImplGlfwGL3_NewFrame(&m_imp->imbinding);
+	m_imgui_ctx_mutex.lock();
+	GImGui = m_imgui;
+	ImGui_ImplGlfwGL3_NewFrame(&m_imbinding);
 }
 
 
 void Context::Resize(int width, int height)
 {
-	m_imp->m_width = width;
-	m_imp->m_height = height;
+	m_width = width;
+	m_height = height;
 }
 
 
 bool Context::ShouldClose()
 {
-	return glfwWindowShouldClose(m_imp->m_window) != 0;
+	return glfwWindowShouldClose(m_window) != 0;
+}
+
+int Context::GetWidth() const
+{
+	return m_width; 
+}
+
+int Context::GetHeight() const
+{
+	return m_height; 
 }
 
 struct Bool
@@ -329,8 +341,8 @@ PYBIND11_MODULE(_bimpy, m) {
 		.def("new_frame", &Context::NewFrame, "Starts a new frame. NewFrame must be called before any imgui functions")
 		.def("render", &Context::Render, "Finilizes the frame and draws all UI. Render must be called after all imgui functions")
 		.def("should_close", &Context::ShouldClose)
-		.def("width", &Context::width)
-		.def("height", &Context::height)
+		.def("width", &Context::GetWidth)
+		.def("height", &Context::GetHeight)
 		.def("__enter__", &Context::NewFrame)
 		.def("__exit__", [](Context& self, py::object, py::object, py::object)
 			{
