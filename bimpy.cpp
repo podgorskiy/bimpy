@@ -870,6 +870,50 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("get_time", &ImGui::GetTime);
 	m.def("get_frame_count", &ImGui::GetFrameCount);
 
+	py::enum_<ImGuiDragDropFlags_>(m, "DragDropFlags")
+		.value("SourceNoPreviewTooltip", ImGuiDragDropFlags_SourceNoPreviewTooltip)
+		.value("SourceNoDisableHover", ImGuiDragDropFlags_SourceNoDisableHover)
+		.value("SourceNoHoldToOpenOthers", ImGuiDragDropFlags_SourceNoHoldToOpenOthers)
+		.value("SourceAllowNullID", ImGuiDragDropFlags_SourceAllowNullID)
+		.value("SourceExtern", ImGuiDragDropFlags_SourceExtern)
+		.value("SourceAutoExpirePayload", ImGuiDragDropFlags_SourceAutoExpirePayload)
+
+		.value("AcceptBeforeDelivery", ImGuiDragDropFlags_AcceptBeforeDelivery)
+		.value("AcceptNoDrawDefaultRect", ImGuiDragDropFlags_AcceptNoDrawDefaultRect)
+		.value("AcceptNoPreviewTooltip", ImGuiDragDropFlags_AcceptNoPreviewTooltip)
+		.value("AcceptPeekOnly", ImGuiDragDropFlags_AcceptPeekOnly)
+
+		.export_values();
+
+	m.def("begin_drag_drop_source", &ImGui::BeginDragDropSource);
+	// todo:
+	//m.def("set_drag_drop_payload", &ImGui::SetDragDropPayload);
+	m.def("set_drag_drop_payload_string", [](std::string data){ImGui::SetDragDropPayload("string",data.c_str(), data.size());});
+	m.def("end_drag_drop_source", &ImGui::EndDragDropSource);
+	m.def("begin_drag_drop_target", &ImGui::BeginDragDropTarget);
+	// todo:
+	//m.def("accept_drag_drop_payload", &ImGui::AcceptDragDropPayload);
+	m.def("accept_drag_drop_payload_string_preview", [](ImGuiDragDropFlags flags = 0)->std::string{
+		auto payload = ImGui::AcceptDragDropPayload("string", flags);
+		if (!payload->IsDataType("string") || !payload->Data)
+			return "";
+		if (payload->IsPreview())
+			return std::string(static_cast<char*>(payload->Data), payload->DataSize);
+		else
+			return "";
+	});
+	m.def("accept_drag_drop_payload_string", [](ImGuiDragDropFlags flags = 0)->std::string{
+		auto payload = ImGui::AcceptDragDropPayload("string", flags);
+		if (!payload->IsDataType("string") || !payload->Data)
+			return "";
+		if (payload->IsDelivery())
+				return std::string(static_cast<char*>(payload->Data), payload->DataSize);
+			else
+				return "";
+	});
+
+	m.def("end_drag_drop_target", &ImGui::EndDragDropTarget);
+
 	m.def("add_line", &AddLine, py::arg("a"), py::arg("b"), py::arg("col"), py::arg("thickness") = 1.0f);
 	m.def("add_rect", &AddRect, py::arg("a"), py::arg("b"), py::arg("col"), py::arg("rounding") = 0.0f, py::arg("rounding_corners_flags") = ImDrawCornerFlags_All, py::arg("thickness") = 1.0f);
 	m.def("add_rect_filled", &AddRectFilled, py::arg("a"), py::arg("b"), py::arg("col"), py::arg("rounding") = 0.0f, py::arg("rounding_corners_flags") = ImDrawCornerFlags_All);
