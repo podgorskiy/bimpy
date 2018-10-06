@@ -870,6 +870,27 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("get_time", &ImGui::GetTime);
 	m.def("get_frame_count", &ImGui::GetFrameCount);
 
+	m.def("get_key_index", &ImGui::GetKeyIndex);
+	m.def("is_key_down", &ImGui::IsKeyDown);
+	m.def("is_key_pressed", &ImGui::IsKeyPressed);
+	m.def("is_key_released", &ImGui::IsKeyReleased);
+	m.def("get_key_pressed_amount", &ImGui::GetKeyPressedAmount);
+	m.def("is_mouse_down", &ImGui::IsMouseDown);
+	m.def("is_any_mouse_down", &ImGui::IsAnyMouseDown);
+	m.def("is_mouse_clicked", &ImGui::IsMouseClicked);
+	m.def("is_mouse_double_clicked", &ImGui::IsMouseDoubleClicked);
+	m.def("is_mouse_released", &ImGui::IsMouseReleased);
+	m.def("is_mouse_dragging", &ImGui::IsMouseDragging);
+	m.def("is_mouse_hovering_rect", &ImGui::IsMouseHoveringRect);
+	m.def("is_mouse_pos_valid", &ImGui::IsMousePosValid);
+	m.def("get_mouse_pos", &ImGui::GetMousePos);
+	m.def("get_mouse_pos_on_opening_current_popup", &ImGui::GetMousePosOnOpeningCurrentPopup);
+	m.def("get_mouse_drag_delta", &ImGui::GetMouseDragDelta);
+	m.def("reset_mouse_drag_delta", &ImGui::ResetMouseDragDelta);
+
+	m.def("capture_keyboard_from_app", &ImGui::CaptureKeyboardFromApp);
+	m.def("capture_mouse_from_app", &ImGui::CaptureMouseFromApp);
+
 	py::enum_<ImGuiDragDropFlags_>(m, "DragDropFlags")
 		.value("SourceNoPreviewTooltip", ImGuiDragDropFlags_SourceNoPreviewTooltip)
 		.value("SourceNoDisableHover", ImGuiDragDropFlags_SourceNoDisableHover)
