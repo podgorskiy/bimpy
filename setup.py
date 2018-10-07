@@ -34,7 +34,7 @@ elif os.name == 'posix':
     target_os = 'posix'
 elif platform.system() == 'Windows':
     target_os = 'win32'
-    
+
 here = os.path.abspath(os.path.dirname(__file__))
 
 with open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
@@ -181,6 +181,7 @@ imgui = [
      "imgui/imgui.cpp"
     ,"imgui/imgui_demo.cpp"
     ,"imgui/imgui_draw.cpp"
+    ,"imgui/imgui_widgets.cpp"
 ]
 
 definitions = {
@@ -226,7 +227,7 @@ extension.extra_compile_cpp_args = extra_compile_cpp_args[target_os]
 setup(
     name='bimpy',
 
-    version='0.0.8',
+    version='0.0.10',
 
     description='bimpy - bundled imgui for python',
     long_description=long_description,

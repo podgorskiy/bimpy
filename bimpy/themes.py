@@ -2,7 +2,7 @@ import bimpy
 
 def set_light_theme():
     """ light style from Pacome Danhiez (user itamago) https://github.com/ocornut/imgui/pull/511#issuecomment-175719267 """
-    
+
     style = bimpy.get_style()
     style.set_color(bimpy.Colors.Text, bimpy.Vec4(0.00, 0.00, 0.00, 1.00))
     style.set_color(bimpy.Colors.TextDisabled, bimpy.Vec4(0.60, 0.60, 0.60, 1.00))
@@ -21,7 +21,7 @@ def set_light_theme():
     style.set_color(bimpy.Colors.ScrollbarGrab, bimpy.Vec4(0.69, 0.69, 0.69, 0.80))
     style.set_color(bimpy.Colors.ScrollbarGrabHovered, bimpy.Vec4(0.49, 0.49, 0.49, 0.80))
     style.set_color(bimpy.Colors.ScrollbarGrabActive, bimpy.Vec4(0.49, 0.49, 0.49, 1.00))
-    style.set_color(bimpy.Colors.ComboBg, bimpy.Vec4(0.86, 0.86, 0.86, 0.99))
+    # style.set_color(bimpy.Colors.ComboBg, bimpy.Vec4(0.86, 0.86, 0.86, 0.99))
     style.set_color(bimpy.Colors.CheckMark, bimpy.Vec4(0.26, 0.59, 0.98, 1.00))
     style.set_color(bimpy.Colors.SliderGrab, bimpy.Vec4(0.26, 0.59, 0.98, 0.78))
     style.set_color(bimpy.Colors.SliderGrabActive, bimpy.Vec4(0.26, 0.59, 0.98, 1.00))
@@ -37,9 +37,9 @@ def set_light_theme():
     style.set_color(bimpy.Colors.ResizeGrip, bimpy.Vec4(0.50, 0.50, 0.50, 1.00))
     style.set_color(bimpy.Colors.ResizeGripHovered, bimpy.Vec4(0.26, 0.59, 0.98, 0.67))
     style.set_color(bimpy.Colors.ResizeGripActive, bimpy.Vec4(0.26, 0.59, 0.98, 0.95))
-    style.set_color(bimpy.Colors.CloseButton, bimpy.Vec4(0.59, 0.59, 0.59, 0.50))
-    style.set_color(bimpy.Colors.CloseButtonHovered, bimpy.Vec4(0.98, 0.39, 0.36, 1.00))
-    style.set_color(bimpy.Colors.CloseButtonActive, bimpy.Vec4(0.98, 0.39, 0.36, 1.00))
+    # style.set_color(bimpy.Colors.CloseButton, bimpy.Vec4(0.59, 0.59, 0.59, 0.50))
+    # style.set_color(bimpy.Colors.CloseButtonHovered, bimpy.Vec4(0.98, 0.39, 0.36, 1.00))
+    # style.set_color(bimpy.Colors.CloseButtonActive, bimpy.Vec4(0.98, 0.39, 0.36, 1.00))
     style.set_color(bimpy.Colors.PlotLines, bimpy.Vec4(0.39, 0.39, 0.39, 1.00))
     style.set_color(bimpy.Colors.PlotLinesHovered, bimpy.Vec4(1.00, 0.43, 0.35, 1.00))
     style.set_color(bimpy.Colors.PlotHistogram, bimpy.Vec4(0.90, 0.70, 0.00, 1.00))
