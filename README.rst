@@ -1,5 +1,9 @@
-bimpy - bundled imgui for python
+bimpy - bundled imgui for python 
 ================================
+
+:Downloads: .. figure:: https://pepy.tech/badge/bimpy
+:Build status: .. figure:: https://travis-ci.org/podgorskiy/bimpy.svg?branch=master
+:License: .. figure:: https://img.shields.io/badge/License-MIT-yellow.svg
 
 **bimpy** is a python module that provides bindings to `dear imgui <https://github.com/ocornut/imgui>`__ and distributed as a self-contained package bundled with `glfw <https://github.com/glfw/glfw>`__ and `gl3w <https://github.com/skaslev/gl3w>`__.
 
@@ -258,3 +262,8 @@ Simple usage example below:
 
 		ctx.render()
 
+
+Acknowledgements
+=======
+* robobuggy https://github.com/gfannes
+* njazz https://github.com/njazz
