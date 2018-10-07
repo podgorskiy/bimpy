@@ -485,6 +485,11 @@ PYBIND11_MODULE(_bimpy, m) {
 		py::arg("name"), py::arg("shortcut"), py::arg("selected") = null, py::arg("enabled") = true);
 	m.def("end_menu", &ImGui::EndMenu);
 
+	m.def("begin_tooltip", &ImGui::BeginTooltip);
+	m.def("end_tooltip", &ImGui::EndTooltip);
+	m.def("set_tooltip", [](const char* text){ ImGui::SetTooltip("%s", text); });
+
+
 
 	m.def("open_popup", [](std::string str_id)
 		{
