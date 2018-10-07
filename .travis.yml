@@ -2,19 +2,17 @@ language: python
 sudo: required
 dist: trusty
 python:
-  - "2.6"
+  - "2.7"
   - "3.6"
 
 before_script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get -qq update; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libx11-dev libxtst-dev libxt-dev libx11-xcb-dev libxcursor-dev; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libx11-dev libxtst-dev libxt-dev libx11-xcb-dev libxcursor-dev libxrandr-dev;  fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libxkbcommon-dev; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libxkbcommon-x11-dev; fi
 
 install:
   - pip install wheel
-  - pip3 install wheel
 script:
   - python setup.py bdist_wheel
-  - python3 setup.py bdist_wheel
  
