@@ -163,12 +163,12 @@ bool Context::ShouldClose()
 
 int Context::GetWidth() const
 {
-	return m_width; 
+	return m_width;
 }
 
 int Context::GetHeight() const
 {
-	return m_height; 
+	return m_height;
 }
 
 struct Bool
@@ -484,6 +484,61 @@ PYBIND11_MODULE(_bimpy, m) {
 		"return true when activated + toggle (*p_selected) if p_selected != NULL",
 		py::arg("name"), py::arg("shortcut"), py::arg("selected") = null, py::arg("enabled") = true);
 	m.def("end_menu", &ImGui::EndMenu);
+
+
+	m.def("open_popup", [](std::string str_id)
+		{
+			ImGui::OpenPopup(str_id.c_str());
+		},
+		"call to mark popup as open (don't call every frame!). popups are closed when user click outside, or if CloseCurrentPopup() is called within a BeginPopup()/EndPopup() block. By default, Selectable()/MenuItem() are calling CloseCurrentPopup(). Popup identifiers are relative to the current ID-stack (so OpenPopup and BeginPopup needs to be at the same level)."
+	);
+	m.def("open_popup_on_item_click", [](std::string str_id = "", int mouse_button = 1)
+		{
+			ImGui::OpenPopupOnItemClick(str_id.c_str(), mouse_button);
+		},
+		"helper to open popup when clicked on last item. return true when just opened."
+	);
+	m.def("begin_popup", [](std::string str_id = "")
+		{
+			ImGui::BeginPopup(str_id.c_str());
+		},
+		""
+	);
+	m.def("begin_popup_modal", [](std::string name = "")
+		{
+			ImGui::BeginPopupModal(name.c_str());
+		},
+		""
+	);
+
+	// add more arguments later:
+	m.def("begin_popup_context_item", []()
+		{
+			ImGui::BeginPopupContextItem();
+		},
+		"helper to open and begin popup when clicked on last item. if you can pass a NULL str_id only if the previous item had an id. If you want to use that on a non-interactive item such as Text() you need to pass in an explicit ID here."
+	);
+	m.def("begin_popup_context_window", []()
+		{
+			ImGui::BeginPopupContextWindow();
+		},
+		"helper to open and begin popup when clicked on current window."
+	);
+	m.def("begin_popup_context_void", []()
+		{
+			ImGui::BeginPopupContextVoid();
+		},
+		"helper to open and begin popup when clicked in void (where there are no imgui windows)."
+	);
+
+	m.def("end_popup", &ImGui::EndPopup);
+	m.def("is_popup_open", [](std::string str_id = "")->bool
+		{
+			return ImGui::IsPopupOpen(str_id.c_str());
+		},
+		""
+	);
+	m.def("clode_current_popup", &ImGui::CloseCurrentPopup);
 
 	m.def("get_content_region_max", &ImGui::GetContentRegionMax);
 	m.def("get_content_region_avail", &ImGui::GetContentRegionAvail);
