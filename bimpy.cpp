@@ -490,7 +490,6 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("set_tooltip", [](const char* text){ ImGui::SetTooltip("%s", text); });
 
 
-
 	m.def("open_popup", [](std::string str_id)
 		{
 			ImGui::OpenPopup(str_id.c_str());
@@ -788,6 +787,21 @@ PYBIND11_MODULE(_bimpy, m) {
 		v4.value = v[3];
 		return result;
 	}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v3"), py::arg("v4"), py::arg("flags") = 0);
+
+
+	m.def("color_edit", [](const char* label, ImVec4 col)->bool
+	{
+		return ImGui::ColorEdit4(label, &col.x);
+	});
+	m.def("color_picker", [](const char* label, ImVec4 col)->bool
+	{
+		return ImGui::ColorPicker4(label, &col.x);
+	});
+	m.def("color_button", [](const char* label, ImVec4 col)->bool
+	{
+		return ImGui::ColorButton(label, col);
+	}, "display a colored square/button, hover for details, return true when pressed.");
+
 
 	m.def("slider_float", [](const char* label, Float& v, float v_min, float v_max, const char* display_format, float power)
 	{
