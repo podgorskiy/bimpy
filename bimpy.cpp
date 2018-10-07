@@ -445,9 +445,15 @@ PYBIND11_MODULE(_bimpy, m) {
 			ImGui::GetStyle() = a;
 		});
 
-	m.def("show_test_window", [](){ ImGui::ShowTestWindow(); });
-	m.def("show_metrics_window", [](){ ImGui::ShowMetricsWindow(); });
-	m.def("show_user_guide", [](){ ImGui::ShowUserGuide(); });
+
+	m.def("show_test_window", [](){ ImGui::ShowDemoWindow(); }, "create demo/test window (previously called ShowTestWindow). demonstrate most ImGui features.");	// deprecated
+	m.def("show_demo_window", [](){ ImGui::ShowDemoWindow(); }, "create demo/test window (previously called ShowTestWindow). demonstrate most ImGui features.");
+	m.def("show_metrics_window", [](){ ImGui::ShowMetricsWindow(); }, "create metrics window. display ImGui internals: draw commands (with individual draw calls and vertices), window list, basic internal state, etc.");
+	m.def("show_style_editor", [](){ ImGui::ShowStyleEditor(); }, "add style editor block (not a window). you can pass in a reference ImGuiStyle structure to compare to, revert to and save to (else it uses the default style)");
+	m.def("show_style_selector", [](const char* label){ ImGui::ShowStyleSelector(label); }, "add style selector block (not a window), essentially a combo listing the default styles.");
+	m.def("show_font_selector", [](const char* label){ ImGui::ShowFontSelector(label); }, "add font selector block (not a window), essentially a combo listing the loaded fonts.");
+	m.def("show_user_guide", [](){ ImGui::ShowUserGuide(); }, "add basic help/info block (not a window): how to manipulate ImGui as a end-user (mouse/keyboard controls).");
+
 
 	m.def("begin",[](const std::string& name, Bool& opened, ImGuiWindowFlags flags) -> bool
 		{
@@ -650,6 +656,9 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("collapsing_header", [](const char* label, ImGuiTreeNodeFlags flags){ return ImGui::CollapsingHeader(label, flags); }, py::arg("label"), py::arg("flags") = 0);
 	m.def("checkbox", [](const char* label, Bool& v){ return ImGui::Checkbox(label, &v.value); });
 	m.def("radio_button", [](const char* label, bool active){ return ImGui::RadioButton(label, active); });
+
+	m.def("begin_combo", &ImGui::BeginCombo, py::arg("label"), py::arg("preview_value"), py::arg("flags") = 0);
+	m.def("end_combo", &ImGui::EndCombo, "only call EndCombo() if BeginCombo() returns true!");
 	m.def("combo", [](const char* label, Int& current_item, const std::vector<std::string>& items)
 	{
 		if (items.size() < 10)
@@ -673,6 +682,7 @@ PYBIND11_MODULE(_bimpy, m) {
 			return result;
 		}
 	});
+
 	m.def("input_text", [](const char* label, String& text, size_t buf_size, ImGuiInputTextFlags flags)
 	{
 		bool result = false;
@@ -797,11 +807,7 @@ PYBIND11_MODULE(_bimpy, m) {
 	{
 		return ImGui::ColorPicker4(label, &col.x);
 	});
-	m.def("color_button", [](const char* label, ImVec4 col)->bool
-	{
-		return ImGui::ColorButton(label, col);
-	}, "display a colored square/button, hover for details, return true when pressed.");
-
+	
 
 	m.def("slider_float", [](const char* label, Float& v, float v_min, float v_max, const char* display_format, float power)
 	{
@@ -906,7 +912,7 @@ PYBIND11_MODULE(_bimpy, m) {
 
 	m.def("progress_bar", &ImGui::ProgressBar, py::arg("fraction"), py::arg("size_arg") = ImVec2(-1,0), py::arg("overlay") = nullptr);
 
-	m.def("color_button", &ImGui::ColorButton, py::arg("desc_id"), py::arg("col"), py::arg("flags") = 0, py::arg("size") = ImVec2(0,0));
+	m.def("color_button", &ImGui::ColorButton, py::arg("desc_id"), py::arg("col"), py::arg("flags") = 0, py::arg("size") = ImVec2(0,0), "display a colored square/button, hover for details, return true when pressed.");
 
 	m.def("selectable", [](
 		std::string label,
