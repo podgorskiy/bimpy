@@ -593,6 +593,7 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("pop_style_color", &ImGui::PopStyleColor, py::arg("count") = 1);
 
 	m.def("push_style_var", [](ImGuiStyleVar_ idx, float val){ ImGui::PushStyleVar((ImGuiStyleVar)idx, val); });
+	m.def("push_style_var", [](ImGuiStyleVar_ idx, ImVec2 val){ ImGui::PushStyleVar((ImGuiStyleVar)idx, val); });
 	m.def("pop_style_var", &ImGui::PopStyleVar, py::arg("count") = 1);
 
 	m.def("push_item_width", &ImGui::PushItemWidth);
@@ -807,7 +808,7 @@ PYBIND11_MODULE(_bimpy, m) {
 	{
 		return ImGui::ColorPicker4(label, &col.x);
 	});
-	
+
 
 	m.def("slider_float", [](const char* label, Float& v, float v_min, float v_max, const char* display_format, float power)
 	{
