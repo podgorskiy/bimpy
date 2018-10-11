@@ -1062,6 +1062,13 @@ PYBIND11_MODULE(_bimpy, m) {
 		return ImGui::GetIO().FontGlobalScale;
 	});
 
-
+	m.attr("key_left_shift") = py::int_(GLFW_KEY_LEFT_SHIFT);
+	m.attr("key_left_control") = py::int_(GLFW_KEY_LEFT_CONTROL);
+	m.attr("key_left_alt") = py::int_(GLFW_KEY_LEFT_ALT);
+	m.attr("key_left_super") = py::int_(GLFW_KEY_LEFT_SUPER);
+	m.attr("key_right_shift") = py::int_(GLFW_KEY_RIGHT_SHIFT);
+	m.attr("key_right_control") = py::int_(GLFW_KEY_RIGHT_CONTROL);
+	m.attr("key_right_alt") = py::int_(GLFW_KEY_RIGHT_ALT);
+	m.attr("key_right_super") = py::int_(GLFW_KEY_RIGHT_SUPER);
 
 }
