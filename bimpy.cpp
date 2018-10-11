@@ -1028,6 +1028,9 @@ PYBIND11_MODULE(_bimpy, m) {
 
 	m.def("end_drag_drop_target", &ImGui::EndDragDropTarget);
 
+	m.def("push_clip_rect", &ImGui::PushClipRect);
+	m.def("pop_clip_rect", &ImGui::PopClipRect);
+
 	m.def("add_line", &AddLine, py::arg("a"), py::arg("b"), py::arg("col"), py::arg("thickness") = 1.0f);
 	m.def("add_rect", &AddRect, py::arg("a"), py::arg("b"), py::arg("col"), py::arg("rounding") = 0.0f, py::arg("rounding_corners_flags") = ImDrawCornerFlags_All, py::arg("thickness") = 1.0f);
 	m.def("add_rect_filled", &AddRectFilled, py::arg("a"), py::arg("b"), py::arg("col"), py::arg("rounding") = 0.0f, py::arg("rounding_corners_flags") = ImDrawCornerFlags_All);
