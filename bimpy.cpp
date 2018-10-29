@@ -222,14 +222,14 @@ PYBIND11_MODULE(_bimpy, m) {
 
 	m.doc() = "bimpy - bundled imgui for python";
 
-	py::enum_<ImGuiCond_>(m, "Condition")
+	py::enum_<ImGuiCond_>(m, "Condition", py::arithmetic())
 		.value("Always", ImGuiCond_::ImGuiCond_Always)
 		.value("Once", ImGuiCond_::ImGuiCond_Once)
 		.value("FirstUseEver", ImGuiCond_::ImGuiCond_FirstUseEver)
 		.value("Appearing", ImGuiCond_::ImGuiCond_Appearing)
 		.export_values();
 
-	py::enum_<ImGuiWindowFlags_>(m, "WindowFlags")
+	py::enum_<ImGuiWindowFlags_>(m, "WindowFlags", py::arithmetic())
 		.value("NoTitleBar", ImGuiWindowFlags_::ImGuiWindowFlags_NoTitleBar)
 		.value("NoResize", ImGuiWindowFlags_::ImGuiWindowFlags_NoResize)
 		.value("NoMove", ImGuiWindowFlags_::ImGuiWindowFlags_NoMove)
@@ -250,7 +250,7 @@ PYBIND11_MODULE(_bimpy, m) {
 		.value("AlwaysUseWindowPadding", ImGuiWindowFlags_::ImGuiWindowFlags_AlwaysUseWindowPadding)
 		.export_values();
 
-	py::enum_<ImGuiInputTextFlags_>(m, "InputTextFlags")
+	py::enum_<ImGuiInputTextFlags_>(m, "InputTextFlags", py::arithmetic())
 		.value("CharsDecimal", ImGuiInputTextFlags_::ImGuiInputTextFlags_CharsDecimal)
 		.value("CharsHexadecimal", ImGuiInputTextFlags_::ImGuiInputTextFlags_CharsHexadecimal)
 		.value("CharsUppercase", ImGuiInputTextFlags_::ImGuiInputTextFlags_CharsUppercase)
