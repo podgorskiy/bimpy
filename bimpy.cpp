@@ -163,12 +163,12 @@ bool Context::ShouldClose()
 
 int Context::GetWidth() const
 {
-	return m_width; 
+	return m_width;
 }
 
 int Context::GetHeight() const
 {
-	return m_height; 
+	return m_height;
 }
 
 struct Bool
@@ -445,9 +445,15 @@ PYBIND11_MODULE(_bimpy, m) {
 			ImGui::GetStyle() = a;
 		});
 
-	m.def("show_test_window", [](){ ImGui::ShowTestWindow(); });
-	m.def("show_metrics_window", [](){ ImGui::ShowMetricsWindow(); });
-	m.def("show_user_guide", [](){ ImGui::ShowUserGuide(); });
+
+	m.def("show_test_window", [](){ ImGui::ShowDemoWindow(); }, "create demo/test window (previously called ShowTestWindow). demonstrate most ImGui features.");	// deprecated
+	m.def("show_demo_window", [](){ ImGui::ShowDemoWindow(); }, "create demo/test window (previously called ShowTestWindow). demonstrate most ImGui features.");
+	m.def("show_metrics_window", [](){ ImGui::ShowMetricsWindow(); }, "create metrics window. display ImGui internals: draw commands (with individual draw calls and vertices), window list, basic internal state, etc.");
+	m.def("show_style_editor", [](){ ImGui::ShowStyleEditor(); }, "add style editor block (not a window). you can pass in a reference ImGuiStyle structure to compare to, revert to and save to (else it uses the default style)");
+	m.def("show_style_selector", [](const char* label){ ImGui::ShowStyleSelector(label); }, "add style selector block (not a window), essentially a combo listing the default styles.");
+	m.def("show_font_selector", [](const char* label){ ImGui::ShowFontSelector(label); }, "add font selector block (not a window), essentially a combo listing the loaded fonts.");
+	m.def("show_user_guide", [](){ ImGui::ShowUserGuide(); }, "add basic help/info block (not a window): how to manipulate ImGui as a end-user (mouse/keyboard controls).");
+
 
 	m.def("begin",[](const std::string& name, Bool& opened, ImGuiWindowFlags flags) -> bool
 		{
@@ -484,6 +490,65 @@ PYBIND11_MODULE(_bimpy, m) {
 		"return true when activated + toggle (*p_selected) if p_selected != NULL",
 		py::arg("name"), py::arg("shortcut"), py::arg("selected") = null, py::arg("enabled") = true);
 	m.def("end_menu", &ImGui::EndMenu);
+
+	m.def("begin_tooltip", &ImGui::BeginTooltip);
+	m.def("end_tooltip", &ImGui::EndTooltip);
+	m.def("set_tooltip", [](const char* text){ ImGui::SetTooltip("%s", text); });
+
+
+	m.def("open_popup", [](std::string str_id)
+		{
+			ImGui::OpenPopup(str_id.c_str());
+		},
+		"call to mark popup as open (don't call every frame!). popups are closed when user click outside, or if CloseCurrentPopup() is called within a BeginPopup()/EndPopup() block. By default, Selectable()/MenuItem() are calling CloseCurrentPopup(). Popup identifiers are relative to the current ID-stack (so OpenPopup and BeginPopup needs to be at the same level)."
+	);
+	m.def("open_popup_on_item_click", [](std::string str_id = "", int mouse_button = 1)
+		{
+			ImGui::OpenPopupOnItemClick(str_id.c_str(), mouse_button);
+		},
+		"helper to open popup when clicked on last item. return true when just opened."
+	);
+	m.def("begin_popup", [](std::string str_id = "")
+		{
+			ImGui::BeginPopup(str_id.c_str());
+		},
+		""
+	);
+	m.def("begin_popup_modal", [](std::string name = "")
+		{
+			ImGui::BeginPopupModal(name.c_str());
+		},
+		""
+	);
+
+	// add more arguments later:
+	m.def("begin_popup_context_item", []()
+		{
+			ImGui::BeginPopupContextItem();
+		},
+		"helper to open and begin popup when clicked on last item. if you can pass a NULL str_id only if the previous item had an id. If you want to use that on a non-interactive item such as Text() you need to pass in an explicit ID here."
+	);
+	m.def("begin_popup_context_window", []()
+		{
+			ImGui::BeginPopupContextWindow();
+		},
+		"helper to open and begin popup when clicked on current window."
+	);
+	m.def("begin_popup_context_void", []()
+		{
+			ImGui::BeginPopupContextVoid();
+		},
+		"helper to open and begin popup when clicked in void (where there are no imgui windows)."
+	);
+
+	m.def("end_popup", &ImGui::EndPopup);
+	m.def("is_popup_open", [](std::string str_id = "")->bool
+		{
+			return ImGui::IsPopupOpen(str_id.c_str());
+		},
+		""
+	);
+	m.def("clode_current_popup", &ImGui::CloseCurrentPopup);
 
 	m.def("get_content_region_max", &ImGui::GetContentRegionMax);
 	m.def("get_content_region_avail", &ImGui::GetContentRegionAvail);
@@ -528,6 +593,7 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("pop_style_color", &ImGui::PopStyleColor, py::arg("count") = 1);
 
 	m.def("push_style_var", [](ImGuiStyleVar_ idx, float val){ ImGui::PushStyleVar((ImGuiStyleVar)idx, val); });
+	m.def("push_style_var", [](ImGuiStyleVar_ idx, ImVec2 val){ ImGui::PushStyleVar((ImGuiStyleVar)idx, val); });
 	m.def("pop_style_var", &ImGui::PopStyleVar, py::arg("count") = 1);
 
 	m.def("push_item_width", &ImGui::PushItemWidth);
@@ -591,6 +657,9 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("collapsing_header", [](const char* label, ImGuiTreeNodeFlags flags){ return ImGui::CollapsingHeader(label, flags); }, py::arg("label"), py::arg("flags") = 0);
 	m.def("checkbox", [](const char* label, Bool& v){ return ImGui::Checkbox(label, &v.value); });
 	m.def("radio_button", [](const char* label, bool active){ return ImGui::RadioButton(label, active); });
+
+	m.def("begin_combo", &ImGui::BeginCombo, py::arg("label"), py::arg("preview_value"), py::arg("flags") = 0);
+	m.def("end_combo", &ImGui::EndCombo, "only call EndCombo() if BeginCombo() returns true!");
 	m.def("combo", [](const char* label, Int& current_item, const std::vector<std::string>& items)
 	{
 		if (items.size() < 10)
@@ -614,6 +683,7 @@ PYBIND11_MODULE(_bimpy, m) {
 			return result;
 		}
 	});
+
 	m.def("input_text", [](const char* label, String& text, size_t buf_size, ImGuiInputTextFlags flags)
 	{
 		bool result = false;
@@ -729,6 +799,17 @@ PYBIND11_MODULE(_bimpy, m) {
 		return result;
 	}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v3"), py::arg("v4"), py::arg("flags") = 0);
 
+
+	m.def("color_edit", [](const char* label, ImVec4 col)->bool
+	{
+		return ImGui::ColorEdit4(label, &col.x);
+	});
+	m.def("color_picker", [](const char* label, ImVec4 col)->bool
+	{
+		return ImGui::ColorPicker4(label, &col.x);
+	});
+
+
 	m.def("slider_float", [](const char* label, Float& v, float v_min, float v_max, const char* display_format, float power)
 	{
 		return ImGui::SliderFloat(label, &v.value, v_min, v_max, display_format, power);
@@ -832,7 +913,7 @@ PYBIND11_MODULE(_bimpy, m) {
 
 	m.def("progress_bar", &ImGui::ProgressBar, py::arg("fraction"), py::arg("size_arg") = ImVec2(-1,0), py::arg("overlay") = nullptr);
 
-	m.def("color_button", &ImGui::ColorButton, py::arg("desc_id"), py::arg("col"), py::arg("flags") = 0, py::arg("size") = ImVec2(0,0));
+	m.def("color_button", &ImGui::ColorButton, py::arg("desc_id"), py::arg("col"), py::arg("flags") = 0, py::arg("size") = ImVec2(0,0), "display a colored square/button, hover for details, return true when pressed.");
 
 	m.def("selectable", [](
 		std::string label,
@@ -947,6 +1028,9 @@ PYBIND11_MODULE(_bimpy, m) {
 
 	m.def("end_drag_drop_target", &ImGui::EndDragDropTarget);
 
+	m.def("push_clip_rect", &ImGui::PushClipRect);
+	m.def("pop_clip_rect", &ImGui::PopClipRect);
+
 	m.def("add_line", &AddLine, py::arg("a"), py::arg("b"), py::arg("col"), py::arg("thickness") = 1.0f);
 	m.def("add_rect", &AddRect, py::arg("a"), py::arg("b"), py::arg("col"), py::arg("rounding") = 0.0f, py::arg("rounding_corners_flags") = ImDrawCornerFlags_All, py::arg("thickness") = 1.0f);
 	m.def("add_rect_filled", &AddRectFilled, py::arg("a"), py::arg("b"), py::arg("col"), py::arg("rounding") = 0.0f, py::arg("rounding_corners_flags") = ImDrawCornerFlags_All);
@@ -981,6 +1065,13 @@ PYBIND11_MODULE(_bimpy, m) {
 		return ImGui::GetIO().FontGlobalScale;
 	});
 
-
+	m.attr("key_left_shift") = py::int_(GLFW_KEY_LEFT_SHIFT);
+	m.attr("key_left_control") = py::int_(GLFW_KEY_LEFT_CONTROL);
+	m.attr("key_left_alt") = py::int_(GLFW_KEY_LEFT_ALT);
+	m.attr("key_left_super") = py::int_(GLFW_KEY_LEFT_SUPER);
+	m.attr("key_right_shift") = py::int_(GLFW_KEY_RIGHT_SHIFT);
+	m.attr("key_right_control") = py::int_(GLFW_KEY_RIGHT_CONTROL);
+	m.attr("key_right_alt") = py::int_(GLFW_KEY_RIGHT_ALT);
+	m.attr("key_right_super") = py::int_(GLFW_KEY_RIGHT_SUPER);
 
 }
