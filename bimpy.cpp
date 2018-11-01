@@ -444,7 +444,19 @@ PYBIND11_MODULE(_bimpy, m) {
 		{
 			ImGui::GetStyle() = a;
 		});
-
+		
+	m.def("style_color_classic", []()
+		{
+			ImGui::StyleColorsClassic();
+		});
+	m.def("style_color_dark", []()
+		{
+			ImGui::StyleColorsDark();
+		});
+	m.def("style_color_light", []()
+		{
+			ImGui::StyleColorsLight();
+		});
 
 	m.def("show_test_window", [](){ ImGui::ShowDemoWindow(); }, "create demo/test window (previously called ShowTestWindow). demonstrate most ImGui features.");	// deprecated
 	m.def("show_demo_window", [](){ ImGui::ShowDemoWindow(); }, "create demo/test window (previously called ShowTestWindow). demonstrate most ImGui features.");
