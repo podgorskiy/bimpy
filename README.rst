@@ -231,7 +231,9 @@ Simple usage example below:
 	while not ctx.should_close():
 		ctx.new_frame()
 
-		bimpy.begin("Drawings", flags=bimpy.WindowFlags.ShowBorders)
+		bimpy.set_next_window_pos(bimpy.Vec2(20, 20), bimpy.Condition.Once)
+		bimpy.set_next_window_size(bimpy.Vec2(800, 600), bimpy.Condition.Once)
+		bimpy.begin("Drawings")
 
 		window_pos = bimpy.get_window_pos()
 
@@ -259,7 +261,9 @@ Simple usage example below:
 
 		bimpy.end()
 
-		bimpy.begin("Controls", flags=bimpy.WindowFlags.ShowBorders)
+		bimpy.set_next_window_pos(bimpy.Vec2(20, 640), bimpy.Condition.Once)
+		bimpy.set_next_window_size(bimpy.Vec2(800, 140), bimpy.Condition.Once)
+		bimpy.begin("Controls")
 
 		bimpy.input_int("Data points count", DATA_POINTS)
 		bimpy.input_int("Clasters count", CLASTERS)
