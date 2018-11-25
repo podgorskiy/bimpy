@@ -1,4 +1,6 @@
 import bimpy
+import pkg_resources
+print(pkg_resources.get_distribution("bimpy").version)
 
 ctx = bimpy.Context()
 
@@ -19,8 +21,6 @@ vals = [0., 0.1, 0.2 ,0.1, 0.4, 0.2]
 
 while(not ctx.should_close()):
     ctx.new_frame()
-
-    bimpy.show_test_window()
 
     if opened.value:
         if bimpy.begin("Hello!", opened = opened): 
@@ -51,4 +51,13 @@ while(not ctx.should_close()):
             a += 0.01
         bimpy.end()
 
+        if bimpy.begin("Hello2!", flags=(bimpy.WindowFlags.AlwaysAutoResize | bimpy.WindowFlags.NoTitleBar)): 
+            bimpy.text("Some text")
+
+            if bimpy.button("Some button"):
+                print("!!!")
+
+            bimpy.combo("Combo2!", selectedItem, mylist)
+
+        bimpy.end()
     ctx.render()

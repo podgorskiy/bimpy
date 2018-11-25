@@ -18,6 +18,7 @@ bimpy - bundled imgui for python
 **bimpy** is a python module that provides bindings to `dear imgui <https://github.com/ocornut/imgui>`__ and distributed as a self-contained package bundled with `glfw <https://github.com/glfw/glfw>`__ and `gl3w <https://github.com/skaslev/gl3w>`__.
 
 Features:
+
 * Allows to create immediate mode UI with python easily. The API is kept as close to the original dear imgui as possible.
 
 * **bimpy** already has all necessary functionality for window/OpenGL context creation and hides those details from the user.
@@ -195,7 +196,7 @@ Simple usage example below:
 
 	ctx = bimpy.Context()
 
-	ctx.init(1200, 1200, "ITQ")
+	ctx.init(1200, 1200, "Draw Commands Test")
 
 	with ctx:
 		bimpy.themes.set_light_theme()
@@ -230,7 +231,9 @@ Simple usage example below:
 	while not ctx.should_close():
 		ctx.new_frame()
 
-		bimpy.begin("Drawings", flags=bimpy.WindowFlags.ShowBorders)
+		bimpy.set_next_window_pos(bimpy.Vec2(20, 20), bimpy.Condition.Once)
+		bimpy.set_next_window_size(bimpy.Vec2(800, 600), bimpy.Condition.Once)
+		bimpy.begin("Drawings")
 
 		window_pos = bimpy.get_window_pos()
 
@@ -258,7 +261,9 @@ Simple usage example below:
 
 		bimpy.end()
 
-		bimpy.begin("Controls", flags=bimpy.WindowFlags.ShowBorders)
+		bimpy.set_next_window_pos(bimpy.Vec2(20, 640), bimpy.Condition.Once)
+		bimpy.set_next_window_size(bimpy.Vec2(800, 140), bimpy.Condition.Once)
+		bimpy.begin("Controls")
 
 		bimpy.input_int("Data points count", DATA_POINTS)
 		bimpy.input_int("Clasters count", CLASTERS)
@@ -278,3 +283,4 @@ Acknowledgements
 
 * robobuggy https://github.com/gfannes
 * njazz https://github.com/njazz
+* Florian Rott https://github.com/sauberfred
