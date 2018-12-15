@@ -943,7 +943,7 @@ PYBIND11_MODULE(_bimpy, m) {
 		, py::arg("overlay_text") = nullptr
 		, py::arg("scale_min") = FLT_MAX
 		, py::arg("scale_max") = FLT_MAX
-		, py::arg("graph_size")	 = ImVec2(0,0)
+		, py::arg("graph_size") = ImVec2(0,0)
 		, py::arg("stride") = sizeof(float)
 		);
 
@@ -953,17 +953,32 @@ PYBIND11_MODULE(_bimpy, m) {
 
 	m.def("selectable", [](
 		std::string label,
-		Bool selected = false,
+		bool selected = false,
 		ImGuiSelectableFlags flags = 0,
 		ImVec2 size = ImVec2(0,0))->bool
 		{
-			return ImGui::Selectable(label.c_str(), (bool*) (selected.null ? nullptr : &selected.value), flags, size);
+			return ImGui::Selectable(label.c_str(), selected, flags, size);
+		}
+		, py::arg("label")
+		, py::arg("selected") = false
+		, py::arg("flags") = 0
+		, py::arg("size") = ImVec2(0,0)
+		);
+
+	m.def("selectable", [](
+		std::string label,
+		Bool& selected,
+		ImGuiSelectableFlags flags = 0,
+		ImVec2 size = ImVec2(0,0))->bool
+		{
+			return ImGui::Selectable(label.c_str(), &selected.value, flags, size);
 		}
 		, py::arg("label")
 		, py::arg("selected")
 		, py::arg("flags") = 0
-		, py::arg("size")
+		, py::arg("size") = ImVec2(0,0)
 		);
+
 	m.def("list_box_header", [](
 			std::string label,
 			ImVec2 size = ImVec2(0,0))
@@ -973,6 +988,7 @@ PYBIND11_MODULE(_bimpy, m) {
 			, py::arg("label")
 			, py::arg("size")
 			);
+
 	m.def("list_box_footer", &ImGui::ListBoxFooter);
 
 	m.def("set_item_default_focus", &ImGui::SetItemDefaultFocus);
