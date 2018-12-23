@@ -544,15 +544,16 @@ PYBIND11_MODULE(_bimpy, m) {
 		},
 		"helper to open popup when clicked on last item. return true when just opened."
 	);
-	m.def("begin_popup", [](std::string str_id = "")
+	m.def("begin_popup", [](std::string str_id, ImGuiWindowFlags flags)->bool
 		{
-			ImGui::BeginPopup(str_id.c_str());
+			return ImGui::BeginPopup(str_id.c_str(), flags);
 		},
-		""
+		"",
+          py::arg("name"), py::arg("flags") = ImGuiWindowFlags_(0)
 	);
-	m.def("begin_popup_modal", [](std::string name = "")
+	m.def("begin_popup_modal", [](std::string name = "")->bool
 		{
-			ImGui::BeginPopupModal(name.c_str());
+			return ImGui::BeginPopupModal(name.c_str());
 		},
 		""
 	);
