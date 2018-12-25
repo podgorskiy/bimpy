@@ -215,7 +215,7 @@ extra_compile_cpp_args = {
 }
 
 extension = Extension("_bimpy",
-                             imgui + glfw + glfw_platform[target_os] + ['bimpy.cpp', "imgui_glfw.cpp", "gl3w/src/gl3w.c"],
+                             imgui + glfw + glfw_platform[target_os] + ['bimpy.cpp', "imgui_impl_glfw.cpp", "imgui_impl_opengl3.cpp", "gl3w/src/gl3w.c"],
                              define_macros = definitions[target_os],
                              include_dirs=["glfw/include", "imgui", "pybind11/include", "gl3w/include"],
                              extra_compile_args=extra_compile_args[target_os],

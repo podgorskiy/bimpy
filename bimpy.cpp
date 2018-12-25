@@ -3,9 +3,11 @@
  * License: https://raw.githubusercontent.com/podgorskiy/bimpy/master/LICENSE.txt
  */
 
-#include "imgui_glfw.h"
 #define IMGUI_DEFINE_MATH_OPERATORS
+#include "imgui.h"
 #include "imgui_internal.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 #include <pybind11/pybind11.h>
@@ -45,7 +47,7 @@ private:
 	int m_width;
 	int m_height;
 	struct ImGuiContext* m_imgui;
-	imguiBinding m_imbinding;
+	// imguiBinding m_imbinding;
 	std::mutex m_imgui_ctx_mutex;
 };
 
@@ -56,6 +58,22 @@ void Context::Init(int width, int height, const std::string& name)
 	{
 		glfwInit();
 
+		#if __APPLE__
+    // GL 3.2 + GLSL 150
+    const char* glsl_version = "#version 150";
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // Required on Mac
+		#else
+    // GL 3.0 + GLSL 130
+    const char* glsl_version = "#version 130";
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    //glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
+    //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
+		#endif
+
 		m_window = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
 
 		glfwMakeContextCurrent(m_window);
@@ -65,7 +83,8 @@ void Context::Init(int width, int height, const std::string& name)
 		m_imgui = ImGui::CreateContext();
 		GImGui = m_imgui;
 
-		ImGui_ImplGlfwGL3_Init(&m_imbinding, m_window, false);
+		ImGui_ImplGlfw_InitForOpenGL(m_window, false);
+		ImGui_ImplOpenGL3_Init(glsl_version);
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
 		m_width = width;
@@ -122,7 +141,8 @@ Context::~Context()
 {
 	glfwSetWindowSizeCallback(m_window, nullptr);
 	GImGui = m_imgui;
-	ImGui_ImplGlfwGL3_Shutdown(&m_imbinding);
+	ImGui_ImplGlfw_Shutdown();
+	ImGui_ImplOpenGL3_Shutdown();
 	glfwTerminate();
 	delete m_imgui;
 }
@@ -130,10 +150,11 @@ Context::~Context()
 
 void Context::Render()
 {
+	ImGui::Render();
 	glfwMakeContextCurrent(m_window);
 	glViewport(0, 0, m_width, m_height);
 	glClear(GL_COLOR_BUFFER_BIT);
-	ImGui_ImplGlfwGL3_Render(&m_imbinding);
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	glfwSwapInterval(1);
 	glfwSwapBuffers(m_window);
 	glfwPollEvents();
@@ -145,7 +166,9 @@ void Context::NewFrame()
 {
 	m_imgui_ctx_mutex.lock();
 	GImGui = m_imgui;
-	ImGui_ImplGlfwGL3_NewFrame(&m_imbinding);
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
 }
 
 
