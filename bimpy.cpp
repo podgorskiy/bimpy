@@ -567,7 +567,7 @@ PYBIND11_MODULE(_bimpy, m) {
 			return ImGui::BeginMenu(name.c_str(), (bool *) (enabled.null ? nullptr : &enabled.value));
 		},
 		"create a sub-menu entry. only call EndMenu() if this returns true!",
-		py::arg("name"), py::arg("enabled") = null);
+		py::arg("name"), py::arg("enabled") = Bool(true));
 	m.def("menu_item",[](const std::string& label, const std::string& shortcut, Bool& selected, Bool enabled) -> bool
 		{
 			return ImGui::MenuItem(label.c_str(), shortcut.c_str(), selected.null ? nullptr : &selected.value, enabled.value);
