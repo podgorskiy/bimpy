@@ -382,6 +382,26 @@ PYBIND11_MODULE(_bimpy, m) {
 		.value("ButtonTextAlign", ImGuiStyleVar_::ImGuiStyleVar_ButtonTextAlign)
 		.export_values();
 
+		py::enum_<ImGuiFocusedFlags_>(m,"FocusedFlags")
+			.value("None", ImGuiFocusedFlags_None)
+			.value("ChildWindows", ImGuiFocusedFlags_ChildWindows)
+			.value("RootWindow", ImGuiFocusedFlags_RootWindow)
+			.value("AnyWindow", ImGuiFocusedFlags_AnyWindow)
+			.value("RootAndChildWindows", ImGuiFocusedFlags_RootAndChildWindows)
+			.export_values();
+
+		py::enum_<ImGuiHoveredFlags_>(m,"HoveredFlags")
+			.value("None",ImGuiHoveredFlags_None)
+			.value("ChildWindows",ImGuiHoveredFlags_ChildWindows)
+			.value("RootWindow",ImGuiHoveredFlags_RootWindow)
+			.value("AnyWindow",ImGuiHoveredFlags_AnyWindow)
+			.value("AllowWhenBlockedByPopup",ImGuiHoveredFlags_AllowWhenBlockedByPopup)
+			.value("AllowWhenBlockedByActiveItem",ImGuiHoveredFlags_AllowWhenBlockedByActiveItem)
+			.value("AllowWhenOverlapped",ImGuiHoveredFlags_AllowWhenOverlapped)
+			.value("AllowWhenDisabled",ImGuiHoveredFlags_AllowWhenDisabled)
+			.value("RectOnly",ImGuiHoveredFlags_RectOnly)
+			.export_values();
+
 	py::class_<Context>(m, "Context")
 		.def(py::init())
 		.def("init", &Context::Init, "Initializes context and creates window")
@@ -630,6 +650,9 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("get_window_height", &ImGui::GetWindowHeight);
 	m.def("is_window_collapsed", &ImGui::IsWindowCollapsed);
 	m.def("is_window_appearing", &ImGui::IsWindowAppearing);
+	m.def("is_window_focused", &ImGui::IsWindowFocused);
+	m.def("is_window_hovered", &ImGui::IsWindowHovered);
+
 	m.def("set_window_font_scale", &ImGui::SetWindowFontScale);
 
 	m.def("set_next_window_pos", &ImGui::SetNextWindowPos, py::arg("pos"), py::arg("cond") = 0, py::arg("pivot") = ImVec2(0,0));
