@@ -238,6 +238,7 @@ void  AddTriangle(const ImVec2& a, const ImVec2& b, const ImVec2& c, ImU32 col, 
 void  AddTriangleFilled(const ImVec2& a, const ImVec2& b, const ImVec2& c, ImU32 col){ ImGui::GetWindowDrawList()->AddTriangleFilled(a, b, c, col); }
 void  AddCircle(const ImVec2& centre, float radius, ImU32 col, int num_segments, float thickness){ ImGui::GetWindowDrawList()->AddCircle(centre, radius, col, num_segments, thickness); }
 void  AddCircleFilled(const ImVec2& centre, float radius, ImU32 col, int num_segments){ ImGui::GetWindowDrawList()->AddCircleFilled(centre, radius, col, num_segments); }
+void  AddBezierCurve(const ImVec2& pos0, const ImVec2& cp0, const ImVec2& cp1, const ImVec2& pos1, ImU32 col, float thickness, int num_segments){ ImGui::GetWindowDrawList()->AddBezierCurve(pos0, cp0, cp1, pos1, col, thickness, num_segments); }
 
 void  PathClear(){ ImGui::GetWindowDrawList()->PathClear(); }
 void  PathLineTo(const ImVec2& pos){ ImGui::GetWindowDrawList()->PathLineTo(pos); }
@@ -1145,6 +1146,7 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("add_triangle_filled", &AddTriangleFilled, py::arg("a"), py::arg("b"), py::arg("c"), py::arg("col"));
 	m.def("add_circle", &AddCircle, py::arg("centre"), py::arg("radius"), py::arg("col"), py::arg("num_segments") = 12, py::arg("thickness") = 1.0f);
 	m.def("add_circle_filled", &AddCircleFilled, py::arg("centre"), py::arg("radius"), py::arg("col"), py::arg("num_segments") = 12);
+	m.def("add_bezier_curve", &AddBezierCurve, py::arg("pos0"), py::arg("cp0"), py::arg("cp1"), py::arg("pos1"), py::arg("col"), py::arg("thickness"), py::arg("num_segments") = 0);
 
 	m.def("path_clear", &PathClear);
 	m.def("path_line_to", &PathLineTo, py::arg("pos"));
