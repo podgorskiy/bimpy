@@ -889,11 +889,11 @@ PYBIND11_MODULE(_bimpy, m) {
 	}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v3"), py::arg("v4"), py::arg("flags") = 0);
 
 
-	m.def("color_edit", [](const char* label, ImVec4 col)->bool
+	m.def("color_edit", [](const char* label, ImVec4& col)->bool
 	{
 		return ImGui::ColorEdit4(label, &col.x);
 	});
-	m.def("color_picker", [](const char* label, ImVec4 col)->bool
+	m.def("color_picker", [](const char* label, ImVec4& col)->bool
 	{
 		return ImGui::ColorPicker4(label, &col.x);
 	});
