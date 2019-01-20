@@ -973,10 +973,76 @@ PYBIND11_MODULE(_bimpy, m) {
 		return result;
 	}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v3"), py::arg("v4"), py::arg("v_min"), py::arg("v_max"), py::arg("display_format") = "%.0f");
 
+
 	m.def("v_slider_int", [](const char* label, const ImVec2& size, Int& v, int v_min, int v_max, const char* display_format)
 	{
-		return ImGui::VSliderInt(label, size, &v.value, v_min, v_max, display_format);
+		return ImGui::VSliderInt(label, size, &v.value,  v_min, v_max, display_format);
 	}, py::arg("label"), py::arg("size"), py::arg("v"), py::arg("v_min"), py::arg("v_max"), py::arg("display_format") = "%.0f");
+
+	//
+    m.def("drag_float", [](const char* label, Float& v, float v_speed, float v_min, float v_max, const char* display_format, float power)
+          {
+              return ImGui::DragFloat(label, &v.value, v_speed, v_min, v_max, display_format, power);
+          }, py::arg("label"), py::arg("v"), py::arg("v_speed") = 1.0f, py::arg("v_min"), py::arg("v_max"), py::arg("display_format") = "%.3f", py::arg("power") = 1.0f);
+    m.def("drag_float2", [](const char* label, Float& v1, Float& v2, float v_speed, float v_min, float v_max, const char* display_format, float power)
+          {
+              float v[2] = {v1.value, v2.value};
+              bool result = ImGui::DragFloat2(label, v, v_speed, v_min, v_max, display_format, power);
+              v1.value = v[0];
+              v2.value = v[1];
+              return result;
+          }, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v_speed") = 1.0f, py::arg("v_min"), py::arg("v_max"), py::arg("display_format") = "%.3f", py::arg("power") = 1.0f);
+    m.def("drag_float3", [](const char* label, Float& v1, Float& v2, Float& v3, float v_speed, float v_min, float v_max, const char* display_format, float power)
+          {
+              float v[3] = {v1.value, v2.value, v3.value};
+              bool result = ImGui::DragFloat3(label, v, v_speed, v_min, v_max, display_format, power);
+              v1.value = v[0];
+              v2.value = v[1];
+              v3.value = v[2];
+              return result;
+          }, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v3"), py::arg("v_speed") = 1.0f, py::arg("v_min"), py::arg("v_max"), py::arg("display_format") = "%.3f", py::arg("power") = 1.0f);
+    m.def("drag_float4", [](const char* label, Float& v1, Float& v2, Float& v3, Float& v4, float v_speed, float v_min, float v_max, const char* display_format, float power)
+          {
+              float v[4] = {v1.value, v2.value, v3.value, v4.value};
+              bool result = ImGui::DragFloat4(label, v, v_speed, v_min, v_max, display_format, power);
+              v1.value = v[0];
+              v2.value = v[1];
+              v3.value = v[2];
+              v4.value = v[3];
+              return result;
+          }, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v3"), py::arg("v4"), py::arg("v_speed") = 1.0f, py::arg("v_min"), py::arg("v_max"), py::arg("display_format") = "%.3f", py::arg("power") = 1.0f);
+
+    m.def("drag_int", [](const char* label, Int& v, float v_speed, int v_min, int v_max, const char* display_format)
+          {
+              return ImGui::DragInt(label, &v.value, v_speed, v_min, v_max, display_format);
+          }, py::arg("label"), py::arg("v"), py::arg("v_speed") = 1.0f, py::arg("v_min"), py::arg("v_max"), py::arg("display_format") = "%.0f");
+    m.def("drag_int2", [](const char* label, Int& v1, Int& v2, float v_speed, int v_min, int v_max, const char* display_format)
+          {
+              int v[2] = {v1.value, v2.value};
+              bool result = ImGui::DragInt2(label, v, v_speed, v_min, v_max, display_format);
+              v1.value = v[0];
+              v2.value = v[1];
+              return result;
+          }, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v_speed") = 1.0f, py::arg("v_min"), py::arg("v_max"), py::arg("display_format") = "%.0f");
+    m.def("drag_int3", [](const char* label, Int& v1, Int& v2, Int& v3, float v_speed, int v_min, int v_max, const char* display_format)
+          {
+              int v[3] = {v1.value, v2.value, v3.value};
+              bool result = ImGui::DragInt3(label, v, v_speed, v_min, v_max, display_format);
+              v1.value = v[0];
+              v2.value = v[1];
+              v3.value = v[2];
+              return result;
+          }, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v3"), py::arg("v_speed") = 1.0f, py::arg("v_min"), py::arg("v_max"), py::arg("display_format") = "%.0f");
+    m.def("drag_int4", [](const char* label, Int& v1, Int& v2, Int& v3, Int& v4, float v_speed, int v_min, int v_max, const char* display_format)
+          {
+              int v[4] = {v1.value, v2.value, v3.value, v4.value};
+              bool result = ImGui::DragInt4(label, v, v_speed, v_min, v_max, display_format);
+              v1.value = v[0];
+              v2.value = v[1];
+              v3.value = v[2];
+              v4.value = v[3];
+              return result;
+          }, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v3"), py::arg("v4"), py::arg("v_speed") = 1.0f, py::arg("v_min"), py::arg("v_max"), py::arg("display_format") = "%.0f");
 
 	m.def("plot_lines", [](
 		const char* label,
