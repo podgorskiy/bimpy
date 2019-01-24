@@ -806,7 +806,7 @@ PYBIND11_MODULE(_bimpy, m) {
 		{
 			char* buff = new char[buf_size];
 			strncpy(buff, text.value.c_str(), buf_size);
-			result = ImGui::InputTextMultiline(label, &text.value[0], buf_size, size, flags);
+			result = ImGui::InputTextMultiline(label, buff, buf_size, size, flags);
 			if (result)
 			{
 				text.value = buff;
@@ -817,7 +817,7 @@ PYBIND11_MODULE(_bimpy, m) {
 		{
 			char buff[256];
 			strncpy(buff, text.value.c_str(), 256);
-			result = ImGui::InputTextMultiline(label, &text.value[0], buf_size, size, flags);
+			result = ImGui::InputTextMultiline(label, buff, buf_size, size, flags);
 			if (result)
 			{
 				text.value = buff;
