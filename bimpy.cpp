@@ -1243,7 +1243,7 @@ PYBIND11_MODULE(_bimpy, m) {
 		return ImGui::GetIO().FontGlobalScale;
 	});
 
-	m.def("image", [](int unsafe_ptr, ImVec2& size){ ImGui::Image((void*)unsafe_ptr, size); });
+	m.def("image", [](GLuint textureId, ImVec2& size){ ImGui::Image(reinterpret_cast<ImTextureID>(textureId), size); });
 	m.def("image_button", &ImGui::ImageButton);
 
 	m.attr("key_left_shift") = py::int_(GLFW_KEY_LEFT_SHIFT);
