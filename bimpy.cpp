@@ -568,12 +568,12 @@ PYBIND11_MODULE(_bimpy, m) {
 		},
 		"create a sub-menu entry. only call EndMenu() if this returns true!",
 		py::arg("name"), py::arg("enabled") = Bool(true));
-	m.def("menu_item",[](const std::string& label, const std::string& shortcut, Bool& selected, Bool enabled) -> bool
+	m.def("menu_item",[](const std::string& label, const std::string& shortcut, Bool& selected, bool enabled) -> bool
 		{
-			return ImGui::MenuItem(label.c_str(), shortcut.c_str(), selected.null ? nullptr : &selected.value, enabled.value);
+			return ImGui::MenuItem(label.c_str(), shortcut.c_str(), selected.null ? nullptr : &selected.value, enabled);
 		},
 		"return true when activated + toggle (*p_selected) if p_selected != NULL",
-		py::arg("name"), py::arg("shortcut"), py::arg("selected") = null, py::arg("enabled") = true);
+		py::arg("name"), py::arg("shortcut"), py::arg("selected") = Bool(false), py::arg("enabled") = true);
 	m.def("end_menu", &ImGui::EndMenu);
 
 	m.def("begin_tooltip", &ImGui::BeginTooltip);
