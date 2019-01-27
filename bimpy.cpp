@@ -725,6 +725,7 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("get_column_offset", &ImGui::GetColumnOffset, py::arg("column_index") = -1);
 	m.def("set_column_offset", &ImGui::SetColumnOffset, py::arg("column_index"), py::arg("offset_x"));
 	m.def("get_column_width", &ImGui::GetColumnWidth, py::arg("column_index") = -1);
+    m.def("set_column_width", &ImGui::SetColumnWidth, py::arg("column_index"), py::arg("column_width"));
 	m.def("get_columns_count", &ImGui::GetColumnsCount);
 
 	m.def("push_id_str", [](const char* str_id_begin, const char* str_id_end){ ImGui::PushID(str_id_begin, str_id_end); }, py::arg("str_id_begin"), py::arg("str_id_end") = nullptr);
