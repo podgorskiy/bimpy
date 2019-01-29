@@ -216,6 +216,11 @@ void  AddTriangleFilled(const ImVec2& a, const ImVec2& b, const ImVec2& c, ImU32
 void  AddCircle(const ImVec2& centre, float radius, ImU32 col, int num_segments, float thickness){ ImGui::GetWindowDrawList()->AddCircle(centre, radius, col, num_segments, thickness); }
 void  AddCircleFilled(const ImVec2& centre, float radius, ImU32 col, int num_segments){ ImGui::GetWindowDrawList()->AddCircleFilled(centre, radius, col, num_segments); }
 
+void  PathClear(){ ImGui::GetWindowDrawList()->PathClear(); }
+void  PathLineTo(const ImVec2& pos){ ImGui::GetWindowDrawList()->PathLineTo(pos); }
+void  PathFillConvex(ImU32 col){ ImGui::GetWindowDrawList()->PathFillConvex(col); }
+void  PathStroke(ImU32 col, bool closed, float thickness){ ImGui::GetWindowDrawList()->PathStroke(col, closed, thickness); }
+
 PYBIND11_MODULE(_bimpy, m) {
 	static Bool null;
 	null.null = true;
@@ -283,7 +288,7 @@ PYBIND11_MODULE(_bimpy, m) {
 		.value("FrameBgHovered", ImGuiCol_::ImGuiCol_FrameBgHovered)
 		.value("FrameBgActive", ImGuiCol_::ImGuiCol_FrameBgActive)
 		.value("TitleBg", ImGuiCol_::ImGuiCol_TitleBg)
-		.value("TitleBgActive", ImGuiCol_::ImGuiCol_TitleBgActive)	
+		.value("TitleBgActive", ImGuiCol_::ImGuiCol_TitleBgActive)
 		.value("TitleBgCollapsed", ImGuiCol_::ImGuiCol_TitleBgCollapsed)
 		.value("MenuBarBg", ImGuiCol_::ImGuiCol_MenuBarBg)
 		.value("ScrollbarBg", ImGuiCol_::ImGuiCol_ScrollbarBg)
@@ -309,7 +314,7 @@ PYBIND11_MODULE(_bimpy, m) {
 		.value("PlotLinesHovered", ImGuiCol_::ImGuiCol_PlotLinesHovered)
 		.value("PlotHistogram", ImGuiCol_::ImGuiCol_PlotHistogram)
 		.value("PlotHistogramHovered", ImGuiCol_::ImGuiCol_PlotHistogramHovered)
-		.value("TextSelectedBg", ImGuiCol_::ImGuiCol_TextSelectedBg)		
+		.value("TextSelectedBg", ImGuiCol_::ImGuiCol_TextSelectedBg)
 		.value("DragDropTarget", ImGuiCol_::ImGuiCol_DragDropTarget)
 		.value("NavHighlight", ImGuiCol_::ImGuiCol_NavHighlight)
 		.value("NavWindowingHighlight", ImGuiCol_::ImGuiCol_NavWindowingHighlight)
@@ -468,7 +473,7 @@ PYBIND11_MODULE(_bimpy, m) {
 		{
 			ImGui::GetStyle() = a;
 		});
-		
+
 	m.def("style_color_classic", []()
 		{
 			ImGui::StyleColorsClassic();
@@ -544,15 +549,16 @@ PYBIND11_MODULE(_bimpy, m) {
 		},
 		"helper to open popup when clicked on last item. return true when just opened."
 	);
-	m.def("begin_popup", [](std::string str_id = "")
+	m.def("begin_popup", [](std::string str_id, ImGuiWindowFlags flags)->bool
 		{
-			ImGui::BeginPopup(str_id.c_str());
+			return ImGui::BeginPopup(str_id.c_str(), flags);
 		},
-		""
+		"",
+          py::arg("name"), py::arg("flags") = ImGuiWindowFlags_(0)
 	);
-	m.def("begin_popup_modal", [](std::string name = "")
+	m.def("begin_popup_modal", [](std::string name = "")->bool
 		{
-			ImGui::BeginPopupModal(name.c_str());
+			return ImGui::BeginPopupModal(name.c_str());
 		},
 		""
 	);
@@ -1093,6 +1099,11 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("add_triangle_filled", &AddTriangleFilled, py::arg("a"), py::arg("b"), py::arg("c"), py::arg("col"));
 	m.def("add_circle", &AddCircle, py::arg("centre"), py::arg("radius"), py::arg("col"), py::arg("num_segments") = 12, py::arg("thickness") = 1.0f);
 	m.def("add_circle_filled", &AddCircleFilled, py::arg("centre"), py::arg("radius"), py::arg("col"), py::arg("num_segments") = 12);
+
+	m.def("path_clear", &PathClear);
+	m.def("path_line_to", &PathLineTo, py::arg("pos"));
+	m.def("path_fill_convex", &PathFillConvex, py::arg("col"));
+	m.def("path_stroke", &PathStroke, py::arg("col"), py::arg("closed"), py::arg("thickness"));
 
 	m.def("add_font_from_file_ttf", [](
 		std::string filename,
