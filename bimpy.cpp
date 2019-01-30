@@ -41,6 +41,7 @@ public:
 	int GetHeight() const;
     
     bool IsActive();
+    void KeepFrame();
 
 	~Context();
 
@@ -181,6 +182,24 @@ void Context::NewFrame()
 	ImGui::NewFrame();
 }
 
+void Context::KeepFrame()
+{
+    m_imgui_ctx_mutex.lock();
+    GImGui = m_imgui;
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+    
+    ImGui::Render();
+    glfwMakeContextCurrent(m_window);
+    glViewport(0, 0, m_width, m_height);
+//    glClear(GL_COLOR_BUFFER_BIT);
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    glfwSwapInterval(4);
+    glfwSwapBuffers(m_window);
+    glfwPollEvents();
+    m_imgui_ctx_mutex.unlock();
+}
 
 void Context::Resize(int width, int height)
 {
@@ -427,6 +446,7 @@ PYBIND11_MODULE(_bimpy, m) {
 		.def("width", &Context::GetWidth)
 		.def("height", &Context::GetHeight)
         .def("is_active", &Context::IsActive)
+        .def("keep_frame", &Context::KeepFrame)
 		.def("__enter__", &Context::NewFrame)
 		.def("__exit__", [](Context& self, py::object, py::object, py::object)
 			{
