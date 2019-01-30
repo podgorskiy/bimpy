@@ -39,6 +39,8 @@ public:
 	int GetWidth() const;
 
 	int GetHeight() const;
+    
+    bool IsActive();
 
 	~Context();
 
@@ -49,6 +51,7 @@ private:
 	struct ImGuiContext* m_imgui;
 	// imguiBinding m_imbinding;
 	std::mutex m_imgui_ctx_mutex;
+    bool is_active = false;
 };
 
 
@@ -133,6 +136,13 @@ void Context::Init(int width, int height, const std::string& name)
 				io.MouseDown[button] = action == GLFW_PRESS;
 			}
 		});
+        
+        glfwSetWindowFocusCallback(m_window, [](GLFWwindow* window, int focused)
+        {
+            Context* ctx = static_cast<Context*>(glfwGetWindowUserPointer(window));
+            ctx->is_active = focused;
+        });
+        
 	}
 }
 
@@ -192,6 +202,11 @@ int Context::GetWidth() const
 int Context::GetHeight() const
 {
 	return m_height;
+}
+                                   
+bool Context::IsActive()
+{
+    return is_active;
 }
 
 struct Bool
@@ -411,6 +426,7 @@ PYBIND11_MODULE(_bimpy, m) {
 		.def("should_close", &Context::ShouldClose)
 		.def("width", &Context::GetWidth)
 		.def("height", &Context::GetHeight)
+        .def("is_active", &Context::IsActive)
 		.def("__enter__", &Context::NewFrame)
 		.def("__exit__", [](Context& self, py::object, py::object, py::object)
 			{
