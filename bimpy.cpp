@@ -197,7 +197,8 @@ void Context::KeepFrame()
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     glfwSwapInterval(4);
     glfwSwapBuffers(m_window);
-    glfwPollEvents();
+//    glfwPollEvents();
+    glfwWaitEvents();
     m_imgui_ctx_mutex.unlock();
 }
 
