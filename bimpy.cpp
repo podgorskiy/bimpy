@@ -42,6 +42,7 @@ public:
     
     bool IsActive();
     void KeepFrame();
+    void Wake();
 
 	~Context();
 
@@ -168,7 +169,7 @@ void Context::Render()
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	glfwSwapInterval(1);
 	glfwSwapBuffers(m_window);
-	glfwPollEvents();
+    glfwPollEvents();
 	m_imgui_ctx_mutex.unlock();
 }
 
@@ -200,6 +201,11 @@ void Context::KeepFrame()
 //    glfwPollEvents();
     glfwWaitEvents();
     m_imgui_ctx_mutex.unlock();
+}
+
+void Context::Wake()
+{
+    glfwPostEmptyEvent();
 }
 
 void Context::Resize(int width, int height)
@@ -448,6 +454,7 @@ PYBIND11_MODULE(_bimpy, m) {
 		.def("height", &Context::GetHeight)
         .def("is_active", &Context::IsActive)
         .def("keep_frame", &Context::KeepFrame)
+        .def("wake", &Context::Wake)
 		.def("__enter__", &Context::NewFrame)
 		.def("__exit__", [](Context& self, py::object, py::object, py::object)
 			{
