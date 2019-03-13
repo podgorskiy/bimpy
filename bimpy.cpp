@@ -1109,7 +1109,7 @@ PYBIND11_MODULE(_bimpy, m) {
 		std::string filename,
 		int size_pixels = 32)
 		{
-			ImGui::GetIO().Fonts->AddFontFromFileTTF(filename.c_str(), size_pixels);
+			return ImGui::GetIO().Fonts->AddFontFromFileTTF(filename.c_str(), size_pixels);
 		}
 		, py::arg("filename")
 		, py::arg("size_pixels"));
