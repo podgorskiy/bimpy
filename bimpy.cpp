@@ -1114,6 +1114,10 @@ PYBIND11_MODULE(_bimpy, m) {
 		, py::arg("filename")
 		, py::arg("size_pixels"));
 
+	m.def("push_font", &ImGui::PushFont);
+	m.def("pop_font", &ImGui::PopFont);
+	m.def("get_font", &ImGui::GetFont);
+
 	m.def("set_display_framebuffer_scale",[](float scale){
 		ImGui::GetIO().DisplayFramebufferScale = ImVec2(scale,scale);
 	}, py::arg("scale"));
