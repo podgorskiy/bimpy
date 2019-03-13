@@ -1112,7 +1112,7 @@ PYBIND11_MODULE(_bimpy, m) {
 			return ImGui::GetIO().Fonts->AddFontFromFileTTF(filename.c_str(), size_pixels);
 		}
 		, py::arg("filename")
-		, py::arg("size_pixels"));
+		, py::arg("size_pixels"), py::return_value_policy::reference);
 
 	m.def("push_font", &ImGui::PushFont);
 	m.def("pop_font", &ImGui::PopFont);
