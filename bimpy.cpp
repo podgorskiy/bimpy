@@ -14,10 +14,13 @@
 #include <pybind11/operators.h>
 #include <pybind11/functional.h>
 #include <pybind11/stl.h>
+#include <pybind11/numpy.h>
 #include <memory>
 #include <mutex>
 
 namespace py = pybind11;
+
+typedef py::array_t<uint8_t, py::array::c_style> ndarray_uint8;
 
 class Context
 {
@@ -224,6 +227,112 @@ struct String
 	String(const std::string& v): value(v) {}
 
 	std::string value;
+};
+
+class Image
+{
+public:
+	Image& operator=(const Context&) = delete;
+	Image(const Context&) = delete;
+
+	Image(ndarray_uint8 ndarray): Image(ndarray.request())
+	{}
+
+	~Image()
+	{
+		glDeleteTextures(1, &m_textureHandle);
+	}
+
+	GLuint GetHandle() const
+	{
+		return m_textureHandle;
+	}
+
+	void GrayScaleToAlpha()
+	{
+		GLint swizzleMask[] = { GL_ONE, GL_ONE, GL_ONE, GL_RED };
+		glBindTexture(GL_TEXTURE_2D, m_textureHandle);
+		glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	ssize_t m_width;
+	ssize_t m_height;
+private:
+	Image(const py::buffer_info& ndarray_info)
+	{
+		glGenTextures(1, &m_textureHandle);
+		glBindTexture(GL_TEXTURE_2D, m_textureHandle);
+
+		m_width = -1;
+		m_height = -1;
+
+		GLint backup;
+		glGetIntegerv(GL_UNPACK_ALIGNMENT, &backup);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+		GLint swizzleMask_R[] = { GL_RED, GL_RED, GL_RED, GL_ONE };
+		GLint swizzleMask_RG[] = { GL_RED, GL_GREEN, GL_ZERO, GL_ONE };
+		GLint swizzleMask_RGB[] = { GL_RED, GL_GREEN, GL_BLUE, GL_ONE };
+		GLint swizzleMask_RGBA[] = { GL_RED, GL_GREEN, GL_BLUE, GL_ALPHA };
+
+		if (ndarray_info.ndim == 2)
+		{
+			m_width = ndarray_info.shape[1];
+			m_height = ndarray_info.shape[0];
+
+			glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask_R);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, m_width, m_height, 0, GL_RED, GL_UNSIGNED_BYTE, ndarray_info.ptr);
+		}
+		else if (ndarray_info.ndim == 3)
+		{
+			m_width = ndarray_info.shape[1];
+			m_height = ndarray_info.shape[0];
+
+			if (ndarray_info.shape[2] == 1)
+			{
+				glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask_R);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, m_width, m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, ndarray_info.ptr);
+			}
+			else if (ndarray_info.shape[2] == 2)
+			{
+				glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask_RG);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RG8, m_width, m_height, 0, GL_RG, GL_UNSIGNED_BYTE, ndarray_info.ptr);
+			}
+			else if (ndarray_info.shape[2] == 3)
+			{
+				glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask_RGB);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, m_width, m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, ndarray_info.ptr);
+			}
+			else if (ndarray_info.shape[2] == 4)
+			{
+				glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask_RGBA);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, ndarray_info.ptr);
+			}
+			else
+			{
+				glBindTexture(GL_TEXTURE_2D, 0);
+				glPixelStorei(GL_UNPACK_ALIGNMENT, backup);
+				throw std::runtime_error("Wrong number of channels. Should be either 1, 2, 3, or 4");
+			}
+		}
+		else
+		{
+			glBindTexture(GL_TEXTURE_2D, 0);
+			glPixelStorei(GL_UNPACK_ALIGNMENT, backup);
+			throw std::runtime_error("Wrong number of dimensions. Should be either 2 or 3");
+		}
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+		glPixelStorei(GL_UNPACK_ALIGNMENT, backup);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	GLuint m_textureHandle;
 };
 
 
@@ -470,6 +579,12 @@ PYBIND11_MODULE(_bimpy, m) {
 		.def_readwrite("y", &ImVec4::y)
 		.def_readwrite("z", &ImVec4::z)
 		.def_readwrite("w", &ImVec4::w);
+
+	py::class_<Image>(m, "Image")
+			.def(py::init<ndarray_uint8>(), "Constructs Image object from ndarray, PIL Image, numpy array, etc.")
+			.def("grayscale_to_alpha", &Image::GrayScaleToAlpha, "For grayscale images, uses values as alpha")
+			.def_readonly("width", &Image::m_width)
+			.def_readonly("height", &Image::m_height);
 
 	py::class_<ImGuiStyle>(m, "GuiStyle")
 		.def(py::init())
@@ -1250,7 +1365,19 @@ PYBIND11_MODULE(_bimpy, m) {
 		return ImGui::GetIO().FontGlobalScale;
 	});
 
-	m.def("image", [](GLuint textureId, ImVec2& size){ ImGui::Image(reinterpret_cast<ImTextureID>(textureId), size); });
+	m.def("image", py::overload_cast<GLuint, ImVec2&>(+[](GLuint textureId, ImVec2& size)
+	{
+		ImGui::Image(reinterpret_cast<ImTextureID>(textureId), size);
+	}));
+	m.def("image", py::overload_cast<Image*, ImVec2&>(+[](Image* im, ImVec2& size)
+	{
+		ImGui::Image(reinterpret_cast<ImTextureID>(im->GetHandle()), size);
+	}));
+	m.def("image", py::overload_cast<Image*>(+[](Image* im)
+	{
+		ImGui::Image(reinterpret_cast<ImTextureID>(im->GetHandle()), ImVec2(im->m_width, im->m_height));
+	}));
+
 	m.def("image_button", &ImGui::ImageButton);
 
 	m.attr("key_left_shift") = py::int_(GLFW_KEY_LEFT_SHIFT);
