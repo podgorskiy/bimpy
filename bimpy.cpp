@@ -1365,15 +1365,15 @@ PYBIND11_MODULE(_bimpy, m) {
 		return ImGui::GetIO().FontGlobalScale;
 	});
 
-	m.def("image", py::overload_cast<GLuint, ImVec2&>(+[](GLuint textureId, ImVec2& size)
+	m.def("image", (void (*)(GLuint, ImVec2&))(+[](GLuint textureId, ImVec2& size)
 	{
 		ImGui::Image(reinterpret_cast<ImTextureID>(textureId), size);
 	}));
-	m.def("image", py::overload_cast<Image*, ImVec2&>(+[](Image* im, ImVec2& size)
+	m.def("image", (void (*)(Image*, ImVec2&))(+[](Image* im, ImVec2& size)
 	{
 		ImGui::Image(reinterpret_cast<ImTextureID>(im->GetHandle()), size);
 	}));
-	m.def("image", py::overload_cast<Image*>(+[](Image* im)
+	m.def("image", (void (*)(Image*))(+[](Image* im)
 	{
 		ImGui::Image(reinterpret_cast<ImTextureID>(im->GetHandle()), ImVec2(im->m_width, im->m_height));
 	}));
