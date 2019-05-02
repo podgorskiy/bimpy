@@ -1364,16 +1364,18 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("get_font_global_scale",[](){
 		return ImGui::GetIO().FontGlobalScale;
 	});
-
-	m.def("image", (void (*)(GLuint, ImVec2&))(+[](GLuint textureId, ImVec2& size)
+	typedef void (*FImage_texId_wSize)(GLuint, ImVec2&);
+	m.def("image", (FImage_texId_wSize)([](GLuint textureId, ImVec2& size)
 	{
 		ImGui::Image(reinterpret_cast<ImTextureID>(textureId), size);
 	}));
-	m.def("image", (void (*)(Image*, ImVec2&))(+[](Image* im, ImVec2& size)
+	typedef void (*FImage_wSize)(Image*, ImVec2&);
+	m.def("image", (FImage_wSize)([](Image* im, ImVec2& size)
 	{
 		ImGui::Image(reinterpret_cast<ImTextureID>(im->GetHandle()), size);
 	}));
-	m.def("image", (void (*)(Image*))(+[](Image* im)
+	typedef void (*FImage)(Image*);
+	m.def("image", (FImage)([](Image* im)
 	{
 		ImGui::Image(reinterpret_cast<ImTextureID>(im->GetHandle()), ImVec2(im->m_width, im->m_height));
 	}));
