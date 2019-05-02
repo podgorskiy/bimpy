@@ -5,4 +5,4 @@ recursive-include glfw/src *.c *.h *.m
 recursive-include glfw/include *.h
 recursive-include imgui *.h
 recursive-include pybind11 *.h
-include imgui_glfw.h
+include *.cpp *.h
