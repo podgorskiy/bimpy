@@ -29,6 +29,8 @@ Features:
 
 * **bimpy** does not have dependencies and can be easely built from sources. Building relies only on distutils.
 
+* **bimpy** can display images from ndarrays, PIL Images, numpy arrays, etc., 
+
 Hello-world with bimpy:
 
 .. code:: python
@@ -57,6 +59,35 @@ Hello-world with bimpy:
 
 .. figure:: https://i.imgur.com/rL7cFj7.png
    :alt: hello-world
+   
+
+Display image:
+   
+.. code:: python
+
+    import bimpy
+    from PIL import Image
+
+    ctx = bimpy.Context()
+
+    ctx.init(800, 800, "Image")
+
+    image = Image.open("test.png")
+
+    im = bimpy.Image(image)
+
+    while(not ctx.should_close()):
+        with ctx:
+            bimpy.text("Display PIL Image")
+
+            bimpy.image(im)
+
+
+.. figure:: https://i.imgur.com/wiDGRpr.png
+   :alt: hello-world
+
+Similarly, numpy arrays with 2 dimensions, 3 dimensions (2, 3 or 4 channels) of type **np.uint8** can be displayed.
+More examples here: https://github.com/podgorskiy/bimpy/blob/master/examples/image.py
 
 
 Install
@@ -83,6 +114,12 @@ Windows users, who use python 2.7 may encounter problems, because on Windows, py
 	call "%VS140COMNTOOLS%\VsDevCmd.bat"
 	set VS90COMNTOOLS=%VS140COMNTOOLS%
 	python setup.py install
+
+If building on Linux, the following dependencies will be needed:
+
+.. code:: shell
+
+	sudo apt-get install mesa-common-dev libxi-dev libxinerama-dev libxrandr-dev libxcursor-dev
 
 
 How to use it?
