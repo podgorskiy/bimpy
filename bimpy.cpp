@@ -748,7 +748,7 @@ PYBIND11_MODULE(_bimpy, m) {
 		},
 		""
 	);
-	m.def("clode_current_popup", &ImGui::CloseCurrentPopup);
+	m.def("close_current_popup", &ImGui::CloseCurrentPopup);
 
 	m.def("get_content_region_max", &ImGui::GetContentRegionMax);
 	m.def("get_content_region_avail", &ImGui::GetContentRegionAvail);
