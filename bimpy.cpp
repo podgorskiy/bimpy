@@ -802,6 +802,7 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("push_item_width", &ImGui::PushItemWidth);
 	m.def("pop_item_width", &ImGui::PopItemWidth);
 	m.def("calc_item_width", &ImGui::CalcItemWidth);
+	m.def("calc_text_size", &ImGui::CalcTextSize, py::arg("text"), py::arg("text_end") = nullptr, py::arg("hide_text_after_double_hash") = false, py::arg("wrap_width") = 0.0f);
 	m.def("push_text_wrap_pos", &ImGui::PushTextWrapPos, py::arg("wrap_pos_x") = 0.0f);
 	m.def("pop_text_wrap_pos", &ImGui::PopTextWrapPos);
 	m.def("push_allow_keyboard_focus", &ImGui::PushAllowKeyboardFocus);
