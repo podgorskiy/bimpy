@@ -1,13 +1,13 @@
 language: python
-sudo: required
-dist: trusty
+os: linux
+dist: bionic
 python:
   - "2.7"
-  - "3.6"
+  - "3.8"
 
 before_script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get -qq update; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libx11-dev libxtst-dev libxt-dev libx11-xcb-dev libxcursor-dev libxrandr-dev libxinerama-dev;  fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y mesa-common-dev libxtst-dev libxt-dev libx11-xcb-dev libxcursor-dev libxrandr-dev libxinerama-dev;  fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libxkbcommon-dev; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y libxkbcommon-x11-dev; fi
 
@@ -15,4 +15,3 @@ install:
   - pip install wheel
 script:
   - python setup.py bdist_wheel
- 
