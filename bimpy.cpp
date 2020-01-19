@@ -895,7 +895,7 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("input_text", [](const char* label, String& text, size_t buf_size, ImGuiInputTextFlags flags)
 	{
 		bool result = false;
-		if (buf_size > 256)
+		if (buf_size > 255)
 		{
 			char* buff = new char[buf_size];
 			strncpy(buff, text.value.c_str(), buf_size);
@@ -909,7 +909,7 @@ PYBIND11_MODULE(_bimpy, m) {
 		else
 		{
 			char buff[256];
-			strncpy(buff, text.value.c_str(), 256);
+			strncpy(buff, text.value.c_str(), 255);
 			result = ImGui::InputText(label, buff, buf_size, flags);
 			if (result)
 			{
@@ -921,7 +921,7 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("input_text_multiline", [](const char* label, String& text, size_t buf_size, const ImVec2& size, ImGuiInputTextFlags flags)
 	{
 		bool result = false;
-		if (buf_size > 256)
+		if (buf_size > 255)
 		{
 			char* buff = new char[buf_size];
 			strncpy(buff, text.value.c_str(), buf_size);
@@ -935,7 +935,7 @@ PYBIND11_MODULE(_bimpy, m) {
 		else
 		{
 			char buff[256];
-			strncpy(buff, text.value.c_str(), 256);
+			strncpy(buff, text.value.c_str(), 255);
 			result = ImGui::InputTextMultiline(label, buff, buf_size, size, flags);
 			if (result)
 			{
