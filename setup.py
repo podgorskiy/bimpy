@@ -184,6 +184,11 @@ imgui = [
     ,"imgui/imgui_widgets.cpp"
 ]
 
+imgui_impl = [
+     "imgui/examples/imgui_impl_glfw.cpp"
+    ,"imgui/examples/imgui_impl_opengl3.cpp"
+]
+
 definitions = {
     'darwin': [("_GLFW_COCOA", 1)],
     'posix': [("GLFW_USE_OSMESA", 0), ("GLFW_USE_WAYLAND", 0), ("GLFW_USE_MIR", 0), ("_GLFW_X11", 1)],
@@ -215,9 +220,9 @@ extra_compile_cpp_args = {
 }
 
 extension = Extension("_bimpy",
-                             imgui + glfw + glfw_platform[target_os] + ['bimpy.cpp', "imgui_impl_glfw.cpp", "imgui_impl_opengl3.cpp", "gl3w/src/gl3w.c"],
+                             imgui + imgui_impl + glfw + glfw_platform[target_os] + ['bimpy.cpp', "gl3w/src/gl3w.c"],
                              define_macros = definitions[target_os],
-                             include_dirs=["glfw/include", "imgui", "pybind11/include", "gl3w/include"],
+                             include_dirs=["glfw/include", "imgui", "imgui/examples", "pybind11/include", "gl3w/include"],
                              extra_compile_args=extra_compile_args[target_os],
                              extra_link_args=extra_link[target_os],
                              libraries = libs[target_os])
