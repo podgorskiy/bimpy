@@ -897,7 +897,7 @@ PYBIND11_MODULE(_bimpy, m) {
 		bool result = false;
 		if (buf_size > 255)
 		{
-			char* buff = new char[buf_size];
+			char* buff = new char[buf_size + 1];
 			strncpy(buff, text.value.c_str(), buf_size);
 			result = ImGui::InputText(label, buff, buf_size, flags);
 			if (result)
@@ -923,7 +923,7 @@ PYBIND11_MODULE(_bimpy, m) {
 		bool result = false;
 		if (buf_size > 255)
 		{
-			char* buff = new char[buf_size];
+			char* buff = new char[buf_size + 1];
 			strncpy(buff, text.value.c_str(), buf_size);
 			result = ImGui::InputTextMultiline(label, buff, buf_size, size, flags);
 			if (result)
