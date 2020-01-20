@@ -121,6 +121,9 @@ If building on Linux, the following dependencies will be needed:
 
 	sudo apt-get install mesa-common-dev libxi-dev libxinerama-dev libxrandr-dev libxcursor-dev
 
+To build all wheels for linux package distribution (manylinux) run `build_manylinux_wheels.sh`.
+
+For testing/debugging there is a CMakeList.txt included. It is not used by setup.py, but can be handy in order to build/debug package from certain IDEs.
 
 How to use it?
 ==============
@@ -153,7 +156,7 @@ All calls to **bimpy**'s API must be within *with* statement applied to the cont
 
 .. code:: python
 
-	with ctx: 
+	with ctx:
 		bimpy.text("Hello, world!")
 
 
@@ -162,7 +165,7 @@ And there must be only one *with* statement applied to the context object per fr
 Or, a second option is to manualy call ``ctx.new_frame()`` before all API calls, and then ``ctx.render()`` after.
 
 .. code:: python
-	
+
 	ctx.new_frame()
 	bimpy.text("Hello, world!")
 	ctx.render()
@@ -193,18 +196,18 @@ To use it with *slider_float* simply pass it to that function:
 All **imgui** input functions that provide multiple inputs, like *SliderFloat2*, *SliderInt4*, *InputInt3*, etc. are mapped to equivalent functions, but instead of passing an array of variables, you need to list all variables in the argument list:
 
 .. code:: python
-	
+
 	f1 = bimpy.Float();
 	f2 = bimpy.Float();
 	f3 = bimpy.Float();
 
 	while(not ctx.should_close()):
-		with ctx: 
+		with ctx:
 			bimpy.slider_float3("float", f1, f2, f3, 0.0, 1.0)
 
 Draw commands
 ------------------
-Some draw commands are exposed. In contrast to C++ API, the exposed functions are not methods of **ImDrawList**, but global functions. All drawing functions should be called inside the *begin/end* calls of a window. 
+Some draw commands are exposed. In contrast to C++ API, the exposed functions are not methods of **ImDrawList**, but global functions. All drawing functions should be called inside the *begin/end* calls of a window.
 
 List of exposed drawing functions:
 
@@ -321,3 +324,5 @@ Acknowledgements
 * robobuggy https://github.com/gfannes
 * njazz https://github.com/njazz
 * Florian Rott https://github.com/sauberfred
+* zakx https://github.com/zakx
+* Joel Linn https://github.com/JoelLinn
