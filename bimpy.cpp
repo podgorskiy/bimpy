@@ -1384,7 +1384,27 @@ PYBIND11_MODULE(_bimpy, m) {
 		ImGui::Image(reinterpret_cast<ImTextureID>(im->GetHandle()), ImVec2(im->m_width, im->m_height));
 	}));
 
-	m.def("image_button", &ImGui::ImageButton);
+	//m.def("image_button", &ImGui::ImageButton);
+	typedef void (*FImageButton)(Image*, int, ImVec4&, ImVec4&);
+	m.def("image_button", (FImageButton)([](Image* im, int padding, ImVec4& bg_col, ImVec4& tint_col)
+	{
+		ImGui::ImageButton(reinterpret_cast<ImTextureID>(im->GetHandle()), ImVec2(im->m_width, im->m_height), ImVec2(0,0), ImVec2(1,1), padding, bg_col, tint_col);
+	}));
+	typedef void (*FImageButton_uv)(Image*, ImVec2&, ImVec2&, int, ImVec4&, ImVec4&);
+	m.def("image_button", (FImageButton_uv)([](Image* im, ImVec2& uv0, ImVec2& uv1, int padding, ImVec4& bg_col, ImVec4& tint_col)
+	{
+		ImGui::ImageButton(reinterpret_cast<ImTextureID>(im->GetHandle()), ImVec2(im->m_width, im->m_height), uv0, uv1, padding, bg_col, tint_col);
+	}));
+	typedef void (*FImageButton_uv_wSize)(Image*, ImVec2&, ImVec2&, ImVec2&, int, ImVec4&, ImVec4&);
+	m.def("image_button", (FImageButton_uv_wSize)([](Image* im, ImVec2& size, ImVec2& uv0, ImVec2& uv1, int padding, ImVec4& bg_col, ImVec4& tint_col)
+	{
+		ImGui::ImageButton(reinterpret_cast<ImTextureID>(im->GetHandle()), size, uv0, uv1, padding, bg_col, tint_col);
+	}));
+	typedef void (*FImageButton_imgui)(GLuint, ImVec2&, ImVec2&, ImVec2&, int, ImVec4&, ImVec4&);
+	m.def("image_button", (FImageButton_imgui)([](GLuint textureId, ImVec2& size, ImVec2& uv0, ImVec2& uv1, int padding, ImVec4& bg_col, ImVec4& tint_col)
+	{
+		ImGui::ImageButton(reinterpret_cast<ImTextureID>(textureId), size, uv0, uv1, padding, bg_col, tint_col);
+	}));
 
 	m.attr("key_left_shift") = py::int_(GLFW_KEY_LEFT_SHIFT);
 	m.attr("key_left_control") = py::int_(GLFW_KEY_LEFT_CONTROL);
