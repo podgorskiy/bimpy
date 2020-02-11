@@ -83,7 +83,7 @@ void Context::Init(int width, int height, const std::string& name)
 		gl3wInit();
 
 		m_imgui = ImGui::CreateContext();
-		GImGui = m_imgui;
+		ImGui::SetCurrentContext(m_imgui);
 
 		ImGui_ImplGlfw_InitForOpenGL(m_window, false);
 		ImGui_ImplOpenGL3_Init(glsl_version);
@@ -142,11 +142,11 @@ void Context::Init(int width, int height, const std::string& name)
 Context::~Context()
 {
 	glfwSetWindowSizeCallback(m_window, nullptr);
-	GImGui = m_imgui;
+	ImGui::SetCurrentContext(m_imgui);
 	ImGui_ImplGlfw_Shutdown();
 	ImGui_ImplOpenGL3_Shutdown();
+	ImGui::DestroyContext(m_imgui);
 	glfwTerminate();
-	delete m_imgui;
 }
 
 
@@ -167,7 +167,7 @@ void Context::Render()
 void Context::NewFrame()
 {
 	m_imgui_ctx_mutex.lock();
-	GImGui = m_imgui;
+	ImGui::SetCurrentContext(m_imgui);
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
