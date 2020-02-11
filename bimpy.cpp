@@ -45,6 +45,8 @@ public:
 
 	~Context();
 
+	std::array<float, 4> clearColor = {0.1f, 0.1f, 0.1f, 1.0f};
+
 private:
 	GLFWwindow* m_window = nullptr;
 	int m_width;
@@ -97,7 +99,6 @@ void Context::Init(int width, int height, const std::string& name)
 
 		ImGui_ImplGlfw_InitForOpenGL(m_window, false);
 		ImGui_ImplOpenGL3_Init(glsl_version);
-		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
 		m_width = width;
 		m_height = height;
@@ -172,6 +173,7 @@ void Context::Render()
 	ImGui::Render();
 	glfwMakeContextCurrent(m_window);
 	glViewport(0, 0, m_width, m_height);
+	glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
 	glClear(GL_COLOR_BUFFER_BIT);
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	glfwSwapBuffers(m_window);
@@ -532,10 +534,11 @@ PYBIND11_MODULE(_bimpy, m) {
 		.def(py::init())
 		.def("init", &Context::Init, "Initializes context and creates window")
 		.def("new_frame", &Context::NewFrame, "Starts a new frame. NewFrame must be called before any imgui functions")
-		.def("render", &Context::Render, "Finilizes the frame and draws all UI. Render must be called after all imgui functions")
+		.def("render", &Context::Render, "Finalizes the frame and draws all UI. Render must be called after all imgui functions")
 		.def("should_close", &Context::ShouldClose)
 		.def("width", &Context::GetWidth)
 		.def("height", &Context::GetHeight)
+		.def_readwrite("clear_color", &Context::clearColor)
 		.def("__enter__", &Context::NewFrame)
 		.def("__exit__", [](Context& self, py::object, py::object, py::object)
 			{
