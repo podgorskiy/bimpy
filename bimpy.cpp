@@ -58,7 +58,9 @@ void Context::Init(int width, int height, const std::string& name)
 {
 	if (nullptr == m_window)
 	{
-		glfwInit();
+		if (!glfwInit()) {
+			throw std::runtime_error("glfwInit() failed.");
+		}
 
 #if __APPLE__
 		// GL 3.2 + GLSL 150
@@ -77,11 +79,18 @@ void Context::Init(int width, int height, const std::string& name)
 #endif
 
 		m_window = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
+		if (m_window == nullptr) {
+			throw std::runtime_error("glfwCreateWindow() failed.");
+		}
 
 		glfwMakeContextCurrent(m_window);
 		glfwSwapInterval(1); // vsync
 
-		gl3wInit();
+		if (gl3wInit() != GL3W_OK) {
+			glfwDestroyWindow(m_window);
+			m_window = nullptr;
+			throw std::runtime_error("gl3wInit() failed.");
+		}
 
 		m_imgui = ImGui::CreateContext();
 		ImGui::SetCurrentContext(m_imgui);
