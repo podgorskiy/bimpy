@@ -49,7 +49,7 @@ private:
 	GLFWwindow* m_window = nullptr;
 	int m_width;
 	int m_height;
-	struct ImGuiContext* m_imgui;
+	struct ImGuiContext* m_imgui = nullptr;
 	std::mutex m_imgui_ctx_mutex;
 };
 
@@ -79,6 +79,7 @@ void Context::Init(int width, int height, const std::string& name)
 		m_window = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
 
 		glfwMakeContextCurrent(m_window);
+		glfwSwapInterval(1); // vsync
 
 		gl3wInit();
 
@@ -141,12 +142,19 @@ void Context::Init(int width, int height, const std::string& name)
 
 Context::~Context()
 {
-	glfwSetWindowSizeCallback(m_window, nullptr);
-	ImGui::SetCurrentContext(m_imgui);
-	ImGui_ImplGlfw_Shutdown();
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui::DestroyContext(m_imgui);
-	glfwTerminate();
+	if (m_window) {
+		glfwSetWindowSizeCallback(m_window, nullptr);
+		ImGui::SetCurrentContext(m_imgui);
+
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
+		ImGui::DestroyContext(m_imgui);
+		m_imgui = nullptr;
+
+		glfwDestroyWindow(m_window);
+		m_window = nullptr;
+		glfwTerminate();
+	}
 }
 
 
@@ -157,7 +165,6 @@ void Context::Render()
 	glViewport(0, 0, m_width, m_height);
 	glClear(GL_COLOR_BUFFER_BIT);
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-	glfwSwapInterval(1);
 	glfwSwapBuffers(m_window);
 	glfwPollEvents();
 	m_imgui_ctx_mutex.unlock();
@@ -168,6 +175,7 @@ void Context::NewFrame()
 {
 	m_imgui_ctx_mutex.lock();
 	ImGui::SetCurrentContext(m_imgui);
+	glfwMakeContextCurrent(m_window);
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
