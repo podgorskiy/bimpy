@@ -31,6 +31,8 @@ public:
 
 	void Init(int width, int height, const std::string& name);
 
+	void Terminate();
+
 	void Resize(int width, int height);
 
 	void NewFrame();
@@ -150,8 +152,7 @@ void Context::Init(int width, int height, const std::string& name)
 }
 
 
-Context::~Context()
-{
+void Context::Terminate() {
 	if (m_window) {
 		glfwSetWindowSizeCallback(m_window, nullptr);
 		ImGui::SetCurrentContext(m_imgui);
@@ -168,8 +169,17 @@ Context::~Context()
 }
 
 
+Context::~Context()
+{
+	Terminate();
+}
+
 void Context::Render()
 {
+	if (!m_window) {
+		return;
+	}
+
 	ImGui::Render();
 	glfwMakeContextCurrent(m_window);
 	glViewport(0, 0, m_width, m_height);
@@ -184,6 +194,10 @@ void Context::Render()
 
 void Context::NewFrame()
 {
+	if (!m_window) {
+		return;
+	}
+
 	m_imgui_ctx_mutex.lock();
 	ImGui::SetCurrentContext(m_imgui);
 	glfwMakeContextCurrent(m_window);
@@ -202,7 +216,8 @@ void Context::Resize(int width, int height)
 
 bool Context::ShouldClose()
 {
-	return glfwWindowShouldClose(m_window) != 0;
+	// If there is no window return true to exit a dangling loop
+	return m_window ? glfwWindowShouldClose(m_window) != 0 : true;
 }
 
 int Context::GetWidth() const
@@ -533,6 +548,7 @@ PYBIND11_MODULE(_bimpy, m) {
 	py::class_<Context>(m, "Context")
 		.def(py::init())
 		.def("init", &Context::Init, "Initializes context and creates window")
+		.def("terminate", &Context::Terminate, "Terminates a context and closes the window immediately. Calling this is optional as it is internally called by the destructor but that depends on python garbage collection.")
 		.def("new_frame", &Context::NewFrame, "Starts a new frame. NewFrame must be called before any imgui functions")
 		.def("render", &Context::Render, "Finalizes the frame and draws all UI. Render must be called after all imgui functions")
 		.def("should_close", &Context::ShouldClose)
