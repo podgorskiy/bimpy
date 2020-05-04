@@ -42,6 +42,10 @@ public:
 	int GetWidth() const;
 
 	int GetHeight() const;
+    
+    bool IsActive();
+    void KeepFrame();
+    void Wake();
 
 	~Context();
 
@@ -51,6 +55,7 @@ private:
 	int m_height;
 	struct ImGuiContext* m_imgui;
 	std::mutex m_imgui_ctx_mutex;
+	bool is_active = false;
 };
 
 
@@ -135,6 +140,13 @@ void Context::Init(int width, int height, const std::string& name)
 				io.MouseDown[button] = action == GLFW_PRESS;
 			}
 		});
+        
+        glfwSetWindowFocusCallback(m_window, [](GLFWwindow* window, int focused)
+        {
+            Context* ctx = static_cast<Context*>(glfwGetWindowUserPointer(window));
+            ctx->is_active = focused;
+        });
+        
 	}
 }
 
@@ -173,6 +185,30 @@ void Context::NewFrame()
 	ImGui::NewFrame();
 }
 
+void Context::KeepFrame()
+{
+    m_imgui_ctx_mutex.lock();
+    GImGui = m_imgui;
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+    
+    ImGui::Render();
+    glfwMakeContextCurrent(m_window);
+    glViewport(0, 0, m_width, m_height);
+//    glClear(GL_COLOR_BUFFER_BIT);
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    glfwSwapInterval(4);
+    glfwSwapBuffers(m_window);
+//    glfwPollEvents();
+    glfwWaitEvents();
+    m_imgui_ctx_mutex.unlock();
+}
+
+void Context::Wake()
+{
+    glfwPostEmptyEvent();
+}
 
 void Context::Resize(int width, int height)
 {
@@ -194,6 +230,11 @@ int Context::GetWidth() const
 int Context::GetHeight() const
 {
 	return m_height;
+}
+                                   
+bool Context::IsActive()
+{
+    return is_active;
 }
 
 struct Bool
@@ -519,6 +560,9 @@ PYBIND11_MODULE(_bimpy, m) {
 		.def("should_close", &Context::ShouldClose)
 		.def("width", &Context::GetWidth)
 		.def("height", &Context::GetHeight)
+        .def("is_active", &Context::IsActive)
+        .def("keep_frame", &Context::KeepFrame)
+        .def("wake", &Context::Wake)
 		.def("__enter__", &Context::NewFrame)
 		.def("__exit__", [](Context& self, py::object, py::object, py::object)
 			{
@@ -1162,6 +1206,7 @@ PYBIND11_MODULE(_bimpy, m) {
 			v4.value = v[3];
 			return result;
 		}, py::arg("label"), py::arg("v1"), py::arg("v2"), py::arg("v3"), py::arg("v4"), py::arg("v_speed") = 1.0f, py::arg("v_min"), py::arg("v_max"), py::arg("display_format") = "%.0f");
+
 
 	m.def("plot_lines", [](
 		const char* label,
