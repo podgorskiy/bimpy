@@ -20,7 +20,7 @@ inline std::string string_format(const std::string& fmt_str, va_list ap)
 	{
 		va_list ap_copy;
 		va_copy(ap_copy, ap);
-		formatted = std::make_unique<char[]>(n);
+		formatted.reset(new char[n]);
 		strcpy(&formatted[0], fmt_str.c_str());
 		int final_n = vsnprintf(&formatted[0], n, fmt_str.c_str(), ap_copy);
 		if (final_n < 0 || final_n >= n)
