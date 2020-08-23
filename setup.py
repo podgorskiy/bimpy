@@ -1,5 +1,5 @@
 #
-# Copyright 2017-2018 Stanislav Pidhorskyi. All rights reserved.
+# Copyright 2017-2020 Stanislav Pidhorskyi. All rights reserved.
 # License: https://raw.githubusercontent.com/podgorskiy/impy/master/LICENSE.txt
 #
 
@@ -227,7 +227,7 @@ extension.extra_compile_cpp_args = extra_compile_cpp_args[target_os]
 setup(
     name='bimpy',
 
-    version='0.0.14',
+    version='0.0.15',
 
     description='bimpy - bundled imgui for python',
     long_description=long_description,

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 Stanislav Pidhorskyi. All rights reserved.
+ * Copyright 2017-2020 Stanislav Pidhorskyi. All rights reserved.
  * License: https://raw.githubusercontent.com/podgorskiy/bimpy/master/LICENSE.txt
  */
 
@@ -8,6 +8,7 @@
 #include "imgui_internal.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+#include "runtime_error.h"
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 #include <pybind11/pybind11.h>
@@ -58,7 +59,10 @@ void Context::Init(int width, int height, const std::string& name)
 {
 	if (nullptr == m_window)
 	{
-		glfwInit();
+		if (!glfwInit())
+		{
+			throw runtime_error("GLFW initialization failed.\nThis may happen if you try to run bimpy on a headless machine ");
+		}
 
 #if __APPLE__
 		// GL 3.2 + GLSL 150
@@ -77,10 +81,18 @@ void Context::Init(int width, int height, const std::string& name)
 #endif
 
 		m_window = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
+	    if (!m_window)
+	    {
+	        glfwTerminate();
+			throw runtime_error("GLFW failed to create window.\nThis may happen if you try to run bimpy on a headless machine ");
+	    }
 
 		glfwMakeContextCurrent(m_window);
 
-		gl3wInit();
+		if (gl3wInit() != GL3W_OK)
+		{
+			throw runtime_error("GL3W initialization failed.\nThis may happen if you try to run bimpy on a headless machine ");
+		}
 
 		m_imgui = ImGui::CreateContext();
 		GImGui = m_imgui;
@@ -313,14 +325,14 @@ private:
 			{
 				glBindTexture(GL_TEXTURE_2D, 0);
 				glPixelStorei(GL_UNPACK_ALIGNMENT, backup);
-				throw std::runtime_error("Wrong number of channels. Should be either 1, 2, 3, or 4");
+				throw runtime_error("Wrong number of channels. Should be either 1, 2, 3, or 4, but got %d", (int)ndarray_info.shape[2]);
 			}
 		}
 		else
 		{
 			glBindTexture(GL_TEXTURE_2D, 0);
 			glPixelStorei(GL_UNPACK_ALIGNMENT, backup);
-			throw std::runtime_error("Wrong number of dimensions. Should be either 2 or 3");
+			throw runtime_error("Wrong number of dimensions. Should be either 2 or 3, but got %d", (int)ndarray_info.ndim);
 		}
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
