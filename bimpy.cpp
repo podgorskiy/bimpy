@@ -1394,4 +1394,6 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.attr("key_right_control") = py::int_(GLFW_KEY_RIGHT_CONTROL);
 	m.attr("key_right_alt") = py::int_(GLFW_KEY_RIGHT_ALT);
 	m.attr("key_right_super") = py::int_(GLFW_KEY_RIGHT_SUPER);
+
+	m.def("inject_imgui_context", [](ImGuiContext* other) { GImGui = other; } );
 }
