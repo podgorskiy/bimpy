@@ -478,7 +478,7 @@ PYBIND11_MODULE(_bimpy, m) {
 		//.value("ComboBg", ImGuiCol_::ImGuiCol_ComboBg)
 		.export_values();
 
-	py::enum_<ImGuiStyleVar_>(m, "Style")
+	py::enum_<ImGuiStyleVar_>(m, "Style", py::arithmetic())
 		.value("Alpha", ImGuiStyleVar_::ImGuiStyleVar_Alpha)
 		.value("WindowPadding", ImGuiStyleVar_::ImGuiStyleVar_WindowPadding)
 		.value("WindowRounding", ImGuiStyleVar_::ImGuiStyleVar_WindowRounding)
@@ -503,25 +503,42 @@ PYBIND11_MODULE(_bimpy, m) {
 		.value("ButtonTextAlign", ImGuiStyleVar_::ImGuiStyleVar_ButtonTextAlign)
 		.export_values();
 
-		py::enum_<ImGuiFocusedFlags_>(m,"FocusedFlags")
-			.value("None", ImGuiFocusedFlags_None)
-			.value("ChildWindows", ImGuiFocusedFlags_ChildWindows)
-			.value("RootWindow", ImGuiFocusedFlags_RootWindow)
-			.value("AnyWindow", ImGuiFocusedFlags_AnyWindow)
-			.value("RootAndChildWindows", ImGuiFocusedFlags_RootAndChildWindows)
-			.export_values();
+	py::enum_<ImGuiFocusedFlags_>(m, "FocusedFlags", py::arithmetic())
+		.value("None", ImGuiFocusedFlags_None)
+		.value("ChildWindows", ImGuiFocusedFlags_ChildWindows)
+		.value("RootWindow", ImGuiFocusedFlags_RootWindow)
+		.value("AnyWindow", ImGuiFocusedFlags_AnyWindow)
+		.value("RootAndChildWindows", ImGuiFocusedFlags_RootAndChildWindows)
+		.export_values();
 
-		py::enum_<ImGuiHoveredFlags_>(m,"HoveredFlags")
-			.value("None",ImGuiHoveredFlags_None)
-			.value("ChildWindows",ImGuiHoveredFlags_ChildWindows)
-			.value("RootWindow",ImGuiHoveredFlags_RootWindow)
-			.value("AnyWindow",ImGuiHoveredFlags_AnyWindow)
-			.value("AllowWhenBlockedByPopup",ImGuiHoveredFlags_AllowWhenBlockedByPopup)
-			.value("AllowWhenBlockedByActiveItem",ImGuiHoveredFlags_AllowWhenBlockedByActiveItem)
-			.value("AllowWhenOverlapped",ImGuiHoveredFlags_AllowWhenOverlapped)
-			.value("AllowWhenDisabled",ImGuiHoveredFlags_AllowWhenDisabled)
-			.value("RectOnly",ImGuiHoveredFlags_RectOnly)
-			.export_values();
+	py::enum_<ImGuiHoveredFlags_>(m, "HoveredFlags", py::arithmetic())
+		.value("None", ImGuiHoveredFlags_None)
+		.value("ChildWindows", ImGuiHoveredFlags_ChildWindows)
+		.value("RootWindow", ImGuiHoveredFlags_RootWindow)
+		.value("AnyWindow", ImGuiHoveredFlags_AnyWindow)
+		.value("AllowWhenBlockedByPopup", ImGuiHoveredFlags_AllowWhenBlockedByPopup)
+		.value("AllowWhenBlockedByActiveItem", ImGuiHoveredFlags_AllowWhenBlockedByActiveItem)
+		.value("AllowWhenOverlapped", ImGuiHoveredFlags_AllowWhenOverlapped)
+		.value("AllowWhenDisabled", ImGuiHoveredFlags_AllowWhenDisabled)
+		.value("RectOnly", ImGuiHoveredFlags_RectOnly)
+		.export_values();
+
+	py::enum_<ImGuiTreeNodeFlags_>(m, "TreeNodeFlags", py::arithmetic())
+		.value("None", ImGuiTreeNodeFlags_None)
+		.value("Selected", ImGuiTreeNodeFlags_Selected)
+		.value("Framed", ImGuiTreeNodeFlags_Framed)
+		.value("AllowItemOverlap", ImGuiTreeNodeFlags_AllowItemOverlap)
+		.value("NoTreePushOnOpen", ImGuiTreeNodeFlags_NoTreePushOnOpen)
+		.value("NoAutoOpenOnLog", ImGuiTreeNodeFlags_NoAutoOpenOnLog)
+		.value("DefaultOpen", ImGuiTreeNodeFlags_DefaultOpen)
+		.value("OpenOnDoubleClick", ImGuiTreeNodeFlags_OpenOnDoubleClick)
+		.value("OpenOnArrow", ImGuiTreeNodeFlags_OpenOnArrow)
+		.value("Leaf", ImGuiTreeNodeFlags_Leaf)
+		.value("Bullet", ImGuiTreeNodeFlags_Bullet)
+		.value("FramePadding", ImGuiTreeNodeFlags_FramePadding)
+		.value("NavLeftJumpsBackHere", ImGuiTreeNodeFlags_NavLeftJumpsBackHere)
+		.value("CollapsingHeader", ImGuiTreeNodeFlags_CollapsingHeader)
+		.export_values();
 
 	py::class_<Context>(m, "Context")
 		.def(py::init())
@@ -872,6 +889,7 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("small_button", &ImGui::SmallButton);
 	m.def("invisible_button", &ImGui::InvisibleButton);
 	m.def("tree_node", [](const char* label){ return ImGui::TreeNode(label); }, py::arg("label"));
+	m.def("tree_node_ex", [](int id, ImGuiTreeNodeFlags flags, const char* label){ return ImGui::TreeNodeEx((void*)(intptr_t)id, flags, "%s", label); }, py::arg("id"), py::arg("flags") = 0, py::arg("label")="");
 	m.def("tree_pop", &ImGui::TreePop);
 	m.def("set_next_tree_node_open", &ImGui::SetNextTreeNodeOpen, py::arg("is_open"), py::arg("cond") = 0);
 	m.def("collapsing_header", [](const char* label, ImGuiTreeNodeFlags flags){ return ImGui::CollapsingHeader(label, flags); }, py::arg("label"), py::arg("flags") = 0);
@@ -1247,7 +1265,7 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("is_item_hovered", &ImGui::IsItemHovered);
 	m.def("is_item_active", &ImGui::IsItemActive);
 	m.def("is_item_focused", &ImGui::IsItemFocused);
-	m.def("is_item_clicked", &ImGui::IsItemClicked);
+	m.def("is_item_clicked", &ImGui::IsItemClicked, py::arg("mouse_button") = 0);
 	m.def("is_item_visible", &ImGui::IsItemVisible);
 	m.def("is_item_edited", &ImGui::IsItemEdited);
 	m.def("is_item_deactivated", &ImGui::IsItemDeactivated);
@@ -1407,5 +1425,5 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.attr("key_right_alt") = py::int_(GLFW_KEY_RIGHT_ALT);
 	m.attr("key_right_super") = py::int_(GLFW_KEY_RIGHT_SUPER);
 
-	m.def("inject_imgui_context", [](ImGuiContext* other) { GImGui = other; } );
+	m.def("inject_imgui_context", [](void* other) { GImGui = (ImGuiContext*)other; } );
 }
