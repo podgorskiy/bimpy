@@ -14,6 +14,29 @@ import os
 import sys
 import platform
 import re
+from distutils.ccompiler import CCompiler
+from multiprocessing.pool import ThreadPool as Pool
+
+
+def compile(self, sources, output_dir=None, macros=None, include_dirs=None, debug=0, extra_preargs=None, extra_postargs=None, depends=None):
+    macros, objects, extra_postargs, pp_opts, build = self._setup_compile(output_dir, macros, include_dirs, sources, depends, extra_postargs)
+    cc_args = self._get_cc_args(pp_opts, debug, extra_preargs)
+
+    def f(x):
+        try:
+            src, ext = build[x]
+        except KeyError:
+            return
+
+        self._compile(x, src, ext, cc_args, extra_postargs, pp_opts)
+
+    pool = Pool(processes=6)
+    pool.map(f, objects)
+
+    return objects
+
+
+CCompiler.compile = compile
 
 sys._argv = sys.argv[:]
 sys.argv=[sys.argv[0], '--root', 'gl3w/']
