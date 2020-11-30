@@ -5,9 +5,9 @@ ctx = bimpy.Context()
 ctx.init(600, 600, "Hello")
 
 str = bimpy.String()
-f = bimpy.Float();
+f = bimpy.Float()
 
-while(not ctx.should_close()):
+while not ctx.should_close():
     with ctx:
         bimpy.text("Hello, world!")
 
