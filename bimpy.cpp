@@ -32,6 +32,8 @@ public:
 
 	void Init(int width, int height, const std::string& name);
 
+	void Terminate();
+
 	void Resize(int width, int height);
 
 	void NewFrame();
@@ -46,11 +48,13 @@ public:
 
 	~Context();
 
+	std::array<float, 4> clearColor = {0.1f, 0.1f, 0.1f, 1.0f};
+
 private:
 	GLFWwindow* m_window = nullptr;
 	int m_width;
 	int m_height;
-	struct ImGuiContext* m_imgui;
+	struct ImGuiContext* m_imgui = nullptr;
 	std::mutex m_imgui_ctx_mutex;
 };
 
@@ -61,7 +65,7 @@ void Context::Init(int width, int height, const std::string& name)
 	{
 		if (!glfwInit())
 		{
-			throw runtime_error("GLFW initialization failed.\nThis may happen if you try to run bimpy on a headless machine ");
+			throw runtime_error("GLFW initialization failed (glfwInit() failed).\nThis may happen if you try to run bimpy on a headless machine ");
 		}
 
 #if __APPLE__
@@ -84,22 +88,24 @@ void Context::Init(int width, int height, const std::string& name)
 	    if (!m_window)
 	    {
 	        glfwTerminate();
-			throw runtime_error("GLFW failed to create window.\nThis may happen if you try to run bimpy on a headless machine ");
+			throw runtime_error("GLFW failed to create window (glfwCreateWindow() failed).\nThis may happen if you try to run bimpy on a headless machine ");
 	    }
 
 		glfwMakeContextCurrent(m_window);
+		glfwSwapInterval(1); // vsync
 
 		if (gl3wInit() != GL3W_OK)
 		{
-			throw runtime_error("GL3W initialization failed.\nThis may happen if you try to run bimpy on a headless machine ");
+			glfwDestroyWindow(m_window);
+			m_window = nullptr;
+			throw runtime_error("GL3W initialization failed.\nThis may happen if you try to run bimpy on a headless machine");
 		}
 
 		m_imgui = ImGui::CreateContext();
-		GImGui = m_imgui;
+		ImGui::SetCurrentContext(m_imgui);
 
 		ImGui_ImplGlfw_InitForOpenGL(m_window, false);
 		ImGui_ImplOpenGL3_Init(glsl_version);
-		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
 		m_width = width;
 		m_height = height;
@@ -151,25 +157,40 @@ void Context::Init(int width, int height, const std::string& name)
 }
 
 
-Context::~Context()
-{
-	glfwSetWindowSizeCallback(m_window, nullptr);
-	GImGui = m_imgui;
-	ImGui_ImplGlfw_Shutdown();
-	ImGui_ImplOpenGL3_Shutdown();
-	glfwTerminate();
-	delete m_imgui;
+void Context::Terminate() {
+	if (m_window) {
+		glfwSetWindowSizeCallback(m_window, nullptr);
+		ImGui::SetCurrentContext(m_imgui);
+
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
+		ImGui::DestroyContext(m_imgui);
+		m_imgui = nullptr;
+
+		glfwDestroyWindow(m_window);
+		m_window = nullptr;
+		glfwTerminate();
+	}
 }
 
 
+Context::~Context()
+{
+	Terminate();
+}
+
 void Context::Render()
 {
+	if (!m_window) {
+		return;
+	}
+
 	ImGui::Render();
 	glfwMakeContextCurrent(m_window);
 	glViewport(0, 0, m_width, m_height);
+	glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
 	glClear(GL_COLOR_BUFFER_BIT);
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-	glfwSwapInterval(1);
 	glfwSwapBuffers(m_window);
 	glfwPollEvents();
 	m_imgui_ctx_mutex.unlock();
@@ -178,8 +199,13 @@ void Context::Render()
 
 void Context::NewFrame()
 {
+	if (!m_window) {
+		return;
+	}
+
 	m_imgui_ctx_mutex.lock();
-	GImGui = m_imgui;
+	ImGui::SetCurrentContext(m_imgui);
+	glfwMakeContextCurrent(m_window);
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
@@ -195,7 +221,8 @@ void Context::Resize(int width, int height)
 
 bool Context::ShouldClose()
 {
-	return glfwWindowShouldClose(m_window) != 0;
+	// If there is no window return true to exit a dangling loop
+	return m_window ? glfwWindowShouldClose(m_window) != 0 : true;
 }
 
 int Context::GetWidth() const
@@ -552,11 +579,15 @@ PYBIND11_MODULE(_bimpy, m) {
 	py::class_<Context>(m, "Context")
 		.def(py::init())
 		.def("init", &Context::Init, "Initializes context and creates window")
+		.def("terminate", &Context::Terminate, "Terminates a context and closes the window immediately. Calling this is optional as it is internally called by the destructor but that depends on python garbage collection.")
 		.def("new_frame", &Context::NewFrame, "Starts a new frame. NewFrame must be called before any imgui functions")
-		.def("render", &Context::Render, "Finilizes the frame and draws all UI. Render must be called after all imgui functions")
+		.def("render", &Context::Render, "Finalizes the frame and draws all UI. Render must be called after all imgui functions")
 		.def("should_close", &Context::ShouldClose)
-		.def("width", &Context::GetWidth)
-		.def("height", &Context::GetHeight)
+
+		.def_property_readonly("width", &Context::GetWidth)
+		.def_property_readonly("height", &Context::GetHeight)
+
+		.def_readwrite("clear_color", &Context::clearColor)
 		.def("__enter__", &Context::NewFrame)
 		.def("__exit__", [](Context& self, py::object, py::object, py::object)
 			{
