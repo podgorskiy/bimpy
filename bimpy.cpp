@@ -16,6 +16,7 @@
 #include <pybind11/functional.h>
 #include <pybind11/stl.h>
 #include <pybind11/numpy.h>
+#include <backward.hpp>
 #include <memory>
 #include <mutex>
 
@@ -56,6 +57,7 @@ private:
 	int m_height;
 	struct ImGuiContext* m_imgui = nullptr;
 	std::mutex m_imgui_ctx_mutex;
+	backward::SignalHandling sh;
 };
 
 
