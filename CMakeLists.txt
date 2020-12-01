@@ -62,6 +62,7 @@ add_library(imgui ${IMGUI_SOURCES})
 include_directories(glfw/include)
 include_directories(pybind11/include)
 include_directories(imgui)
+include_directories(imgui/examples)
 include_directories(${Python_INCLUDE_DIRS})
 
 if (OPENGL_FOUND)
