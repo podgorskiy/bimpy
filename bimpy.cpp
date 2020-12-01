@@ -157,8 +157,10 @@ void Context::Init(int width, int height, const std::string& name)
 }
 
 
-void Context::Terminate() {
-	if (m_window) {
+void Context::Terminate()
+{
+	if (m_window)
+	{
 		glfwSetWindowSizeCallback(m_window, nullptr);
 		ImGui::SetCurrentContext(m_imgui);
 
@@ -181,7 +183,8 @@ Context::~Context()
 
 void Context::Render()
 {
-	if (!m_window) {
+	if (!m_window)
+	{
 		return;
 	}
 
@@ -199,7 +202,8 @@ void Context::Render()
 
 void Context::NewFrame()
 {
-	if (!m_window) {
+	if (!m_window)
+	{
 		return;
 	}
 
