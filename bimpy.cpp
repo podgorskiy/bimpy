@@ -585,7 +585,6 @@ PYBIND11_MODULE(_bimpy, m) {
 	py::class_<Context>(m, "Context")
 		.def(py::init())
 		.def("init", &Context::Init, "Initializes context and creates window")
-		.def("terminate", &Context::Terminate, "Terminates a context and closes the window immediately. Calling this is optional as it is internally called by the destructor but that depends on python garbage collection.")
 		.def("new_frame", &Context::NewFrame, "Starts a new frame. NewFrame must be called before any imgui functions")
 		.def("render", &Context::Render, "Finalizes the frame and draws all UI. Render must be called after all imgui functions")
 		.def("should_close", &Context::ShouldClose)
