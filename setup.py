@@ -39,12 +39,12 @@ def compile(self, sources, output_dir=None, macros=None, include_dirs=None, debu
 CCompiler.compile = compile
 
 sys._argv = sys.argv[:]
-sys.argv=[sys.argv[0], '--root', 'gl3w/']
+sys.argv = [sys.argv[0], '--root', 'libs/gl3w/']
 
 try:
-    from gl3w import gl3w_gen
+    from libs.gl3w import gl3w_gen
 except:
-    sys.path.insert(0, './gl3w')
+    sys.path.insert(0, './libs/gl3w')
     import gl3w_gen
 
 sys.argv = sys._argv
@@ -93,9 +93,9 @@ def build_extension(self, ext):
     sources = ext.sources
     if sources is None or not isinstance(sources, (list, tuple)):
         raise DistutilsSetupError(
-              "in 'ext_modules' option (extension '%s'), "
-              "'sources' must be present and must be "
-              "a list of source filenames" % ext.name)
+                "in 'ext_modules' option (extension '%s'), "
+                "'sources' must be present and must be "
+                "a list of source filenames" % ext.name)
 
     sources = list(sources)
     ext_path = self.get_ext_fullpath(ext.name)
@@ -141,15 +141,16 @@ def build_extension(self, ext):
 
     language = ext.language or self.compiler.detect_language(sources)
     self.compiler.link_shared_object(
-        objects, ext_path,
-        libraries=self.get_libraries(ext),
-        library_dirs=ext.library_dirs,
-        runtime_library_dirs=ext.runtime_library_dirs,
-        extra_postargs=extra_args,
-        export_symbols=self.get_export_symbols(ext),
-        debug=self.debug,
-        build_temp=self.build_temp,
-        target_lang=language)
+            objects, ext_path,
+            libraries=self.get_libraries(ext),
+            library_dirs=ext.library_dirs,
+            runtime_library_dirs=ext.runtime_library_dirs,
+            extra_postargs=extra_args,
+            export_symbols=self.get_export_symbols(ext),
+            debug=self.debug,
+            build_temp=self.build_temp,
+            target_lang=language)
+
 
 # patching
 build_ext.build_extension = build_extension
@@ -214,41 +215,52 @@ imgui_impl = [
 
 definitions = {
     'darwin': [("_GLFW_COCOA", 1)],
-    'posix': [("GLFW_USE_OSMESA", 0), ("GLFW_USE_WAYLAND", 0), ("GLFW_USE_MIR", 0), ("_GLFW_X11", 1)],
-    'win32': [("GLFW_USE_HYBRID_HPG", 0), ("_GLFW_WIN32", 1), ("_CRT_SECURE_NO_WARNINGS", 1), ("NOMINMAX", 1)],
+    'posix' : [("GLFW_USE_OSMESA", 0), ("GLFW_USE_WAYLAND", 0), ("GLFW_USE_MIR", 0), ("_GLFW_X11", 1)],
+    'win32' : [("GLFW_USE_HYBRID_HPG", 0), ("_GLFW_WIN32", 1), ("_CRT_SECURE_NO_WARNINGS", 1), ("NOMINMAX", 1)],
 }
 
 libs = {
     'darwin': [],
-    'posix': ["rt", "m", "X11"],
-    'win32': ["gdi32", "opengl32", "Shell32"],
+    'posix' : ["rt", "m", "X11"],
+    'win32' : ["gdi32", "opengl32", "Shell32"],
 }
 
 extra_link = {
-    'darwin': ["-framework", "Cocoa","-framework", "IOKit","-framework", "Cocoa","-framework", "CoreFoundation","-framework", "CoreVideo"],
-    'posix': [],
-    'win32': [],
+    'darwin': ["-framework", "Cocoa", "-framework", "IOKit", "-framework", "Cocoa", "-framework", "CoreFoundation",
+               "-framework", "CoreVideo"],
+    'posix' : [],
+    'win32' : [],
 }
 
 extra_compile_args = {
     'darwin': [],
-    'posix': [],
-    'win32': ['/MT', '/fp:fast', '/GL', '/GR-'],
+    'posix' : [],
+    'win32' : ['/MT', '/fp:fast', '/GL', '/GR-'],
 }
 
 extra_compile_cpp_args = {
     'darwin': ['-std=c++11'],
-    'posix': ['-std=c++11'],
-    'win32': [],
+    'posix' : ['-std=c++11'],
+    'win32' : [],
 }
 
+
+def add_prefix(l, prefix):
+    return [os.path.join(prefix, x) for x in l]
+
+
 extension = Extension("_bimpy",
-                             imgui + imgui_impl + glfw + glfw_platform[target_os] + ['bimpy.cpp', "gl3w/src/gl3w.c"],
-                             define_macros = definitions[target_os],
-                             include_dirs=["glfw/include", "imgui", "imgui/examples", "pybind11/include", "gl3w/include"],
-                             extra_compile_args=extra_compile_args[target_os],
-                             extra_link_args=extra_link[target_os],
-                             libraries = libs[target_os])
+                      add_prefix(imgui + imgui_impl + glfw + glfw_platform[target_os], "libs") + ['bimpy.cpp', "libs/gl3w/src/gl3w.c"],
+                      define_macros=definitions[target_os],
+                      include_dirs=add_prefix([
+                          "glfw/include",
+                          "imgui",
+                          "imgui/examples",
+                          "pybind11/include",
+                          "gl3w/include"], "libs"),
+                      extra_compile_args=extra_compile_args[target_os],
+                      extra_link_args=extra_link[target_os],
+                      libraries=libs[target_os])
 
 extension.extra_compile_cpp_args = extra_compile_cpp_args[target_os]
 

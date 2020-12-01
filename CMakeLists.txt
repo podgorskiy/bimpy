@@ -38,20 +38,20 @@ find_package (Python COMPONENTS Interpreter Development REQUIRED)
 # Generating OpenGL profile
 ##############################################################
 message("Executing gl3w_gen.py")
-execute_process(COMMAND python gl3w_gen.py --root ${PROJECT_BINARY_DIR}/gl3w WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/gl3w)
+execute_process(COMMAND python gl3w_gen.py --root ${PROJECT_BINARY_DIR}/libs/gl3w WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/libs/gl3w)
 
 
 ##############################################################
 # Externals
 ##############################################################
-add_subdirectory (glfw)
-add_subdirectory (gl3w)
+add_subdirectory (libs/glfw)
+add_subdirectory (libs/gl3w)
 
 
 #####################################################################
 # imgui
 #####################################################################
-set(IMGUI_DIR imgui)
+set(IMGUI_DIR libs/imgui)
 file(GLOB IMGUI_SOURCES ${IMGUI_DIR}/*.cpp ${IMGUI_DIR}/*.h )
 add_library(imgui ${IMGUI_SOURCES})
 
@@ -59,10 +59,10 @@ add_library(imgui ${IMGUI_SOURCES})
 ##############################################################
 # Includes
 ##############################################################
-include_directories(glfw/include)
-include_directories(pybind11/include)
-include_directories(imgui)
-include_directories(imgui/examples)
+include_directories(libs/glfw/include)
+include_directories(libs/pybind11/include)
+include_directories(libs/imgui)
+include_directories(libs/imgui/examples)
 include_directories(${Python_INCLUDE_DIRS})
 
 if (OPENGL_FOUND)
