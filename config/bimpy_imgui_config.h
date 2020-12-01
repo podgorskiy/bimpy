@@ -3,7 +3,7 @@
  * License: https://raw.githubusercontent.com/podgorskiy/bimpy/master/LICENSE.txt
  */
 #pragma once
-#include "../runtime_error.h"
+#include <runtime_error.h>
 
 #define BIMPY_IMGUI_CONFIG
 #define IMGUI_DEFINE_MATH_OPERATORS

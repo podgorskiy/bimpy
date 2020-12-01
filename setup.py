@@ -14,6 +14,7 @@ import os
 import sys
 import platform
 import re
+import glob
 from distutils.ccompiler import CCompiler
 from multiprocessing.pool import ThreadPool as Pool
 
@@ -36,6 +37,7 @@ def compile(self, sources, output_dir=None, macros=None, include_dirs=None, debu
     return objects
 
 
+# Overwrite to enable multiprocess compilation
 CCompiler.compile = compile
 
 sys._argv = sys.argv[:]
@@ -208,11 +210,6 @@ imgui = [
     ,"imgui/imgui_widgets.cpp"
 ]
 
-imgui_impl = [
-     "imgui/examples/imgui_impl_glfw.cpp"
-    ,"imgui/examples/imgui_impl_opengl3.cpp"
-]
-
 definitions = {
     'darwin': [("_GLFW_COCOA", 1)],
     'posix' : [("GLFW_USE_OSMESA", 0), ("GLFW_USE_WAYLAND", 0), ("GLFW_USE_MIR", 0), ("_GLFW_X11", 1)],
@@ -244,20 +241,22 @@ extra_compile_cpp_args = {
     'win32' : [],
 }
 
+bimpy_sources = list(glob.glob('sources/*.cpp'))
+
 
 def add_prefix(l, prefix):
     return [os.path.join(prefix, x) for x in l]
 
 
 extension = Extension("_bimpy",
-                      add_prefix(imgui + imgui_impl + glfw + glfw_platform[target_os], "libs") + ['bimpy.cpp', "libs/gl3w/src/gl3w.c"],
-                      define_macros=definitions[target_os],
+                      add_prefix(imgui + glfw + glfw_platform[target_os], "libs") + bimpy_sources + ["libs/gl3w/src/gl3w.c"],
+                      define_macros=definitions[target_os] + [('IMGUI_USER_CONFIG', '"bimpy_imgui_config.h"')],
                       include_dirs=add_prefix([
                           "glfw/include",
                           "imgui",
-                          "imgui/examples",
                           "pybind11/include",
-                          "gl3w/include"], "libs"),
+                          "backward-cpp",
+                          "gl3w/include"], "libs") + ["config", "sources"],
                       extra_compile_args=extra_compile_args[target_os],
                       extra_link_args=extra_link[target_os],
                       libraries=libs[target_os])

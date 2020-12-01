@@ -65,6 +65,7 @@ include_directories(libs/glfw/include)
 include_directories(libs/pybind11/include)
 include_directories(libs/imgui)
 include_directories(libs/backward-cpp)
+include_directories(sources)
 include_directories(${Python_INCLUDE_DIRS})
 
 if (OPENGL_FOUND)
@@ -77,7 +78,7 @@ endif (OPENGL_FOUND)
 ##############################################################
 # Targets
 ##############################################################
-file(GLOB SOURCES *.cpp *.h )
+file(GLOB SOURCES sources/*.cpp sources/*.h )
 add_library(bimpy SHARED ${SOURCES})
 ##############################################################
 # Linkage

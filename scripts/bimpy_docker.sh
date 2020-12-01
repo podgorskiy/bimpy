@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Script to build wheels for manylinux. This script runs inside docker.
 # See build_maylinux_wheels.sh
 
@@ -18,5 +19,6 @@ done
 
 # Bundle external shared libraries into the wheels
 for whl in /io/wheelhouse/*.whl; do
+    auditwheel show "$whl"
     auditwheel repair "$whl" --plat $PLAT -w /io/wheelhouse/
 done
