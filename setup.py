@@ -266,7 +266,7 @@ extension.extra_compile_cpp_args = extra_compile_cpp_args[target_os]
 setup(
     name='bimpy',
 
-    version='0.0.15',
+    version='0.0.16',
 
     description='bimpy - bundled imgui for python',
     long_description=long_description,
@@ -279,7 +279,7 @@ setup(
     license='MIT',
 
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.5',
