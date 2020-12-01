@@ -33,8 +33,6 @@ public:
 
 	void Init(int width, int height, const std::string& name);
 
-	void Terminate();
-
 	void Resize(int width, int height);
 
 	void NewFrame();
@@ -57,109 +55,118 @@ private:
 	int m_height;
 	struct ImGuiContext* m_imgui = nullptr;
 	std::mutex m_imgui_ctx_mutex;
-	backward::SignalHandling sh;
+	backward::SignalHandling m_sh;
 };
 
 
 void Context::Init(int width, int height, const std::string& name)
 {
-	if (nullptr == m_window)
+	if (m_window)
 	{
-		if (!glfwInit())
-		{
-			throw runtime_error("GLFW initialization failed (glfwInit() failed).\nThis may happen if you try to run bimpy on a headless machine ");
-		}
+		throw runtime_error(
+				"bimpy context was already initialized, can not initialize again. Create a new one and dispose the old one instead.");
+	}
+
+	if (!glfwInit())
+	{
+		throw runtime_error(
+				"GLFW initialization failed (glfwInit() failed).\nThis may happen if you try to run bimpy on a headless machine ");
+	}
 
 #if __APPLE__
-		// GL 3.2 + GLSL 150
-		const char* glsl_version = "#version 150";
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
-		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // Required on Mac
+	// GL 3.2 + GLSL 150
+	const char* glsl_version = "#version 150";
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // Required on Mac
 #else
-		// GL 3.0 + GLSL 130
-		const char* glsl_version = "#version 130";
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-		//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
-		//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
+	// GL 3.0 + GLSL 130
+	const char* glsl_version = "#version 130";
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
+	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 #endif
 
-		m_window = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
-	    if (!m_window)
-	    {
-	        glfwTerminate();
-			throw runtime_error("GLFW failed to create window (glfwCreateWindow() failed).\nThis may happen if you try to run bimpy on a headless machine ");
-	    }
+	m_window = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
+	if (!m_window)
+	{
+		glfwTerminate();
+		throw runtime_error(
+				"GLFW failed to create window (glfwCreateWindow() failed).\nThis may happen if you try to run bimpy on a headless machine ");
+	}
 
-		glfwMakeContextCurrent(m_window);
-		glfwSwapInterval(1); // vsync
+	glfwMakeContextCurrent(m_window);
+	glfwSwapInterval(1); // vsync
 
-		if (gl3wInit() != GL3W_OK)
+	if (gl3wInit() != GL3W_OK)
+	{
+		glfwDestroyWindow(m_window);
+		m_window = nullptr;
+		throw runtime_error(
+				"GL3W initialization failed.\nThis may happen if you try to run bimpy on a headless machine");
+	}
+
+	m_imgui = ImGui::CreateContext();
+	ImGui::SetCurrentContext(m_imgui);
+
+	ImGui_ImplGlfw_InitForOpenGL(m_window, false);
+	ImGui_ImplOpenGL3_Init(glsl_version);
+
+	m_width = width;
+	m_height = height;
+
+	glfwSetWindowUserPointer(m_window, this); // replaced m_imp.get()
+
+	glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height)
+	{
+		Context* ctx = static_cast<Context*>(glfwGetWindowUserPointer(window));
+		ctx->Resize(width, height);
+	});
+
+	glfwSetKeyCallback(m_window, [](GLFWwindow*, int key, int, int action, int mods)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		if (action == GLFW_PRESS)
 		{
-			glfwDestroyWindow(m_window);
-			m_window = nullptr;
-			throw runtime_error("GL3W initialization failed.\nThis may happen if you try to run bimpy on a headless machine");
+			io.KeysDown[key] = true;
+		}
+		if (action == GLFW_RELEASE)
+		{
+			io.KeysDown[key] = false;
 		}
 
-		m_imgui = ImGui::CreateContext();
-		ImGui::SetCurrentContext(m_imgui);
+		io.KeyCtrl = io.KeysDown[GLFW_KEY_LEFT_CONTROL] || io.KeysDown[GLFW_KEY_RIGHT_CONTROL];
+		io.KeyShift = io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
+		io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
+		io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
+	});
 
-		ImGui_ImplGlfw_InitForOpenGL(m_window, false);
-		ImGui_ImplOpenGL3_Init(glsl_version);
+	glfwSetCharCallback(m_window, [](GLFWwindow*, unsigned int c)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.AddInputCharacter(c);
+	});
 
-		m_width = width;
-		m_height = height;
+	glfwSetScrollCallback(m_window, [](GLFWwindow*, double /*xoffset*/, double yoffset)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.MouseWheel += (float) yoffset * 2.0f;
+	});
 
-		glfwSetWindowUserPointer(m_window, this); // replaced m_imp.get()
+	glfwSetMouseButtonCallback(m_window, [](GLFWwindow*, int button, int action, int /*mods*/)
+	{
+		ImGuiIO& io = ImGui::GetIO();
 
-		glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height)
+		if (button >= 0 && button < 3)
 		{
-			Context* ctx = static_cast<Context*>(glfwGetWindowUserPointer(window));
-			ctx->Resize(width, height);
-		});
-
-		glfwSetKeyCallback(m_window, [](GLFWwindow*, int key, int, int action, int mods)
-		{
-			ImGuiIO& io = ImGui::GetIO();
-			if (action == GLFW_PRESS)
-				io.KeysDown[key] = true;
-			if (action == GLFW_RELEASE)
-				io.KeysDown[key] = false;
-
-			io.KeyCtrl = io.KeysDown[GLFW_KEY_LEFT_CONTROL] || io.KeysDown[GLFW_KEY_RIGHT_CONTROL];
-			io.KeyShift = io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
-			io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
-			io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
-		});
-
-		glfwSetCharCallback(m_window, [](GLFWwindow*, unsigned int c)
-		{
-			ImGuiIO& io = ImGui::GetIO();
-			io.AddInputCharacter(c);
-		});
-
-		glfwSetScrollCallback(m_window, [](GLFWwindow*, double /*xoffset*/, double yoffset)
-		{
-			ImGuiIO& io = ImGui::GetIO();
-			io.MouseWheel += (float)yoffset * 2.0f;
-		});
-
-		glfwSetMouseButtonCallback(m_window, [](GLFWwindow*, int button, int action, int /*mods*/)
-		{
-			ImGuiIO& io = ImGui::GetIO();
-
-			if (button >= 0 && button < 3)
-			{
-				io.MouseDown[button] = action == GLFW_PRESS;
-			}
-		});
-	}
+			io.MouseDown[button] = action == GLFW_PRESS;
+		}
+	});
 }
 
-
-void Context::Terminate()
+Context::~Context()
 {
 	if (m_window)
 	{
@@ -175,12 +182,6 @@ void Context::Terminate()
 		m_window = nullptr;
 		glfwTerminate();
 	}
-}
-
-
-Context::~Context()
-{
-	Terminate();
 }
 
 void Context::Render()
