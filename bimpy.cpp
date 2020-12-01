@@ -3,7 +3,6 @@
  * License: https://raw.githubusercontent.com/podgorskiy/bimpy/master/LICENSE.txt
  */
 
-#define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui.h>
 #include <imgui_internal.h>
 #include "imgui_impl_glfw.h"
@@ -19,6 +18,10 @@
 #include <backward.hpp>
 #include <memory>
 #include <mutex>
+
+#ifndef BIMPY_IMGUI_CONFIG
+#error("imgui config is not used")
+#endif
 
 namespace py = pybind11;
 

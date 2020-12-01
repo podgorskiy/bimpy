@@ -52,8 +52,10 @@ add_subdirectory (libs/gl3w)
 # imgui
 #####################################################################
 set(IMGUI_DIR libs/imgui)
-file(GLOB IMGUI_SOURCES ${IMGUI_DIR}/*.cpp ${IMGUI_DIR}/*.h )
+file(GLOB IMGUI_SOURCES ${IMGUI_DIR}/*.cpp ${IMGUI_DIR}/*.h config/bimpy_imgui_config.h)
 add_library(imgui ${IMGUI_SOURCES})
+target_compile_definitions(imgui PUBLIC IMGUI_USER_CONFIG="bimpy_imgui_config.h")
+target_include_directories(imgui PUBLIC config)
 
 
 ##############################################################
