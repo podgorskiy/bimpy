@@ -33,7 +33,9 @@ def generate_fake_data():
                 x += position
                 datapoints.append((x, rotation, position, scale))
 
+
 axis = x = np.array([[-1, 0], [1, 0], [0, -1], [0, 1]])
+
 
 while not ctx.should_close():
         ctx.new_frame()
@@ -83,4 +85,3 @@ while not ctx.should_close():
         bimpy.end()
 
         ctx.render()
- 

@@ -17,9 +17,9 @@ mylist = ["aaa", "bbb", "ccc"]
 
 selectedItem = bimpy.Int()
 
-vals = [0., 0.1, 0.2 ,0.1, 0.4, 0.2]
+vals = [0., 0.1, 0.2, 0.1, 0.4, 0.2]
 
-while(not ctx.should_close()):
+while not ctx.should_close():
     ctx.new_frame()
 
     if opened.value:
@@ -45,7 +45,7 @@ while(not ctx.should_close()):
             bimpy.combo("Combo!", selectedItem, mylist)
 
             bimpy.push_item_width(-10.0)
-            bimpy.plot_lines("Some plot", vals, graph_size = bimpy.Vec2(0, 300))
+            bimpy.plot_lines("Some plot", vals, graph_size=bimpy.Vec2(0, 300))
             bimpy.pop_item_width()
 
             a += 0.01

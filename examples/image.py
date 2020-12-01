@@ -9,6 +9,7 @@ img_urls = [
     "https://bellard.org/bpg/3.png"
 ]
 
+
 def download_image(url):
     r = requests.get(url, timeout=4.0)
     if r.status_code != requests.codes.ok:
@@ -23,7 +24,7 @@ ctx.init(800, 800, "Image")
 
 im = None
 
-while(not ctx.should_close()):
+while not ctx.should_close():
     with ctx:
         bimpy.text("Example showing how to display images from PIL Image and numpy array")
 
@@ -67,7 +68,6 @@ while(not ctx.should_close()):
         bimpy.text("Some text behind image. See 'Checkerboard' and 'RGB with alpha' options.")
         bimpy.add_circle_filled(center, 50, 0xaf4bb43c, 255)
         bimpy.set_cursor_pos_y(y)
-
 
         if im is not None:
             bimpy.image(im)

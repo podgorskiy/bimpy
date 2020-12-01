@@ -9,23 +9,23 @@ ctx.init(600, 600, "Sliders")
 with ctx:
     bimpy.themes.set_light_theme()
 
-#slider float3    
+# slider float3
 f1 = bimpy.Float();
 f2 = bimpy.Float();
 f3 = bimpy.Float();
 
-#vertical slider 
+# vertical slider
 f4 = bimpy.Float();
 f5 = bimpy.Float();
     
-#slider_angle
+# slider_angle
 f6 = bimpy.Float();
 
-#slider int2
+# slider int2
 i1 = bimpy.Int();
 i2 = bimpy.Int();
 
-while(not ctx.should_close()):
+while not ctx.should_close():
     ctx.new_frame()
 
     bimpy.begin("Sliders!", flags=bimpy.WindowFlags.AlwaysAutoResize)
