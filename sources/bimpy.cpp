@@ -966,7 +966,9 @@ PYBIND11_MODULE(_bimpy, m) {
 
 	m.def("button", &ImGui::Button, py::arg("label"), py::arg("size") = ImVec2(0,0));
 	m.def("small_button", &ImGui::SmallButton);
-	m.def("invisible_button", &ImGui::InvisibleButton);
+	m.def("invisible_button", &ImGui::InvisibleButton, "button behavior without the visuals, frequently useful to build custom behaviors using the public api (along with IsItemActive, IsItemHovered, etc.)");
+	m.def("arrow_button", &ImGui::ArrowButton, "square button with an arrow shape");
+
 	m.def("tree_node", [](const char* label){ return ImGui::TreeNode(label); }, py::arg("label"));
 	m.def("tree_node_ex", [](int id, ImGuiTreeNodeFlags flags, const char* label){ return ImGui::TreeNodeEx((void*)(intptr_t)id, flags, "%s", label); }, py::arg("id"), py::arg("flags") = 0, py::arg("label")="");
 	m.def("tree_pop", &ImGui::TreePop);
@@ -976,6 +978,7 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("collapsing_header", [](const char* label, ImGuiTreeNodeFlags flags){ return ImGui::CollapsingHeader(label, flags); }, py::arg("label"), py::arg("flags") = 0);
 	m.def("checkbox", [](const char* label, Bool& v){ return ImGui::Checkbox(label, &v.value); });
 	m.def("radio_button", [](const char* label, bool active){ return ImGui::RadioButton(label, active); });
+	m.def("radio_button", [](const char* label, Int& v, int v_button){ return ImGui::RadioButton(label, &v.value, v_button); });
 
 	m.def("begin_combo", &ImGui::BeginCombo, py::arg("label"), py::arg("preview_value"), py::arg("flags") = 0);
 	m.def("end_combo", &ImGui::EndCombo, "only call EndCombo() if BeginCombo() returns true!");
