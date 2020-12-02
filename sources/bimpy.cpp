@@ -436,7 +436,7 @@ PYBIND11_MODULE(_bimpy, m) {
 		.value("NoNavInputs", ImGuiWindowFlags_::ImGuiWindowFlags_NoNavInputs)
 		.value("NoNavFocus", ImGuiWindowFlags_::ImGuiWindowFlags_NoNavFocus)
 		.value("UnsavedDocument", ImGuiWindowFlags_::ImGuiWindowFlags_UnsavedDocument)
-		.value("NoNav ", ImGuiWindowFlags_::ImGuiWindowFlags_NoNav )
+		.value("NoNav", ImGuiWindowFlags_::ImGuiWindowFlags_NoNav )
 		.value("NoDecoration", ImGuiWindowFlags_::ImGuiWindowFlags_NoDecoration)
 		.value("NoInputs", ImGuiWindowFlags_::ImGuiWindowFlags_NoInputs)
 		.export_values();
