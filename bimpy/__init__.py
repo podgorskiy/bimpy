@@ -1,9 +1,12 @@
+# Copyright 2017-2020 Stanislav Pidhorskyi. All rights reserved.
+# License: https://raw.githubusercontent.com/podgorskiy/bimpy/master/LICENSE.txt
+
+
 import sys
 import os
 
-from bimpy.multilingual import unicode_ranges
 
-
+# For debugging using CMakelist build in an IDE
 def _handle_debugging():
     # if running debug session
     if os.path.exists("cmake-build-debug/"):
@@ -18,9 +21,11 @@ from _bimpy import *
 from bimpy import themes
 import bimpy.multilingual.unicode_ranges
 import bimpy.utils
+from bimpy.utils import begin_root
+from bimpy.app import App
 
 
-class IO_wrap():
+class _IO_wrap():
     def __init__(self):
         pass
 
@@ -31,22 +36,18 @@ class IO_wrap():
         return setattr(getio(), key, value)
 
 
-io = IO_wrap()
+io = _IO_wrap()
 
 
-def begin_root(name):
-    set_next_window_pos(Vec2(0, 0))
-    set_next_window_size(io.display_size)
-    push_style_var(Style.WindowRounding, 0)
-    begin("name", flags=WindowFlags.NoDecoration | WindowFlags.NoMove | WindowFlags.NoMove)
-    pop_style_var()
+_sphinx = 'sphinx' in sys.modules
 
+# clean up namespace
+del os
+del sys
+del app
+del _IO_wrap
+del _handle_debugging
 
 # A hack to force sphinx to do the right thing
-if 'sphinx' in sys.modules:
-    del os
-    del sys
+if _sphinx:
     __all__ = dir()
-else:
-    del os
-    del sys

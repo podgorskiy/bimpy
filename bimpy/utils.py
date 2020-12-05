@@ -1,3 +1,6 @@
+# Copyright 2017-2020 Stanislav Pidhorskyi. All rights reserved.
+# License: https://raw.githubusercontent.com/podgorskiy/bimpy/master/LICENSE.txt
+
 import bimpy as bp
 
 
@@ -18,3 +21,13 @@ def help_marker(desc, icon='(?)', width=35.):
         bp.pop_text_wrap_pos()
         bp.end_tooltip()
 
+
+def begin_root(name="root", menu=False):
+    bp.set_next_window_pos(bp.Vec2(0, 0))
+    bp.set_next_window_size(bp.io.display_size)
+    bp.push_style_var(bp.Style.WindowRounding, 0)
+    flags = bp.WindowFlags.NoDecoration | bp.WindowFlags.NoMove
+    if menu:
+        flags = flags | bp.WindowFlags.MenuBar
+    bp.begin("name", flags=flags)
+    bp.pop_style_var()

@@ -1,17 +1,5 @@
-# Copyright 2019-2020 Stanislav Pidhorskyi
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#  http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-# ==============================================================================
+# Copyright 2017-2020 Stanislav Pidhorskyi. All rights reserved.
+# License: https://raw.githubusercontent.com/podgorskiy/bimpy/master/LICENSE.txt
 
 import bimpy
 
@@ -34,14 +22,10 @@ class App:
     Example:
         >>> import bimpy
         >>>
-        >>> class App(anntoolkit.App):
+        >>> class App(bimpy.App):
         >>>     def __init__(self):
         >>>         # Calling constructor of base class
         >>>         super(App, self).__init__(title='Test')
-        >>>
-        >>>         # set image to view
-        >>>         im = imageio.imread('test_image.jpg')
-        >>>         self.set_image(im)
         >>>
         >>> # Run app
         >>> app = App()
@@ -52,15 +36,15 @@ class App:
         self._ctx = bimpy.Context()
         self._ctx.init(width, height, title, **kwargs)
 
-        def mouse_button(down, x, y, lx, ly):
-            self.on_mouse_button(down, x, y, lx, ly)
+        def mouse_button(button, down, x, y):
+            self.on_mouse_button(button, down, x, y)
 
-        self._ctx.set_mouse_button_callback(mouse_button)
+        self._ctx.mouse_button_callback = mouse_button
 
-        def mouse_pos(x, y, lx, ly):
-            self.on_mouse_position(x, y, lx, ly)
+        def mouse_pos(x, y):
+            self.on_mouse_position(x, y)
 
-        self._ctx.set_mouse_position_callback(mouse_pos)
+        self._ctx.mouse_position_callback = mouse_pos
 
         def keyboard(key, action, mods):
             if key < 255:
@@ -72,7 +56,7 @@ class App:
                     del self.keys[key]
             self.on_keyboard(key, action == 1, mods)
 
-        self._ctx.set_keyboard_callback(keyboard)
+        self._ctx.keyboard_callback = keyboard
         self.keys = {}
         self.image = None
 
@@ -97,7 +81,9 @@ class App:
                         self.on_keyboard(k, True, 0)
                         self.keys[k] = 45
 
+                bimpy.begin_root()
                 self.on_update()
+                bimpy.end()
 
     def on_update(self):
         """Is called each frame from the event loop that is run in :meth:`run` method
@@ -114,7 +100,7 @@ class App:
         """
         pass
 
-    def on_mouse_button(self, down, x, y, lx, ly):
+    def on_mouse_button(self, button, down, x, y):
         """Is called on left mouse button event from event loop that is run in :meth:`run` method
         If the user presses left button on the mouse, this method is called
 
@@ -124,16 +110,15 @@ class App:
             * Don't call it, this is callback
 
         Arguments:
+            button (int): If 0 - Left mouse button; if 1 - right mouse button; if > 1  - other buttons.
             down (bool): True if left mouse button is pressed. False if left mouse button is released.
             x (float): x coordinate of mouse cursor in window coordinate system
             y (float): y coordinate of mouse cursor in window coordinate system
-            lx (float): x coordinate of mouse cursor in image coordinate system
-            ly (float): y coordinate of mouse cursor in image coordinate system
 
         """
         pass
 
-    def on_mouse_position(self, x, y, lx, ly):
+    def on_mouse_position(self, x, y):
         """Is called on mouse move event from event loop that is run in :meth:`run` method
         If the user moves mouse, this method is called
 
@@ -145,8 +130,6 @@ class App:
         Arguments:
             x (float): x coordinate of mouse cursor in window coordinate system
             y (float): y coordinate of mouse cursor in window coordinate system
-            lx (float): x coordinate of mouse cursor in image coordinate system
-            ly (float): y coordinate of mouse cursor in image coordinate system
 
         """
         pass

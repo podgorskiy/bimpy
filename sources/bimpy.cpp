@@ -63,6 +63,9 @@ public:
 
 	std::array<float, 4> clearColor = {0.1f, 0.1f, 0.1f, 1.0f};
 
+	py::function mouse_button_callback;
+	py::function mouse_position_callback;
+	py::function keyboard_callback;
 private:
 	GLFWwindow* m_window = nullptr;
 	int m_width;
@@ -153,7 +156,7 @@ void Context::Init(int width, int height, const std::string& name,
 	m_width = width;
 	m_height = height;
 
-	glfwSetWindowUserPointer(m_window, this); // replaced m_imp.get()
+	glfwSetWindowUserPointer(m_window, this);
 
 	glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height)
 	{
@@ -161,8 +164,10 @@ void Context::Init(int width, int height, const std::string& name,
 		ctx->Resize(width, height);
 	});
 
-	glfwSetKeyCallback(m_window, [](GLFWwindow*, int key, int, int action, int mods)
+	glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int, int action, int mods)
 	{
+		Context* ctx = static_cast<Context*>(glfwGetWindowUserPointer(window));
+
 		ImGuiIO& io = ImGui::GetIO();
 		if (action == GLFW_PRESS)
 		{
@@ -177,6 +182,10 @@ void Context::Init(int width, int height, const std::string& name,
 		io.KeyShift = io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
 		io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
 		io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
+		if (ctx->keyboard_callback)
+		{
+			ctx->keyboard_callback(key, action, mods);
+		}
 	});
 
 	glfwSetCharCallback(m_window, [](GLFWwindow*, unsigned int c)
@@ -191,13 +200,29 @@ void Context::Init(int width, int height, const std::string& name,
 		io.MouseWheel += (float) yoffset * 2.0f;
 	});
 
-	glfwSetMouseButtonCallback(m_window, [](GLFWwindow*, int button, int action, int /*mods*/)
+	glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int /*mods*/)
 	{
+		Context* ctx = static_cast<Context*>(glfwGetWindowUserPointer(window));
 		ImGuiIO& io = ImGui::GetIO();
 
 		if (button >= 0 && button < 3)
 		{
 			io.MouseDown[button] = action == GLFW_PRESS;
+		}
+		if (ctx->mouse_button_callback)
+		{
+			double x, y;
+			glfwGetCursorPos(window, &x, &y);
+			ctx->mouse_button_callback(button, action == GLFW_PRESS, (float)x, (float)y);
+		}
+	});
+
+	glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double x, double y)
+	{
+		Context* ctx = static_cast<Context*>(glfwGetWindowUserPointer(window));
+		if (ctx->mouse_position_callback)
+		{
+			ctx->mouse_position_callback((float)x, (float)y);
 		}
 	});
 }
@@ -659,6 +684,10 @@ PYBIND11_MODULE(_bimpy, m) {
 
 		.def_property_readonly("width", &Context::GetWidth)
 		.def_property_readonly("height", &Context::GetHeight)
+
+		.def_readwrite("mouse_button_callback", &Context::mouse_button_callback)
+		.def_readwrite("mouse_position_callback", &Context::mouse_position_callback)
+		.def_readwrite("keyboard_callback", &Context::keyboard_callback)
 
 		.def_readwrite("clear_color", &Context::clearColor)
 		.def("__enter__", &Context::NewFrame)
