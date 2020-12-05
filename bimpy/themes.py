@@ -1,7 +1,9 @@
 import bimpy
 
+
 def __lerp(a, b, t):
     return a + (b - a) * t
+
 
 def set_light_theme():
     """ light style from Pacome Danhiez (user itamago) https://github.com/ocornut/imgui/pull/511#issuecomment-175719267 """

@@ -34,7 +34,18 @@ public:
 	Context(const Context&) = delete;
 	Context() = default;
 
-	void Init(int width, int height, const std::string& name);
+	void Init(int width, int height, const std::string& name,
+			bool resizable,
+			bool visible,
+			bool decorated,
+			bool focused,
+			bool auto_iconify,
+			bool floating,
+			bool maximized,
+			bool transperent,
+			bool focus_on_show,
+			bool scale_to_monitor,
+			bool full_screen);
 
 	void Resize(int width, int height);
 
@@ -62,7 +73,18 @@ private:
 };
 
 
-void Context::Init(int width, int height, const std::string& name)
+void Context::Init(int width, int height, const std::string& name,
+			bool resizable,
+			bool visible,
+			bool decorated,
+			bool focused,
+			bool auto_iconify,
+			bool floating,
+			bool maximized,
+			bool transperent,
+			bool focus_on_show,
+			bool scale_to_monitor,
+			bool full_screen)
 {
 	if (m_window)
 	{
@@ -75,6 +97,17 @@ void Context::Init(int width, int height, const std::string& name)
 		throw runtime_error(
 				"GLFW initialization failed (glfwInit() failed).\nThis may happen if you try to run bimpy on a headless machine ");
 	}
+
+	glfwWindowHint(GLFW_RESIZABLE, (int)resizable);
+	glfwWindowHint(GLFW_VISIBLE, (int)visible);
+	glfwWindowHint(GLFW_DECORATED, (int)decorated);
+	glfwWindowHint(GLFW_FOCUSED, (int)focused);
+	glfwWindowHint(GLFW_AUTO_ICONIFY, (int)auto_iconify);
+	glfwWindowHint(GLFW_FLOATING, (int)floating);
+	glfwWindowHint(GLFW_MAXIMIZED, (int)maximized);
+	glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, (int)transperent);
+	glfwWindowHint(GLFW_FOCUS_ON_SHOW, (int)focus_on_show);
+	glfwWindowHint(GLFW_SCALE_TO_MONITOR, (int)scale_to_monitor);
 
 #if __APPLE__
 	// GL 3.2 + GLSL 150
@@ -92,7 +125,7 @@ void Context::Init(int width, int height, const std::string& name)
 	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 #endif
 
-	m_window = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
+	m_window = glfwCreateWindow(width, height, name.c_str(), full_screen ? glfwGetPrimaryMonitor() : NULL, NULL);
 	if (!m_window)
 	{
 		glfwTerminate();
@@ -384,6 +417,8 @@ private:
 	GLuint m_textureHandle;
 };
 
+auto range_to_list(const ImWchar* r) { std::vector<unsigned short> l; while(*r != 0) { l.push_back(*r); ++r; } return l; }
+
 
 void  AddLine(const ImVec2& a, const ImVec2& b, ImU32 col, float thickness){ ImGui::GetWindowDrawList()->AddLine(a, b, col, thickness); }
 void  AddRect(const ImVec2& a, const ImVec2& b, ImU32 col, float rounding, int rounding_corners_flags, float thickness){ ImGui::GetWindowDrawList()->AddRect(a, b, col, rounding, rounding_corners_flags, thickness); }
@@ -401,6 +436,7 @@ void  PathClear(){ ImGui::GetWindowDrawList()->PathClear(); }
 void  PathLineTo(const ImVec2& pos){ ImGui::GetWindowDrawList()->PathLineTo(pos); }
 void  PathFillConvex(ImU32 col){ ImGui::GetWindowDrawList()->PathFillConvex(col); }
 void  PathStroke(ImU32 col, bool closed, float thickness){ ImGui::GetWindowDrawList()->PathStroke(col, closed, thickness); }
+
 
 PYBIND11_MODULE(_bimpy, m) {
 	static Bool null;
@@ -586,9 +622,37 @@ PYBIND11_MODULE(_bimpy, m) {
 		.value("CollapsingHeader", ImGuiTreeNodeFlags_CollapsingHeader)
 		.export_values();
 
+
+	/*
+	 * int width, int height, const std::string& name,
+			bool resizable,
+			bool visible,
+			bool decorated,
+			bool focused,
+			bool auto_iconify,
+			bool floating,
+			bool maximized,
+			bool transperent,
+			bool focus_on_show,
+			bool scale_to_monitor,
+			bool full_screen)
+	 */
 	py::class_<Context>(m, "Context")
 		.def(py::init())
-		.def("init", &Context::Init, "Initializes context and creates window")
+		.def("init", &Context::Init, "Initializes context and creates window",
+				py::arg("width"), py::arg("height"), py::arg("name"),
+				py::arg("resizable") = true,
+				py::arg("visible") = true,
+				py::arg("decorated") = true,
+				py::arg("focused") = true,
+				py::arg("auto_iconify") = true,
+				py::arg("floating") = false,
+				py::arg("maximized") = false,
+				py::arg("transperent") = false,
+				py::arg("focus_on_show") = true,
+				py::arg("scale_to_monitor") = false,
+				py::arg("full_screen") = false
+		)
 		.def("new_frame", &Context::NewFrame, "Starts a new frame. NewFrame must be called before any imgui functions")
 		.def("render", &Context::Render, "Finalizes the frame and draws all UI. Render must be called after all imgui functions")
 		.def("should_close", &Context::ShouldClose)
@@ -716,6 +780,21 @@ PYBIND11_MODULE(_bimpy, m) {
 			{
 				self.Colors[(int)a] = c;
 			});
+
+	py::class_<ImGuiIO>(m, "IO")
+		.def(py::init())
+			.def_readonly("display_size", &ImGuiIO::DisplaySize)
+			.def_readonly("delta_time", &ImGuiIO::DeltaTime)
+			.def_readwrite("font_global_scale", &ImGuiIO::FontGlobalScale)
+			.def_readonly("backend_platform_name", &ImGuiIO::BackendPlatformName)
+			.def_readonly("backend_render_name", &ImGuiIO::BackendRendererName)
+			.def_readonly("mouse_pos", &ImGuiIO::MousePos)
+			.def_readonly("mouse_down", &ImGuiIO::MouseDown)
+			.def_readonly("mouse_wheel", &ImGuiIO::MouseWheel)
+			.def_readonly("mouse_wheel", &ImGuiIO::MouseWheel)
+			;
+
+	m.def("getio", [](){ return &ImGui::GetIO(); }, py::return_value_policy::reference);
 
 	m.def("get_style", &ImGui::GetStyle);
 	m.def("set_style", [](const ImGuiStyle& a)
@@ -1489,14 +1568,55 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("path_fill_convex", &PathFillConvex, py::arg("col"));
 	m.def("path_stroke", &PathStroke, py::arg("col"), py::arg("closed"), py::arg("thickness"));
 
-	m.def("add_font_from_file_ttf", [](
+	m.def("get_glyph_ranges_default", [](){ return range_to_list(ImGui::GetIO().Fonts->GetGlyphRangesDefault()); });
+	m.def("get_glyph_ranges_korean", [](){ return range_to_list(ImGui::GetIO().Fonts->GetGlyphRangesKorean()); });
+	m.def("get_glyph_ranges_japanese", [](){ return range_to_list(ImGui::GetIO().Fonts->GetGlyphRangesJapanese()); });
+	m.def("get_glyph_ranges_chinese_full", [](){ return range_to_list(ImGui::GetIO().Fonts->GetGlyphRangesChineseFull()); });
+	m.def("get_glyph_ranges_chinese_simplified_common", [](){ return range_to_list(ImGui::GetIO().Fonts->GetGlyphRangesChineseSimplifiedCommon()); });
+	m.def("get_glyph_ranges_cyrillic", [](){ return range_to_list(ImGui::GetIO().Fonts->GetGlyphRangesCyrillic()); });
+	m.def("get_glyph_ranges_thai", [](){ return range_to_list(ImGui::GetIO().Fonts->GetGlyphRangesThai()); });
+	m.def("get_glyph_ranges_vietnamese", [](){ return range_to_list(ImGui::GetIO().Fonts->GetGlyphRangesVietnamese()); });
+
+	auto get_persistent_storage = []()->auto&
+			{ static std::vector<std::shared_ptr<std::vector<unsigned short> > > x; return x;};
+
+	m.def("add_font_from_file_ttf", [get_persistent_storage](
 		std::string filename,
-		float size_pixels = 32.0f)
+		float size_pixels = 32.0f, int oversample=2, bool merge=false, std::vector<unsigned short> range={})
 		{
-			return ImGui::GetIO().Fonts->AddFontFromFileTTF(filename.c_str(), size_pixels);
+            ImFontConfig font_cfg = ImFontConfig();
+            font_cfg.OversampleH = oversample;
+            font_cfg.MergeMode = merge;
+			if (range.size() > 0)
+			{
+				// Data needs to be persistent in memory until the atlas is built
+				auto prange = std::make_shared<std::vector<unsigned short> >(range);
+				prange->push_back(0);
+				get_persistent_storage().push_back(prange);
+				return ImGui::GetIO().Fonts->AddFontFromFileTTF(filename.c_str(), size_pixels, &font_cfg, prange->data());
+			}
+			else
+				return ImGui::GetIO().Fonts->AddFontFromFileTTF(filename.c_str(), size_pixels, &font_cfg);
 		}
 		, py::arg("filename")
-		, py::arg("size_pixels"), py::return_value_policy::reference);
+		, py::arg("size_pixels"), py::arg("oversample") = 2
+		, py::arg("merge") = false, py::arg("range") = std::vector<int>(), py::return_value_policy::reference);
+
+	m.def("add_font_default", [get_persistent_storage](int oversample=2, bool merge=false)
+		{
+            ImFontConfig font_cfg = ImFontConfig();
+            font_cfg.OversampleH = oversample;
+            font_cfg.MergeMode = merge;
+			return ImGui::GetIO().Fonts->AddFontDefault(&font_cfg);
+		}
+		,py::arg("oversample") = 2
+		, py::arg("merge") = false, py::return_value_policy::reference);
+
+	m.def("build_font", [get_persistent_storage]()
+		{
+			ImGui::GetIO().Fonts->Build();
+			get_persistent_storage().clear();
+		});
 
 	m.def("push_font", &ImGui::PushFont);
 	m.def("pop_font", &ImGui::PopFont);

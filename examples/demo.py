@@ -27,6 +27,7 @@
 # [SECTION] Example App: Documents Handling / ShowExampleAppDocuments()
 
 import bimpy as bp
+from bimpy.utils import help_marker
 
 
 # Examples Apps (accessible from the "Examples" menu)
@@ -61,18 +62,6 @@ no_background = bp.Bool(False)
 no_bring_to_front = bp.Bool(False)
 
 show_config_info = bp.Bool(False)
-
-
-# Helper to display a little (?) mark which shows a tooltip when hovered.
-# In your own code you may want to display an actual icon if you are using a merged icon fonts (see docs/FONTS.txt)
-def help_marker(desc):
-    bp.text_disabled("(?)")
-    if bp.is_item_hovered():
-        bp.begin_tooltip()
-        bp.push_text_wrap_pos(bp.get_font_size() * 35.0)
-        bp.text(desc)
-        bp.pop_text_wrap_pos()
-        bp.end_tooltip()
 
 
 #  Helper to display basic user controls.
