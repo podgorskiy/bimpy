@@ -51,7 +51,7 @@ ctx = bp.Context()
 
 ctx.init(600, 600, "Hello")
 
-str = bp.String()
+s = bp.String()
 f = bp.Float()
 
 while not ctx.should_close():
@@ -61,11 +61,12 @@ while not ctx.should_close():
         bp.text("Hello, world!")
 
         if bp.button("OK"):
-            print(str.value)
+            print(s.value)
 
         bp.input_text('string', str, 256)
 
-        bp.slider_float("float", f, 0.0, 1.0)
+        bp.slider_float("float", f,
+                        0.0, 1.0)
 
         bp.end()
 ```
@@ -80,18 +81,19 @@ import bimpy as bp
 class App(bp.App):
     def __init__(self):
         super(App, self).__init__(title='Test')
-        self.string = bp.String()
+        self.s = bp.String()
         self.f = bp.Float()
 
     def on_update(self):
         bp.text("Hello, world!")
 
         if bp.button("OK"):
-            print(self.string.value)
+            print(self.s.value)
 
-        bp.input_text('string', self.string, 256)
+        bp.input_text('string', self.s, 256)
 
-        bp.slider_float("float", self.f, 0.0, 1.0)
+        bp.slider_float("float", self.f,
+                        0.0, 1.0)
 
 
 app = App()
