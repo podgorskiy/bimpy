@@ -31,30 +31,35 @@ Features:
 Hello-world with bimpy:
 
 ```python
-import bimpy
+import bimpy as bp
 
-ctx = bimpy.Context()
-	
+ctx = bp.Context()
+
 ctx.init(600, 600, "Hello")
- 
-str = bimpy.String()
-f = bimpy.Float();
-	
+
+str = bp.String()
+f = bp.Float()
+
 while not ctx.should_close():
-	with ctx: 
-		bimpy.text("Hello, world!")
-		
-		if bimpy.button("OK"):
-			print(str.value)
-		
-		bimpy.input_text('string', str, 256)
-		
-		bimpy.slider_float("float", f, 0.0, 1.0)
+    with ctx:
+        bp.begin_root()
+
+        bp.text("Hello, world!")
+
+        if bp.button("OK"):
+            print(str.value)
+
+        bp.input_text('string', str, 256)
+
+        bp.slider_float("float", f, 0.0, 1.0)
+
+        bp.end()
 ```
 
 
 
-![hello-world](https://i.imgur.com/rL7cFj7.png)
+![Screenshot from 2020-12-05 08-38-39](https://user-images.githubusercontent.com/3229783/101244661-bfe01600-36d5-11eb-9d39-3d19c091abba.png)
+
    
 
 Display image:
