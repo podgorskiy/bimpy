@@ -442,7 +442,7 @@ private:
 	GLuint m_textureHandle;
 };
 
-auto range_to_list(const ImWchar* r) { std::vector<unsigned short> l; while(*r != 0) { l.push_back(*r); ++r; } return l; }
+std::vector<unsigned short> range_to_list(const ImWchar* r) { std::vector<unsigned short> l; while(*r != 0) { l.push_back(*r); ++r; } return l; }
 
 
 void  AddLine(const ImVec2& a, const ImVec2& b, ImU32 col, float thickness){ ImGui::GetWindowDrawList()->AddLine(a, b, col, thickness); }
