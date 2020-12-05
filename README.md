@@ -1,21 +1,18 @@
 bimpy - bundled imgui for python 
 ================================
 
-.. |Downloads| image:: https://pepy.tech/badge/bimpy
-   :target: https://pepy.tech/project/bimpy
-
-.. |Build| image:: https://travis-ci.org/podgorskiy/bimpy.svg?branch=master
-   :target: https://api.travis-ci.com/podgorskiy/bimpy.svg?branch=master
-
-.. |License| image:: https://img.shields.io/badge/License-MIT-yellow.svg
+### **bimpy** is a python module that provides bindings to [dear imgui](https://github.com/ocornut/imgui) and distributed as a self-contained package bundled with [glfw](https://github.com/glfw/glfw) and [gl3w](https://github.com/skaslev/gl3w)
 
 
-:Downloads:     |Downloads|
-:Build status:  |Build|
-:License:       |License|
+<h4 align="center">bimpy is a native extension for Python built with C++ and <a href="https://github.com/pybind/pybind11" target="_blank">pybind11</a>.</h4>
 
+<p align="center">
+  <a href="https://badge.fury.io/py/bimpy"><img src="https://badge.fury.io/py/bimpy.svg" alt="PyPI version" height="18"></a>
+  <a href="https://pepy.tech/project/bimpy"><img src="https://pepy.tech/badge/bimpy"></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/pypi/l/bimpy"></a>
+  <a href="https://api.travis-ci.com/podgorskiy/bimpy.svg?branch=master"><img src="https://travis-ci.org/podgorskiy/bimpy.svg?branch=master"></a>
+</p>
 
-**bimpy** is a python module that provides bindings to `dear imgui <https://github.com/ocornut/imgui>`__ and distributed as a self-contained package bundled with `glfw <https://github.com/glfw/glfw>`__ and `gl3w <https://github.com/skaslev/gl3w>`__.
 
 Features:
 
@@ -33,58 +30,52 @@ Features:
 
 Hello-world with bimpy:
 
-.. code:: python
+```python
+import bimpy
 
-	import bimpy
-
-	ctx = bimpy.Context()
+ctx = bimpy.Context()
+	
+ctx.init(600, 600, "Hello")
+ 
+str = bimpy.String()
+f = bimpy.Float();
+	
+while not ctx.should_close():
+	with ctx: 
+		bimpy.text("Hello, world!")
 		
-	ctx.init(600, 600, "Hello")
-	 
-	str = bimpy.String()
-	f = bimpy.Float();
+		if bimpy.button("OK"):
+			print(str.value)
 		
-	while(not ctx.should_close()):
-		with ctx: 
-			bimpy.text("Hello, world!")
-			
-			if bimpy.button("OK"):
-				print(str.value)
-			
-			bimpy.input_text('string', str, 256)
-			
-			bimpy.slider_float("float", f, 0.0, 1.0)
+		bimpy.input_text('string', str, 256)
+		
+		bimpy.slider_float("float", f, 0.0, 1.0)
+```
 
 
 
-.. figure:: https://i.imgur.com/rL7cFj7.png
-   :alt: hello-world
+![hello-world](https://i.imgur.com/rL7cFj7.png)
    
 
 Display image:
    
-.. code:: python
+```python
+import bimpy
+from PIL import Image
 
-    import bimpy
-    from PIL import Image
+ctx = bimpy.Context()
+ctx.init(800, 800, "Image")
 
-    ctx = bimpy.Context()
+image = Image.open("test.png")
+im = bimpy.Image(image)
 
-    ctx.init(800, 800, "Image")
+while not ctx.should_close():
+    with ctx:
+        bimpy.text("Display PIL Image")
+        bimpy.image(im)
+```
 
-    image = Image.open("test.png")
-
-    im = bimpy.Image(image)
-
-    while(not ctx.should_close()):
-        with ctx:
-            bimpy.text("Display PIL Image")
-
-            bimpy.image(im)
-
-
-.. figure:: https://i.imgur.com/wiDGRpr.png
-   :alt: hello-world
+![hello-world](https://i.imgur.com/wiDGRpr.png)
 
 Similarly, numpy arrays with 2 dimensions, 3 dimensions (2, 3 or 4 channels) of type **np.uint8** can be displayed.
 More examples here: https://github.com/podgorskiy/bimpy/blob/master/examples/image.py
@@ -95,31 +86,31 @@ Install
 
 Installation is easy since the package does not have dependencies:
 
-.. code:: shell
-
-	pip install bimpy
+```shell
+pip install bimpy
+```
 
 Or you can build and install from sources:
 
-.. code:: shell
-
-	python setup.py install
+```shell
+python setup.py install
+```
 
 All c/c++ sources are built with distutils. All you need is a compiler with C++11 support.
 
 Windows users, who use python 2.7 may encounter problems, because on Windows, python 2.7 uses MSVC 9.0, which doesn't have support for c++11. However, you still can build it with more recent MSVC (for example MSVC 14.0, which is Visual C++ 2015) using the commands below:
 
-.. code:: shell
-
-	call "%VS140COMNTOOLS%\VsDevCmd.bat"
-	set VS90COMNTOOLS=%VS140COMNTOOLS%
-	python setup.py install
+```shell
+call "%VS140COMNTOOLS%\VsDevCmd.bat"
+set VS90COMNTOOLS=%VS140COMNTOOLS%
+python setup.py install
+```
 
 If building on Linux, the following dependencies will be needed:
 
-.. code:: shell
-
-	sudo apt-get install mesa-common-dev libxi-dev libxinerama-dev libxrandr-dev libxcursor-dev
+```shell
+sudo apt-get install mesa-common-dev libxi-dev libxinerama-dev libxrandr-dev libxcursor-dev
+```
 
 To build all wheels for linux package distribution (manylinux) run `build_manylinux_wheels.sh`.
 
@@ -140,35 +131,35 @@ Context and window
 
 First of all, you need to import **bimpy**
 
-.. code:: python
-
-	import bimpy
+```python
+import bimpy
+```
 
 Distinctively from **dear imgui**, bimpy does not have global state (**dear imgui** has it by default, but it has an option not to have one). So, you will need to create a context.
 
-.. code:: python
-
-	ctx = bimpy.Context(width, height, name)
+```python
+ctx = bimpy.Context(width, height, name)
+```
 
 Where integers *width* and *height* specify the size of the window, and string *name* is a caption of the window.
 
 All calls to **bimpy**'s API must be within *with* statement applied to the context object:
 
-.. code:: python
-
-	with ctx:
-		bimpy.text("Hello, world!")
+```python
+with ctx:
+    bimpy.text("Hello, world!")
+```
 
 
 And there must be only one *with* statement applied to the context object per frame.
 
 Or, a second option is to manualy call ``ctx.new_frame()`` before all API calls, and then ``ctx.render()`` after.
 
-.. code:: python
-
-	ctx.new_frame()
-	bimpy.text("Hello, world!")
-	ctx.render()
+```python
+ctx.new_frame()
+bimpy.text("Hello, world!")
+ctx.render()
+```
 
 
 You can have multiple *Context* objects for multiple windows, however, API is not thread-safe.
@@ -180,9 +171,9 @@ All **imgui** API that provides user input (such as *InputText*, *SliderFloat*, 
 
 For example, to use *slider_float*, you will need first to create a variable that will hold the state:
 
-.. code:: python
-
-	f = bimpy.Float();
+```python
+f = bimpy.Float();
+```
 
 You can access the value in the following way: ``f.value``
 
@@ -190,20 +181,22 @@ To use it with *slider_float* simply pass it to that function:
 
 .. code:: python
 
-	bimpy.slider_float("float slider", f, 0.0, 1.0)
+```python
+bimpy.slider_float("float slider", f, 0.0, 1.0)
+```
 
 
 All **imgui** input functions that provide multiple inputs, like *SliderFloat2*, *SliderInt4*, *InputInt3*, etc. are mapped to equivalent functions, but instead of passing an array of variables, you need to list all variables in the argument list:
 
-.. code:: python
+```python
+f1 = bimpy.Float();
+f2 = bimpy.Float();
+f3 = bimpy.Float();
 
-	f1 = bimpy.Float();
-	f2 = bimpy.Float();
-	f3 = bimpy.Float();
-
-	while(not ctx.should_close()):
-		with ctx:
-			bimpy.slider_float3("float", f1, f2, f3, 0.0, 1.0)
+while(not ctx.should_close()):
+	with ctx:
+		bimpy.slider_float3("float", f1, f2, f3, 0.0, 1.0)
+```
 
 Draw commands
 ------------------
@@ -211,8 +204,7 @@ Some draw commands are exposed. In contrast to C++ API, the exposed functions ar
 
 List of exposed drawing functions:
 
-.. code:: python
-
+```python
     add_circle(centre: _bimpy.Vec2, radius: float, col: int, num_segments: int=12, thickness: float=1.0) -> None
     add_circle_filled(centre: _bimpy.Vec2, radius: float, col: int, num_segments: int=12) -> None
     add_line(a: _bimpy.Vec2, b: _bimpy.Vec2, col: int, thickness: float=1.0) -> None
@@ -223,14 +215,13 @@ List of exposed drawing functions:
     add_rect_filled_multicolor(a: _bimpy.Vec2, b: _bimpy.Vec2, col_upr_left: int, col_upr_right: int, col_bot_right: int, col_bot_lefs: int) -> None
     add_triangle(a: _bimpy.Vec2, b: _bimpy.Vec2, c: _bimpy.Vec2, col: int, thickness: float=1.0) -> None
     add_triangle_filled(a: _bimpy.Vec2, b: _bimpy.Vec2, c: _bimpy.Vec2, col: int) -> None
+```
 
 Simple usage example below:
 
-.. figure:: https://i.imgur.com/MU5Vhfl.png
-   :alt: hello-world
+![hello-world](https://i.imgur.com/MU5Vhfl.png)
 
-.. code:: python
-
+```python
 	import bimpy
 	import numpy as np
 
@@ -316,6 +307,7 @@ Simple usage example below:
 		bimpy.end()
 
 		ctx.render()
+```
 
 
 Acknowledgements
