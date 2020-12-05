@@ -1,19 +1,23 @@
-import bimpy
+import bimpy as bp
 
-ctx = bimpy.Context()
+ctx = bp.Context()
 
 ctx.init(600, 600, "Hello")
 
-str = bimpy.String()
-f = bimpy.Float()
+str = bp.String()
+f = bp.Float()
 
 while not ctx.should_close():
     with ctx:
-        bimpy.text("Hello, world!")
+        bp.begin_root()
 
-        if bimpy.button("OK"):
+        bp.text("Hello, world!")
+
+        if bp.button("OK"):
             print(str.value)
 
-        bimpy.input_text('string', str, 256)
+        bp.input_text('string', str, 256)
 
-        bimpy.slider_float("float", f, 0.0, 1.0)
+        bp.slider_float("float", f, 0.0, 1.0)
+
+        bp.end()
