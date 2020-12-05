@@ -28,7 +28,21 @@ Features:
 
 * **bimpy** can display images from ndarrays, PIL Images, numpy arrays, etc., 
 
-Hello-world with bimpy:
+# Hello world with bimpy
+
+Core API tries to map to the Dear ImGui as close as possible. There is additional API, such as `bimpy.App` class that simplifies **bimpy** usage
+
+<table>
+<tr><td>
+ 
+Core API
+
+</td> <td> 
+
+Using `bimpy.App` class </td>
+</tr>
+<tr>
+<td>
 
 ```python
 import bimpy as bp
@@ -55,6 +69,38 @@ while not ctx.should_close():
 
         bp.end()
 ```
+
+</td>
+<td> 
+
+```python
+import bimpy as bp
+
+
+class App(bp.App):
+    def __init__(self):
+        super(App, self).__init__(title='Test')
+        self.string = bp.String()
+        self.f = bp.Float()
+
+    def on_update(self):
+        bp.text("Hello, world!")
+
+        if bp.button("OK"):
+            print(self.string.value)
+
+        bp.input_text('string', self.string, 256)
+
+        bp.slider_float("float", self.f, 0.0, 1.0)
+
+
+app = App()
+app.run()
+```
+
+</td>
+</tr>
+</table>
 
 
 
