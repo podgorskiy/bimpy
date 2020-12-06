@@ -19,7 +19,7 @@
 		<stop  offset="0" style="stop-color:#2E1E54"/>
 		<stop  offset="1" style="stop-color:#B94238"/>
 	</linearGradient>
-	<rect y="0.0" class="st0" width="640" height="226"/>
+	<rect class="st0" width="640" height="226"/>
 	<rect y="175" class="st1" width="640" height="51"/>
 	<text transform="matrix(1.0191 0 0 1 121.7368 119.3747)" class="text text_large">bimpy</text>
 	<text transform="matrix(1 0 0 1 530.4453 209.009)" class="text text_version">
