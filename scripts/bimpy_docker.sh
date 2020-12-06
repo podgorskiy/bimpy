@@ -5,7 +5,7 @@
 git clone https://github.com/podgorskiy/bimpy.git
 cd bimpy
 git submodule update --init
-cd glfw
+cd libs/glfw
 git pull origin master
 cd ..
 
