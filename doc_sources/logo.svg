@@ -21,7 +21,7 @@
 	</linearGradient>
 	<rect class="st0" width="640" height="226"/>
 	<rect y="175" class="st1" width="640" height="51"/>
-	<text transform="matrix(1.0191 0 0 1 121.7368 119.3747)" class="text text_large">bimpy</text>
+	<text transform="matrix(1.0191 0 0 1 121.7368 137.0)" class="text text_large">bimpy</text>
 	<text transform="matrix(1 0 0 1 530.4453 209.009)" class="text text_version">
 <!-- VERSION BEGIN -->
 v0.1.0
