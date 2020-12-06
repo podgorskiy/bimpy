@@ -1,0 +1,272 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>bimpy.multilingual.unicode_ranges &mdash; bimpy  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> bimpy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">First steps</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../bimpy.html">bimpy - References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">bimpy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>bimpy.multilingual.unicode_ranges</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for bimpy.multilingual.unicode_ranges</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">bimpy</span>
+
+<span class="n">latin</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mh">0x0020</span><span class="p">,</span> <span class="mh">0x00FF</span><span class="p">,</span>  <span class="c1"># Basic Latin + Latin Supplement</span>
+<span class="p">]</span>
+<span class="n">latin_extension_A</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mh">0x0100</span><span class="p">,</span> <span class="mh">0x0180</span><span class="p">,</span>  <span class="c1"># Extended_A</span>
+<span class="p">]</span>
+<span class="n">latin_extension_B</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mh">0x0180</span><span class="p">,</span> <span class="mh">0x0250</span><span class="p">,</span>  <span class="c1"># Extended_B</span>
+<span class="p">]</span>
+<span class="n">greek</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mh">0x0370</span><span class="p">,</span> <span class="mh">0x0400</span><span class="p">,</span>
+    <span class="mh">0x1F00</span><span class="p">,</span> <span class="mh">0x2000</span>   <span class="c1"># extended</span>
+<span class="p">]</span>
+<span class="n">cyrillic</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mh">0x0400</span><span class="p">,</span> <span class="mh">0x052F</span><span class="p">,</span>  <span class="c1"># Cyrillic + Cyrillic Supplement</span>
+    <span class="mh">0x2DE0</span><span class="p">,</span> <span class="mh">0x2DFF</span><span class="p">,</span>  <span class="c1"># Cyrillic Extended-A</span>
+    <span class="mh">0xA640</span><span class="p">,</span> <span class="mh">0xA69F</span><span class="p">,</span>  <span class="c1"># Cyrillic Extended-B</span>
+<span class="p">]</span>
+<span class="n">armenian</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mh">0x0530</span><span class="p">,</span> <span class="mh">0x0590</span>
+<span class="p">]</span>
+
+<span class="n">general_punctuation</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mh">0x2000</span><span class="p">,</span> <span class="mh">0x206F</span><span class="p">,</span>  <span class="c1"># General Punctuation</span>
+<span class="p">]</span>
+<span class="n">currency</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mh">0x20A0</span><span class="p">,</span> <span class="mh">0x20CF</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">letterlike</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mh">0x2100</span><span class="p">,</span> <span class="mh">0x214F</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">number_forms</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mh">0x2150</span><span class="p">,</span> <span class="mh">0x218F</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">arrows</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mh">0x2190</span><span class="p">,</span> <span class="mh">0x21FF</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">math</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mh">0x2200</span><span class="p">,</span> <span class="mh">0x22FF</span>
+<span class="p">]</span>
+
+<span class="n">katakana</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mh">0x30A0</span><span class="p">,</span> <span class="mh">0x30FF</span><span class="p">,</span>  <span class="c1"># Katakana</span>
+    <span class="mh">0x31F0</span><span class="p">,</span> <span class="mh">0x31FF</span><span class="p">,</span>  <span class="c1"># Katakana Phonetic Extensions</span>
+<span class="p">]</span>
+<span class="n">hiragana</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mh">0x3040</span><span class="p">,</span> <span class="mh">0x309F</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">hangul</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mh">0xAC00</span><span class="p">,</span> <span class="mh">0xD79D</span><span class="p">,</span>  <span class="c1"># Hangul Syllables</span>
+    <span class="mh">0x1100</span><span class="p">,</span> <span class="mh">0x11FF</span><span class="p">,</span>  <span class="c1"># Hangul Jamo</span>
+    <span class="mh">0x3130</span><span class="p">,</span> <span class="mh">0x318F</span>   <span class="c1"># Hangul Compatibility Jamo</span>
+<span class="p">]</span>
+<span class="n">CJK_punctuations</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mh">0x3000</span><span class="p">,</span> <span class="mh">0x303F</span>
+<span class="p">]</span>
+<span class="n">CJK_unified</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mh">0x4e00</span><span class="p">,</span> <span class="mh">0x9FFF</span><span class="p">,</span>  <span class="c1"># CJK Unified Ideograms</span>
+<span class="p">]</span>
+<span class="n">Halfwidth_and_Fullwidth</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mh">0xFF00</span><span class="p">,</span> <span class="mh">0xFFEF</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">CJK_extension_A</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mh">0x3400</span><span class="p">,</span> <span class="mh">0x4DBF</span>  <span class="c1"># CJK Han Ideograms</span>
+<span class="p">]</span>
+<span class="n">CJK_compatibility</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mh">0xF900</span><span class="p">,</span> <span class="mh">0xFAFF</span>   <span class="c1"># CJK Compatibility Ideographs</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="get_simplified_chinese_common"><a class="viewcode-back" href="../../../bimpy.multilingual.html#bimpy.multilingual.unicode_ranges.get_simplified_chinese_common">[docs]</a><span class="k">def</span> <span class="nf">get_simplified_chinese_common</span><span class="p">():</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">bimpy</span><span class="o">.</span><span class="n">get_glyph_ranges_chinese_simplified_common</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="k">if</span> <span class="mh">0xFF00</span> <span class="o">&gt;</span> <span class="n">r</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mh">0x4E00</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">r</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span><span class="p">:]</span></div>
+
+
+<div class="viewcode-block" id="get_japanese_common"><a class="viewcode-back" href="../../../bimpy.multilingual.html#bimpy.multilingual.unicode_ranges.get_japanese_common">[docs]</a><span class="k">def</span> <span class="nf">get_japanese_common</span><span class="p">():</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">bimpy</span><span class="o">.</span><span class="n">get_glyph_ranges_japanese</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="k">if</span> <span class="mh">0xFF00</span> <span class="o">&gt;</span> <span class="n">r</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mh">0x4E00</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">r</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">i</span><span class="p">:]</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Stanislav Pidhorskyi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

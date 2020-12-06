@@ -1,0 +1,374 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>bimpy.app &mdash; bimpy  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> bimpy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">First steps</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../bimpy.html">bimpy - References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">bimpy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>bimpy.app</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for bimpy.app</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2017-2020 Stanislav Pidhorskyi. All rights reserved.</span>
+<span class="c1"># License: https://raw.githubusercontent.com/podgorskiy/bimpy/master/LICENSE.txt</span>
+
+<span class="kn">import</span> <span class="nn">bimpy</span>
+
+
+<div class="viewcode-block" id="App"><a class="viewcode-back" href="../../bimpy.html#bimpy.App">[docs]</a><span class="k">class</span> <span class="nc">App</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;A base class for the application.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        You need to implement your own application class that derives from this class.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        You will need to call `set_image` before you can run it</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        width (int): width of the window. Default: 600.</span>
+<span class="sd">        height (int): height of the window. Default: 600.</span>
+<span class="sd">        title (str): title of the window. Default: &quot;Hello&quot;.</span>
+
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; import bimpy</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; class App(bimpy.App):</span>
+<span class="sd">        &gt;&gt;&gt;     def __init__(self):</span>
+<span class="sd">        &gt;&gt;&gt;         # Calling constructor of base class</span>
+<span class="sd">        &gt;&gt;&gt;         super(App, self).__init__(title=&#39;Test&#39;)</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # Run app</span>
+<span class="sd">        &gt;&gt;&gt; app = App()</span>
+<span class="sd">        &gt;&gt;&gt; app.run()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ctx</span> <span class="o">=</span> <span class="n">bimpy</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ctx</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">mouse_button</span><span class="p">(</span><span class="n">button</span><span class="p">,</span> <span class="n">down</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_mouse_button</span><span class="p">(</span><span class="n">button</span><span class="p">,</span> <span class="n">down</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ctx</span><span class="o">.</span><span class="n">mouse_button_callback</span> <span class="o">=</span> <span class="n">mouse_button</span>
+
+        <span class="k">def</span> <span class="nf">mouse_pos</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_mouse_position</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ctx</span><span class="o">.</span><span class="n">mouse_position_callback</span> <span class="o">=</span> <span class="n">mouse_pos</span>
+
+        <span class="k">def</span> <span class="nf">keyboard</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">mods</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">&lt;</span> <span class="mi">255</span><span class="p">:</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="nb">chr</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">:</span>
+                    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_keyboard</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">action</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">mods</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ctx</span><span class="o">.</span><span class="n">keyboard_callback</span> <span class="o">=</span> <span class="n">keyboard</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keys</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="App.run"><a class="viewcode-back" href="../../bimpy.html#bimpy.App.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Runs the application.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            This is a blocking call. It won&#39;t return until the window is closed</span>
+
+<span class="sd">        Runs an event loop, where it process user input and updates window.</span>
+<span class="sd">        Call callback method  :meth:`on_update`.</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; app = App()</span>
+<span class="sd">            &gt;&gt;&gt; app.run()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ctx</span><span class="o">.</span><span class="n">should_close</span><span class="p">():</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ctx</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">on_keyboard</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="mi">45</span>
+
+                <span class="n">bimpy</span><span class="o">.</span><span class="n">begin_root</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">on_update</span><span class="p">()</span>
+                <span class="n">bimpy</span><span class="o">.</span><span class="n">end</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="App.on_update"><a class="viewcode-back" href="../../bimpy.html#bimpy.App.on_update">[docs]</a>    <span class="k">def</span> <span class="nf">on_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Is called each frame from the event loop that is run in :meth:`run` method</span>
+
+<span class="sd">        Empty method, you need to overwrite it.</span>
+<span class="sd">        Do all drawing from here.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            * Calls to draw API are valid only from within this method. Draw API: :meth:`point`,  :meth:`box`,  :meth:`text`, etc.</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            * Don&#39;t call it, this is callback</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="App.on_mouse_button"><a class="viewcode-back" href="../../bimpy.html#bimpy.App.on_mouse_button">[docs]</a>    <span class="k">def</span> <span class="nf">on_mouse_button</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">button</span><span class="p">,</span> <span class="n">down</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Is called on left mouse button event from event loop that is run in :meth:`run` method</span>
+<span class="sd">        If the user presses left button on the mouse, this method is called</span>
+
+<span class="sd">        Empty method, you need to overwrite it</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            * Don&#39;t call it, this is callback</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            button (int): If 0 - Left mouse button; if 1 - right mouse button; if &gt; 1  - other buttons.</span>
+<span class="sd">            down (bool): True if left mouse button is pressed. False if left mouse button is released.</span>
+<span class="sd">            x (float): x coordinate of mouse cursor in window coordinate system</span>
+<span class="sd">            y (float): y coordinate of mouse cursor in window coordinate system</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="App.on_mouse_position"><a class="viewcode-back" href="../../bimpy.html#bimpy.App.on_mouse_position">[docs]</a>    <span class="k">def</span> <span class="nf">on_mouse_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Is called on mouse move event from event loop that is run in :meth:`run` method</span>
+<span class="sd">        If the user moves mouse, this method is called</span>
+
+<span class="sd">        Empty method, you need to overwrite it</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            * Don&#39;t call it, this is callback</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            x (float): x coordinate of mouse cursor in window coordinate system</span>
+<span class="sd">            y (float): y coordinate of mouse cursor in window coordinate system</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="App.on_keyboard"><a class="viewcode-back" href="../../bimpy.html#bimpy.App.on_keyboard">[docs]</a>    <span class="k">def</span> <span class="nf">on_keyboard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">down</span><span class="p">,</span> <span class="n">mods</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Is called on keybord key event from event loop that is run in :meth:`run` method</span>
+
+<span class="sd">        Empty method, you need to overwrite it</span>
+
+<span class="sd">        .. warning::</span>
+<span class="sd">            * Don&#39;t call it, this is callback</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            key (int): The key that generated even. Can be `anntoolkit.KeyEscape`, `anntoolkit.KeyTab`,</span>
+<span class="sd">                `anntoolkit.KeyBackspace`, `anntoolkit.KeyInsert`, `anntoolkit.KeyDelete`, `anntoolkit.KeyRight`, `anntoolkit.KeyLeft`, `anntoolkit.KeyDown`, `anntoolkit.KeyUp` or any char from &#39;A&#39; to &#39;Z&#39;</span>
+<span class="sd">            down (bool): True if key is pressed. False if key is released.</span>
+<span class="sd">            mods (int): Indicates additional modifing keys, such as Ctrl, Shift, Alt</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; def on_keyboard(self, key, down, mods):</span>
+<span class="sd">            &gt;&gt;&gt;     if down:</span>
+<span class="sd">            &gt;&gt;&gt;         if key == anntoolkit.KeyLeft:</span>
+<span class="sd">            &gt;&gt;&gt;             ...</span>
+<span class="sd">            &gt;&gt;&gt;         if key == anntoolkit.KeyRight:</span>
+<span class="sd">            &gt;&gt;&gt;             ...</span>
+<span class="sd">            &gt;&gt;&gt;         if key == anntoolkit.KeyUp:</span>
+<span class="sd">            &gt;&gt;&gt;             ...</span>
+<span class="sd">            &gt;&gt;&gt;         if key == anntoolkit.KeyDown:</span>
+<span class="sd">            &gt;&gt;&gt;             ...</span>
+<span class="sd">            &gt;&gt;&gt;         if key == anntoolkit.KeyDelete:</span>
+<span class="sd">            &gt;&gt;&gt;             ...</span>
+<span class="sd">            &gt;&gt;&gt;         if key == anntoolkit.KeyBackspace:</span>
+<span class="sd">            &gt;&gt;&gt;             ...</span>
+<span class="sd">            &gt;&gt;&gt;         if key == &#39;R&#39;:</span>
+<span class="sd">            &gt;&gt;&gt;             ...</span>
+<span class="sd">            &gt;&gt;&gt;         if key == &#39;A&#39;:</span>
+<span class="sd">            &gt;&gt;&gt;             ...</span>
+<span class="sd">            &gt;&gt;&gt;         if key == &#39;Q&#39;:</span>
+<span class="sd">            &gt;&gt;&gt;             ...</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">width</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Width of the window</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ctx</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">height</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Height of the window</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ctx</span><span class="o">.</span><span class="n">height</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Stanislav Pidhorskyi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
