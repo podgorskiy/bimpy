@@ -7,7 +7,7 @@ cd bimpy
 git submodule update --init
 cd libs/glfw
 git pull origin master
-cd ..
+cd ../..
 
 yum install -y libX11-devel libXcursor-devel libXrandr-devel libXinerama-devel mesa-libGL-devel libXi-devel
 
