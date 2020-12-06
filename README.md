@@ -1,14 +1,11 @@
 bimpy - bundled imgui for python 
 ================================
 
-<h1 align="center">
-  <img src="doc_sources/logo.svg">
-</h1>
+<img src="doc_sources/logo.svg">
 
-### **bimpy** is a python module that provides bindings to [dear imgui](https://github.com/ocornut/imgui) and distributed as a self-contained package bundled with [glfw](https://github.com/glfw/glfw) and [gl3w](https://github.com/skaslev/gl3w)
-
-
-<h4 align="center">bimpy is a native extension for Python built with C++ and <a href="https://github.com/pybind/pybind11" target="_blank">pybind11</a>.</h4>
+<h4 align="center">
+<strong>bimpy</strong> is a a native extension for Python built with C++ and <a href="https://github.com/pybind/pybind11"></a> that provides bindings to <a href="https://github.com/ocornut/imgui">dear imgui</a> and distributed as a self-contained package bundled with <a href="https://github.com/glfw/glfw">glfw</a> and <a href="https://github.com/skaslev/gl3w">gl3w</a>
+</h4>
 
 <p align="center">
   <a href="https://badge.fury.io/py/bimpy"><img src="https://badge.fury.io/py/bimpy.svg" alt="PyPI version" height="18"></a>
