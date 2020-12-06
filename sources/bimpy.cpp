@@ -1606,7 +1606,7 @@ PYBIND11_MODULE(_bimpy, m) {
 	m.def("get_glyph_ranges_thai", [](){ return range_to_list(ImGui::GetIO().Fonts->GetGlyphRangesThai()); });
 	m.def("get_glyph_ranges_vietnamese", [](){ return range_to_list(ImGui::GetIO().Fonts->GetGlyphRangesVietnamese()); });
 
-	auto get_persistent_storage = []()->auto&
+	auto get_persistent_storage = []()->std::vector<std::shared_ptr<std::vector<unsigned short> > >&
 			{ static std::vector<std::shared_ptr<std::vector<unsigned short> > > x; return x;};
 
 	m.def("add_font_from_file_ttf", [get_persistent_storage](
