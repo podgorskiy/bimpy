@@ -1,0 +1,249 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>bimpy.multilingual.load_fonts &mdash; bimpy  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> bimpy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">First steps</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../bimpy.html">bimpy - References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">bimpy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>bimpy.multilingual.load_fonts</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for bimpy.multilingual.load_fonts</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">bimpy</span> <span class="k">as</span> <span class="nn">bp</span>
+<span class="kn">import</span> <span class="nn">bimpy.multilingual.unicode_ranges</span> <span class="k">as</span> <span class="nn">unicode_ranges</span>
+<span class="kn">import</span> <span class="nn">bimpy.download</span> <span class="k">as</span> <span class="nn">download</span>
+
+
+<div class="viewcode-block" id="load_fonts"><a class="viewcode-back" href="../../../bimpy.html#bimpy.load_fonts">[docs]</a><span class="k">def</span> <span class="nf">load_fonts</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">22</span><span class="p">,</span>
+               <span class="n">latin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">latin_ext</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">greek</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cyrillic</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">armenian</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">special</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+               <span class="n">chinese</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">japanese</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">korean</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+               <span class="n">simplified_chinese_common</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">japanese_common</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+               <span class="n">cjk_unified</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">katakana</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">hiragana</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cjk_ext_a</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cjk_compatibility</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">ranges</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">cjk</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">if</span> <span class="n">latin</span><span class="p">:</span>
+        <span class="n">ranges</span> <span class="o">+=</span> <span class="n">unicode_ranges</span><span class="o">.</span><span class="n">latin</span>
+    <span class="k">if</span> <span class="n">latin_ext</span><span class="p">:</span>
+        <span class="n">ranges</span> <span class="o">+=</span> <span class="n">unicode_ranges</span><span class="o">.</span><span class="n">latin_extension_A</span> <span class="o">+</span> <span class="n">unicode_ranges</span><span class="o">.</span><span class="n">latin_extension_B</span>
+    <span class="k">if</span> <span class="n">greek</span><span class="p">:</span>
+        <span class="n">ranges</span> <span class="o">+=</span> <span class="n">unicode_ranges</span><span class="o">.</span><span class="n">greek</span>
+    <span class="k">if</span> <span class="n">cyrillic</span><span class="p">:</span>
+        <span class="n">ranges</span> <span class="o">+=</span> <span class="n">unicode_ranges</span><span class="o">.</span><span class="n">cyrillic</span>
+    <span class="k">if</span> <span class="n">armenian</span><span class="p">:</span>
+        <span class="n">ranges</span> <span class="o">+=</span> <span class="n">unicode_ranges</span><span class="o">.</span><span class="n">armenian</span>
+    <span class="k">if</span> <span class="n">special</span><span class="p">:</span>
+        <span class="n">ranges</span> <span class="o">+=</span> <span class="n">unicode_ranges</span><span class="o">.</span><span class="n">math</span> <span class="o">+</span> <span class="n">unicode_ranges</span><span class="o">.</span><span class="n">arrows</span> <span class="o">+</span> <span class="n">unicode_ranges</span><span class="o">.</span><span class="n">currency</span>
+        <span class="n">ranges</span> <span class="o">+=</span> <span class="n">unicode_ranges</span><span class="o">.</span><span class="n">general_punctuation</span> <span class="o">+</span> <span class="n">unicode_ranges</span><span class="o">.</span><span class="n">letterlike</span> <span class="o">+</span> <span class="n">unicode_ranges</span><span class="o">.</span><span class="n">number_forms</span>
+    <span class="k">if</span> <span class="n">chinese</span> <span class="ow">or</span> <span class="n">japanese</span> <span class="ow">or</span> <span class="n">korean</span> <span class="ow">or</span> <span class="n">cjk_unified</span> <span class="ow">or</span> <span class="n">simplified_chinese_common</span> <span class="ow">or</span> <span class="n">japanese_common</span> <span class="ow">or</span> <span class="n">katakana</span> <span class="ow">or</span> <span class="n">hiragana</span><span class="p">:</span>
+        <span class="n">ranges</span> <span class="o">+=</span> <span class="n">unicode_ranges</span><span class="o">.</span><span class="n">CJK_punctuations</span>
+        <span class="n">cjk</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="n">chinese</span> <span class="ow">or</span> <span class="n">japanese</span> <span class="ow">or</span> <span class="n">cjk_unified</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">simplified_chinese_common</span> <span class="ow">or</span> <span class="n">japanese_common</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Simplified Chinese common or Japanese common sets should not be mixed with the full sets&quot;</span><span class="p">)</span>
+        <span class="n">ranges</span> <span class="o">+=</span> <span class="n">unicode_ranges</span><span class="o">.</span><span class="n">CJK_unified</span>
+    <span class="k">if</span> <span class="n">simplified_chinese_common</span><span class="p">:</span>
+        <span class="n">ranges</span> <span class="o">+=</span> <span class="n">unicode_ranges</span><span class="o">.</span><span class="n">get_simplified_chinese_common</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">japanese_common</span><span class="p">:</span>
+        <span class="n">ranges</span> <span class="o">+=</span> <span class="n">unicode_ranges</span><span class="o">.</span><span class="n">get_japanese_common</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">japanese</span> <span class="ow">or</span> <span class="n">japanese_common</span><span class="p">:</span>
+        <span class="n">katakana</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">hiragana</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="n">katakana</span><span class="p">:</span>
+        <span class="n">ranges</span> <span class="o">+=</span> <span class="n">unicode_ranges</span><span class="o">.</span><span class="n">katakana</span>
+    <span class="k">if</span> <span class="n">hiragana</span><span class="p">:</span>
+        <span class="n">ranges</span> <span class="o">+=</span> <span class="n">unicode_ranges</span><span class="o">.</span><span class="n">hiragana</span>
+    <span class="k">if</span> <span class="n">korean</span><span class="p">:</span>
+        <span class="n">ranges</span> <span class="o">+=</span> <span class="n">unicode_ranges</span><span class="o">.</span><span class="n">hangul</span>
+    <span class="k">if</span> <span class="n">cjk_ext_a</span><span class="p">:</span>
+        <span class="n">ranges</span> <span class="o">+=</span> <span class="n">unicode_ranges</span><span class="o">.</span><span class="n">CJK_extension_A</span>
+    <span class="k">if</span> <span class="n">cjk_compatibility</span><span class="p">:</span>
+        <span class="n">ranges</span> <span class="o">+=</span> <span class="n">unicode_ranges</span><span class="o">.</span><span class="n">CJK_compatibility</span> <span class="o">+</span> <span class="n">unicode_ranges</span><span class="o">.</span><span class="n">Halfwidth_and_Fullwidth</span>
+
+    <span class="n">ranges</span> <span class="o">=</span> <span class="nb">list</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">sub</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">ranges</span><span class="p">[::</span><span class="mi">2</span><span class="p">],</span> <span class="n">ranges</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">])))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sub</span><span class="p">])</span>  <span class="c1"># keep unique ranges</span>
+
+    <span class="n">noto_sans_regular</span> <span class="o">=</span> <span class="n">download</span><span class="o">.</span><span class="n">get_font_cached_or_download</span><span class="p">(</span><span class="s1">&#39;https://github.com/googlefonts/noto-fonts/blob/master/hinted/ttf/NotoSans/NotoSans-Regular.ttf?raw=true&#39;</span><span class="p">,</span> <span class="s1">&#39;NotoSans-Regular.ttf&#39;</span><span class="p">)</span>
+
+    <span class="n">bp</span><span class="o">.</span><span class="n">add_font_from_file_ttf</span><span class="p">(</span><span class="n">noto_sans_regular</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">ranges</span><span class="p">,</span> <span class="n">oversample</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">cjk</span><span class="p">:</span>
+        <span class="n">noto_sans_cjk</span> <span class="o">=</span> <span class="n">download</span><span class="o">.</span><span class="n">get_font_cached_or_download</span><span class="p">(</span><span class="s1">&#39;https://github.com/googlefonts/noto-cjk/blob/master/NotoSansCJK-Regular.ttc?raw=true&#39;</span><span class="p">,</span> <span class="s1">&#39;NotoSansCJK-Regular.ttf&#39;</span><span class="p">)</span>
+        <span class="n">bp</span><span class="o">.</span><span class="n">add_font_from_file_ttf</span><span class="p">(</span><span class="n">noto_sans_cjk</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">ranges</span><span class="p">,</span> <span class="n">oversample</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Stanislav Pidhorskyi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
