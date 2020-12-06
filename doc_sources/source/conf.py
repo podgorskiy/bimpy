@@ -13,8 +13,7 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../../'))
-##import _bimpy
-#_bimpy.__name__ = 'bimpy'
+sys.path.insert(0, os.path.abspath('../../cmake-build-debug'))
 
 # -- Project information -----------------------------------------------------
 

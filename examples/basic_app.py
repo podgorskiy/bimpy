@@ -1,10 +1,3 @@
-import sys
-import os
-
-if os.path.exists("../cmake-build-debug/"):
-    print('Running Debugging session!')
-    sys.path.insert(0, "../cmake-build-debug/")
-
 import bimpy as bp
 
 

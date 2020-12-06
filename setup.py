@@ -256,7 +256,7 @@ extension = Extension("_bimpy",
                           "imgui",
                           "pybind11/include",
                           "backward-cpp",
-                          "gl3w/include"], "libs") + ["config", "sources"],
+                          "gl3w/include"], "libs") + ["sources/config", "sources"],
                       extra_compile_args=extra_compile_args[target_os],
                       extra_link_args=extra_link[target_os],
                       libraries=libs[target_os])
