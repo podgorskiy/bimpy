@@ -19,16 +19,13 @@
 <g id="Layer_1">
 	<rect class="st0" width="640" height="253"/>
 	<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="55.9014" y1="235.2697" x2="637.0977" y2="-3.505">
-		<stop  offset="0" style="stop-color:#3E4669"/>
-		<stop  offset="0.1743" style="stop-color:#574B60"/>
-		<stop  offset="0.5582" style="stop-color:#8A5448"/>
-		<stop  offset="0.8291" style="stop-color:#AD5830"/>
-		<stop  offset="0.9603" style="stop-color:#BB5927"/>
+		<stop  offset="0" style="stop-color:#2E1E54"/>
+		<stop  offset="1" style="stop-color:#B94238"/>
 	</linearGradient>
 	<rect class="st1" width="640" height="253"/>
 	<rect y="193.07" class="st2" width="640" height="60.47"/>
 	<text transform="matrix(1.0191 0 0 1 121.7368 137.1659)" class="st3 st4 st5">bimpy</text>
-	<text transform="matrix(1 0 0 1 550.4453 230.8002)" class="st3 st4 st6">
+	<text transform="matrix(1 0 0 1 530.0 230.0)" class="st3 st4 st6">
 <!-- VERSION BEGIN -->
 v0.1.0
 <!-- VERSION END -->
