@@ -21,8 +21,10 @@ from _bimpy import *
 from bimpy import themes
 import bimpy.multilingual.unicode_ranges
 import bimpy.utils
+import bimpy.download
 from bimpy.utils import begin_root
 from bimpy.app import App
+from bimpy.multilingual.load_fonts import load_fonts
 
 
 class _IO_wrap():

@@ -17,17 +17,16 @@ bimpy - bundled imgui for python
 
 Features:
 
-* Allows to create immediate mode UI with python easily. The API is kept as close to the original dear imgui as possible.
+* Immediate mode UI with python. The API is kept as close to the original dear imgui as possible.
 
 * **bimpy** already has all necessary functionality for window/OpenGL context creation and hides those details from the user.
 
-* **bimpy** supports multiple contexts and allows creating multiple windows. 
+* **bimpy** can display images from ndarrays, PIL Images, numpy arrays, etc., 
 
 * **bimpy** works on Windows, GNU Linux, and macOS.
 
-* **bimpy** does not have dependencies and can be easely built from sources. Building relies only on distutils.
+* **bimpy** does not have dependencies and can be easily built from sources. Building relies only on distutils.
 
-* **bimpy** can display images from ndarrays, PIL Images, numpy arrays, etc., 
 
 # Hello world with bimpy
 
@@ -57,8 +56,6 @@ f = bp.Float()
 
 while not ctx.should_close():
     with ctx:
-        bp.begin_root()
-
         bp.text("Hello, world!")
 
         if bp.button("OK"):
@@ -67,8 +64,6 @@ while not ctx.should_close():
         bp.input_text('string', str, 256)
 
         bp.slider_float("float", f, 0, 1)
-
-        bp.end()
 ```
 
 </td>
@@ -108,9 +103,14 @@ app.run()
 ![Screenshot from 2020-12-05 08-38-39](https://user-images.githubusercontent.com/3229783/101244661-bfe01600-36d5-11eb-9d39-3d19c091abba.png)
 
    
+# Display images
 
-Display image:
-   
+
+Display PIL image:
+
+<table>
+<tr><td>
+ 
 ```python
 import bimpy
 from PIL import Image
@@ -127,10 +127,128 @@ while not ctx.should_close():
         bimpy.image(im)
 ```
 
-![hello-world](https://i.imgur.com/wiDGRpr.png)
+</td> <td> 
+
+![Screenshot from 2020-12-06 06-58-02](https://user-images.githubusercontent.com/3229783/101279465-743e7280-3790-11eb-9364-137c336b78a2.png)
+
+
+
+</td>
+</tr>
+</table>
+
 
 Similarly, numpy arrays with 2 dimensions, 3 dimensions (2, 3 or 4 channels) of type **np.uint8** can be displayed.
+
+
+Display numpy, ndarray image:
+
+<table>
+<tr><td>
+ 
+```python
+import bimpy
+from PIL import Image
+import numpy as np
+
+ctx = bimpy.Context()
+ctx.init(800, 800, "Image")
+
+image = np.asarray(Image.open("3.png"), dtype=np.uint8)
+im = bimpy.Image(image)
+
+while not ctx.should_close():
+    with ctx:
+        bimpy.text("Display Image of type:")
+        bimpy.same_line()
+        bimpy.text(str(type(image)))
+        bimpy.image(im)
+```
+
+</td> <td> 
+
+![Screenshot from 2020-12-06 07-05-08](https://user-images.githubusercontent.com/3229783/101279636-8ff64880-3791-11eb-8646-9957b0c42d1a.png)
+
+</td>
+</tr>
+</table>
+
 More examples here: https://github.com/podgorskiy/bimpy/blob/master/examples/image.py
+
+Non-english text
+================
+
+Use builtin `bp.load_fonts` to load fonts with CJK, cyrillic, greek  characters
+
+<table>
+<tr><td>
+ 
+```python
+import bimpy as bp
+
+
+ctx = bp.Context()
+
+ctx.init(600, 600, "Hello")
+
+bp.load_fonts(
+    chinese=True, 
+    latin_ext=True, 
+    japanese=True, 
+    cyrillic=True
+)
+
+
+while not ctx.should_close():
+    with ctx:
+        chinese = u"學而不思則罔，思而不學則殆。"
+        japanese = u"二兎を追う者は一兎をも得ず。 "
+
+        hiragana = u"あ い う え お か ..."
+        katakana = u"ア イ ウ エ オ カ ..."
+        kanji = "川 月 木 心 火 左 北 今..."
+
+        ukrainian = "Садок вишневий коло..."
+        polish = "Hej, tam gdzieś z nad..."
+        russian = "Ночь, улица, фонарь, ..."
+
+        bp.text('Chinese:')
+        bp.indent()
+        bp.text(chinese)
+        bp.unindent()
+        bp.text('Japanese:')
+        bp.indent()
+        bp.text(japanese)
+        bp.bullet_text("hiragana: " + hiragana)
+        bp.bullet_text("katakana: " + katakana)
+        bp.bullet_text("kanji: " + kanji)
+        bp.unindent()
+        bp.separator()
+        bp.text('Ukrainian:')
+        bp.indent()
+        bp.text(ukrainian)
+        bp.unindent()
+        bp.separator()
+        bp.text('Polish:')
+        bp.indent()
+        bp.text(polish)
+        bp.unindent()
+        bp.separator()
+        bp.text('Russian:')
+        bp.indent()
+        bp.text(russian)
+        bp.unindent()
+        bp.separator()
+
+```
+
+</td> <td> 
+
+![Screenshot from 2020-12-06 08-31-13](https://user-images.githubusercontent.com/3229783/101281665-4b24de80-379e-11eb-8170-fe09d6bfa894.png)
+
+</td>
+</tr>
+</table>
 
 
 Install
@@ -230,8 +348,6 @@ f = bimpy.Float();
 You can access the value in the following way: ``f.value``
 
 To use it with *slider_float* simply pass it to that function:
-
-.. code:: python
 
 ```python
 bimpy.slider_float("float slider", f, 0.0, 1.0)
