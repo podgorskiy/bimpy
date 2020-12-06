@@ -15,7 +15,7 @@ class App(bp.App):
 
         bp.input_text('string', self.string, 256)
 
-        bp.slider_float("float", self.f, 0.0, 1.0)
+        bp.slider_float("float", self.f, 0, 1)
 
 
 app = App()
