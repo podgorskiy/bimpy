@@ -277,6 +277,20 @@ void Context::NewFrame()
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
+
+	// Overwrite default window behaviour
+	if (GImGui->WithinFrameScopeWithImplicitWindow)
+	{
+        GImGui->CurrentWindow->Active = false;
+		GImGui->WithinFrameScopeWithImplicitWindow = false;
+		ImGui::End();
+		GImGui->WithinFrameScopeWithImplicitWindow = true;
+		ImGui::SetNextWindowPos(ImVec2(0, 0));
+		ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+		ImGui::Begin("Debug##Default2", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove);
+		ImGui::PopStyleVar();
+	}
 }
 
 
