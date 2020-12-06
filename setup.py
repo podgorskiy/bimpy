@@ -266,7 +266,7 @@ extension.extra_compile_cpp_args = extra_compile_cpp_args[target_os]
 setup(
     name='bimpy',
 
-    version='0.1.0',
+    version='0.1.1',
 
     description='bimpy - bundled imgui for python',
     long_description=long_description,
@@ -291,7 +291,7 @@ setup(
 
     keywords='imgui ui',
 
-    packages=['bimpy'],
+    packages=['bimpy', 'bimpy.multilingual'],
 
     ext_modules=[extension],
 )
