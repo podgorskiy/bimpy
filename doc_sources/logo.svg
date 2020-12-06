@@ -5,12 +5,12 @@
  -->
 
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 640 253" style="enable-background:new 0 0 640 253;" xml:space="preserve">
+	 viewBox="0 0 640 226" style="enable-background:new 0 0 640 226;" xml:space="preserve">
 <style type="text/css">
 	.st0{fill:url(#SVGID_1_);}
 	.st1{opacity:0.17;}
 	.text{fill:#FFFFFF; font-family:'Segoe UI';}
-	.text_large{font-size:102.2903px;}
+	.text_large{font-size:102px;}
 	.text_version{font-size:24px;}
 	.logo{fill:#EE9C33;}
 </style>
@@ -19,8 +19,8 @@
 		<stop  offset="0" style="stop-color:#2E1E54"/>
 		<stop  offset="1" style="stop-color:#B94238"/>
 	</linearGradient>
-	<rect y="-0.02" class="st0" width="640" height="226.04"/>
-	<rect y="175.38" class="st1" width="640" height="50.64"/>
+	<rect y="0.0" class="st0" width="640" height="226"/>
+	<rect y="175" class="st1" width="640" height="51"/>
 	<text transform="matrix(1.0191 0 0 1 121.7368 119.3747)" class="text text_large">bimpy</text>
 	<text transform="matrix(1 0 0 1 530.4453 209.009)" class="text text_version">
 <!-- VERSION BEGIN -->
