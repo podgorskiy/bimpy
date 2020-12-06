@@ -66,7 +66,7 @@ while not ctx.should_close():
 
         bp.input_text('string', str, 256)
 
-        bp.slider_float("float", f, 0., 1.)
+        bp.slider_float("float", f, 0, 1)
 
         bp.end()
 ```
@@ -92,7 +92,7 @@ class App(bp.App):
 
         bp.input_text('string', self.s, 256)
 
-        bp.slider_float("float", self.f, 0., 1.)
+        bp.slider_float("float", self.f, 0, 1)
 
 
 app = App()
