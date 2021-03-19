@@ -878,7 +878,7 @@ PYBIND11_MODULE(_bimpy, m) {
 
 	m.def("begin_child",[](const std::string& str_id, const ImVec2& size, bool border, ImGuiWindowFlags extra_flags) -> bool
 		{
-			return ImGui::BeginChild(str_id.c_str(), size, border);
+			return ImGui::BeginChild(str_id.c_str(), size, border, extra_flags);
 		},
 		"begin a scrolling region. size==0.0f: use remaining window size, size<0.0f: use remaining window size minus abs(size). size>0.0f: fixed size. each axis can use a different mode, e.g. ImVec2(0,400).",
 		py::arg("str_id"), py::arg("size") = ImVec2(0,0), py::arg("border") = false, py::arg("extra_flags") = ImGuiWindowFlags_(0));
